@@ -19,7 +19,7 @@ async function registerArtists() {
 
   for (const name of top100Artists) {
     const { data: existing } = await supabase.from('artists').select('id').ilike('name', name).single();
-    
+
     if (existing) {
       console.log(`Skipping ${name}: Already exists.`);
       continue;

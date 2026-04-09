@@ -17,23 +17,28 @@ export async function updateArtistPhoto(artistId: string, imageUrl: string) {
 
     // 2. Reputation Gating (10+ votes for this artist)
     // admin (local dev) bypass
-    
+
     if (!isLocalAdmin) {
+      // ✅ [추가된 부분] 타입스크립트를 안심시키기 위한 안전장치
+      if (!user) {
+        return { success: false, error: 'LOG_IN_REQUIRED' };
+      }
+
       const { count, error: countErr } = await supabase
         .from('votes')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
+        .eq('user_id', user.id) // 이제 타입스크립트가 user.id를 안전하게 인식합니다!
         .eq('artist_id', artistId);
-      
+
       if (countErr) throw countErr;
 
       const voteCount = count || 0;
       if (voteCount < 10) {
-        return { 
-          success: false, 
-          error: 'VOTES_INSUFFICIENT', 
-          currentVotes: voteCount, 
-          requiredVotes: 10 
+        return {
+          success: false,
+          error: 'VOTES_INSUFFICIENT',
+          currentVotes: voteCount,
+          requiredVotes: 10
         };
       }
     }
