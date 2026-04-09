@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
 
           <h2 className="text-xl font-bold text-white mt-8">4. Contact</h2>
           <p>
-            If you have questions regarding this policy, please contact us at stan.dom.support@example.com.
+            If you have questions regarding this policy, please contact us at admin@openhrd.com.
           </p>
         </div>
       </div>
