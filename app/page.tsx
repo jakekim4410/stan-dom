@@ -288,8 +288,8 @@ export default function Dashboard() {
               <button
                 onClick={() => setMapView('globe')}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'globe'
-                    ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
-                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                  ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
+                  : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <GlobeIcon size={14} />
@@ -298,8 +298,8 @@ export default function Dashboard() {
               <button
                 onClick={() => setMapView('flat')}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'flat'
-                    ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
-                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                  ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
+                  : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <Map size={14} />
@@ -560,10 +560,10 @@ export default function Dashboard() {
                       onClick={() => handleVote(a.id, a.total_votes)}
                       disabled={!!activeVotes[a.id]}
                       className={`shrink-0 ml-3 px-4 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-black transition-all ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success'
-                          ? 'bg-emerald-500 border-emerald-400 text-white'
-                          : activeVotes[a.id] === 'loading'
-                            ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
-                            : 'border-zinc-700 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
+                        ? 'bg-emerald-500 border-emerald-400 text-white'
+                        : activeVotes[a.id] === 'loading'
+                          ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
+                          : 'border-zinc-700 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
                         }`}
                     >
                       {activeVotes[a.id] === 'success' ? (
@@ -597,6 +597,7 @@ export default function Dashboard() {
       </div>
 
       <footer className="mt-32 border-t border-white/5 bg-black/20 backdrop-blur-md pt-16 pb-12 flex flex-col items-center gap-8">
+        {/* 1. 관리자 문의 버튼 */}
         <button
           onClick={() => setIsInquiryModalOpen(true)}
           className="group flex flex-col items-center gap-3 transition-all hover:scale-105"
@@ -609,6 +610,17 @@ export default function Dashboard() {
           </span>
         </button>
 
+        {/* 2. 구글 검토용 법적 공지 링크 (Privacy & Terms) */}
+        <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+          <Link href="/privacy" className="hover:text-[#37C561] transition-colors">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="hover:text-[#37C561] transition-colors">
+            Terms of Service
+          </Link>
+        </div>
+
+        {/* 3. 저작권 표시 */}
         <p className="text-zinc-600 text-[10px] font-black tracking-[0.3em] uppercase opacity-50">
           © 2026 STANDOM GLOBAL NETWORK
         </p>
