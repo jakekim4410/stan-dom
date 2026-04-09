@@ -37,6 +37,22 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Footer
     footer: '© 2026 STANDOM GLOBAL NETWORK',
 
+    // Photo Modal
+    photoModalTitle: 'Edit Photo',
+    photoModalSub: 'Search for or change the artist\'s profile picture',
+    searchLabel: 'Image Search',
+    photoModalSearchPlaceholder: 'Search for the artist\'s name...', // <-- 키 이름 변경
+    manualLabel: 'Photo Link (URL)',
+    manualPlaceholder: 'Enter the image address...',
+    previewLabel: 'Preview',
+    awaitingSignal: 'Awaiting Signal',
+    establishSync: 'Establish Sync',
+    abort: 'Abort',
+    photoWarning: 'Please use appropriate images. Inappropriate images may be removed by the administrator.',
+    accessRestricted: 'Access Restricted',
+    votesRequired: 'More votes are required to edit photos.',
+    loginRequired: 'Login is required to edit photos.',
+
     // Shared
     showMore: 'Show More',
     showLess: 'Show Less',
@@ -53,7 +69,7 @@ export const i18n: Record<Language, Record<string, string>> = {
   },
   KO: {
     // Navbar
-    searchPlaceholder: '아티스트 검색...',
+    searchPlaceholder: '아티스트 검색...', // <-- Navbar용
     login: '로그인',
 
     // Globe
@@ -103,7 +119,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     photoModalTitle: '사진 수정',
     photoModalSub: '아티스트의 프로필 사진을 검색하거나 변경하세요',
     searchLabel: '이미지 검색',
-    searchPlaceholder: '아티스트 이름을 검색하세요...',
+    photoModalSearchPlaceholder: '아티스트 이름을 검색하세요...', // <-- 키 이름 변경
     manualLabel: '사진 링크 (URL)',
     manualPlaceholder: '이미지 주소를 입력하세요...',
     previewLabel: '미리보기',
