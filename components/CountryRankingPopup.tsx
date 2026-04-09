@@ -92,7 +92,7 @@ export default function CountryRankingPopup({
 
           {/* Neon Accent Footer */}
           <div className="px-5 pb-4">
-            <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+            <div className="h-px bg-gradient-to-r from-transparent via-[#37C561]/30 to-transparent" />
             <p className="text-center text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-3">
               {countryCode} • STAN.DOM
             </p>

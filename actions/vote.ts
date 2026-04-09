@@ -1,43 +1,100 @@
 'use server';
 
-import { supabase } from '@/utils/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
+
+const QUOTA_GUEST = process.env.NODE_ENV === 'development' ? 1000 : 3;
+const QUOTA_MEMBER = process.env.NODE_ENV === 'development' ? 1000 : 10;
 
 export async function voteForArtist(artistId: string, countryCode: string = 'UN') {
+  console.log(`[Vote Action] DEBUG: Function entered for artist ${artistId}`);
   try {
+    const headerList = await headers();
+    const ip = headerList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
+    
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    // 1. Insert vote with user-selected country code
+    const limit = user ? QUOTA_MEMBER : QUOTA_GUEST;
+    const identifierType = user ? 'user_id' : 'ip_address';
+    const identifierValue = user ? user.id : ip;
+
+    console.log(`[Vote Action] Context: IP=${ip}, User=${user?.id || 'anon'}, Quota=${limit}`);
+
+    // 1. Security Scan: Check for ALL votes by this user/ip within the last 24 hours
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const { data: existingVotes, error: scanError } = await supabase
+      .from('votes')
+      .select('created_at')
+      .eq(identifierType, identifierValue)
+      .gt('created_at', twentyFourHoursAgo)
+      .order('created_at', { ascending: false });
+
+    if (scanError) {
+      console.error(`[Vote Action] Scan Error:`, scanError);
+      throw scanError;
+    }
+
+    if (existingVotes && existingVotes.length >= limit) {
+      console.log(`[Vote Action] Quota exceeded. Used: ${existingVotes.length}/${limit}`);
+      const oldestBlockingVote = new Date(existingVotes[limit - 1].created_at);
+      const nextVoteDate = new Date(oldestBlockingVote.getTime() + 24 * 60 * 60 * 1000);
+      return { 
+        success: false, 
+        error: 'COOLDOWN_ACTIVE', 
+        nextVoteAt: nextVoteDate.toISOString(),
+        limit
+      };
+    }
+
+    // 2. Insert vote
+    console.log(`[Vote Action] Inserting new vote record...`);
     const { error: voteError } = await supabase
       .from('votes')
       .insert({
         user_id: user?.id || null,
         artist_id: artistId,
         country_code: countryCode.toUpperCase(),
+        ip_address: ip
       });
 
-    if (voteError) throw voteError;
+    if (voteError) {
+      console.error(`[Vote Action] Insert Error:`, voteError);
+      throw voteError;
+    }
 
-    // 2. Increment total_votes atomically
+    // 3. Increment total_votes
+    console.log(`[Vote Action] Fetching current vote count for artist ${artistId}...`);
     const { data: artistData, error: fetchError } = await supabase
       .from('artists')
       .select('total_votes')
       .eq('id', artistId)
       .single();
 
-    if (fetchError) throw fetchError;
+    if (fetchError || !artistData) {
+      console.error(`[Vote Action] Fetch Artist Data Error:`, fetchError);
+      throw new Error(fetchError?.message || 'Artist not found');
+    }
 
+    console.log(`[Vote Action] Updating artist ${artistId} votes to ${ (artistData.total_votes || 0) + 1 }...`);
     const { error: updateError } = await supabase
       .from('artists')
       .update({ total_votes: (artistData.total_votes || 0) + 1 })
       .eq('id', artistId);
 
-    if (updateError) throw updateError;
+    if (updateError) {
+      console.error(`[Vote Action] Update Artist Error:`, updateError);
+      throw updateError;
+    }
 
+    console.log(`[Vote Action] ALL SUCCESSFUL. Revalidating path...`);
     revalidatePath('/');
     return { success: true, countryCode };
   } catch (error: any) {
-    console.error('Voting error:', error);
-    return { success: false, error: error.message };
+    console.error('[Vote Action] Unexpected fatal error:', error);
+    return { success: false, error: error.message || 'An unexpected system error occurred' };
   }
 }
+

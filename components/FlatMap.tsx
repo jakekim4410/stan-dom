@@ -2,35 +2,35 @@
 
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Language, getT } from '@/constants/i18n';
-import { Country } from './CountrySelector';
+import { COUNTRY_DATA } from '@/constants/countryData';
 
 // Country code → approx normalized map position [x%, y%] for 2D flat map
-const FLAT_POSITIONS: Record<string, [number, number]> = {
-  KR: [78.5, 35], JP: [81, 34], US: [20, 35], CN: [75, 34],
-  TH: [73, 44], PH: [79, 45], VN: [73, 42], ID: [76, 52],
-  MY: [74, 49], SG: [74, 51], IN: [68, 42], GB: [47, 26],
-  FR: [48, 28], DE: [50, 26], BR: [29, 58], MX: [17, 42],
-  AU: [80, 67], CA: [17, 24], RU: [72, 22], TR: [57, 32],
-  SA: [60, 40], ZA: [53, 68], NG: [50, 48], EG: [55, 37],
-  AR: [27, 68], UN: [50, 50],
-};
+// Positions derived dynamically from lat/lng in countryData.ts
+const FLAT_COORDS_MAP: Record<string, [number, number]> = COUNTRY_DATA.reduce(
+  (acc: Record<string, [number, number]>, c) => {
+    const x = ((c.lng + 180) / 360) * 100;
+    const latRad = (c.lat * Math.PI) / 180;
+    const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+    const y = 50 - (mercN / Math.PI) * 50;
+    acc[c.code] = [x, Math.max(0, Math.min(100, y))];
+    return acc;
+  },
+  {}
+);
 
 function getHeatColor(votes: number, maxVotes: number): string {
-  if (maxVotes === 0 || votes === 0) return 'rgba(30,10,60,0.7)';
+  if (maxVotes === 0 || votes === 0) return 'rgba(0,0,0,0)';
   const ratio = Math.sqrt(votes / maxVotes);
-  if (ratio < 0.5) {
-    const t = ratio / 0.5;
-    return `rgba(${Math.round(138*(1-t))},${Math.round(43*(1-t)+243*t)},${Math.round(226*(1-t)+255*t)},${0.5 + 0.4*t})`;
-  } else {
-    const t = (ratio - 0.5) / 0.5;
-    return `rgba(0,${Math.round(243*(1-t)+255*t)},${Math.round(255*(1-t)+100*t)},${0.8 + 0.2*t})`;
-  }
+  const r = Math.round(10 + 45 * ratio);
+  const g = Math.round(40 + 157 * ratio);
+  const b = Math.round(20 + 77 * ratio);
+  return `rgba(${r},${g},${b},${0.4 + 0.6 * ratio})`;
 }
 
 interface FlatMapProps {
   stats: Record<string, number>;
   lastVoteCountry?: string;
-  userCountry?: Country | null;
+  userCountry?: { code: string; name: string; flag: string; lat: number; lng: number; nameKo: string } | null;
   onCountryClick: (code: string, name: string) => void;
   lang: Language;
 }
@@ -44,20 +44,16 @@ export default function FlatMap({ stats, lastVoteCountry, userCountry, onCountry
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const rippleId = useRef(0);
 
-  // Combine demo + real stats
-  const DEMO: Record<string, number> = {
-    KR:1250, JP:1100, US:980, CN:850, BR:720, IN:640,
-    TH:510, GB:480, ID:450, PH:390, FR:360, DE:320, VN:290, MX:240,
-  };
+  // 100% Real-time data
   const mergedStats = useMemo(() => {
-    const m = {...DEMO};
-    for (const [c, v] of Object.entries(stats)) m[c] = (m[c]||0) + v*10;
+    const m: Record<string, number> = {};
+    for (const [c, v] of Object.entries(stats)) m[c] = (m[c]||0) + v;
     return m;
   }, [stats]);
 
   const maxVotes = useMemo(() => Math.max(1, ...Object.values(mergedStats)), [mergedStats]);
 
-  // Fetch world GeoJSON
+  // Fetch world GeoJSON for node generation
   useEffect(() => {
     fetch('https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
       .then(r => r.json())
@@ -65,7 +61,7 @@ export default function FlatMap({ stats, lastVoteCountry, userCountry, onCountry
       .catch(() => {});
   }, []);
 
-  // Convert lng/lat to SVG x/y for Mercator-like projection (1000×500)
+  // Convert lng/lat to SVG x/y
   const project = useCallback((lng: number, lat: number): [number, number] => {
     const x = ((lng + 180) / 360) * 1000;
     const latRad = (lat * Math.PI) / 180;
@@ -74,26 +70,44 @@ export default function FlatMap({ stats, lastVoteCountry, userCountry, onCountry
     return [x, Math.max(0, Math.min(500, y))];
   }, []);
 
-  // Convert GeoJSON polygon rings to SVG path
-  const geoToPath = useCallback((geometry: any): string => {
-    if (!geometry) return '';
-    const rings: number[][][] = geometry.type === 'Polygon'
-      ? geometry.coordinates
-      : geometry.type === 'MultiPolygon'
-        ? geometry.coordinates.flat(1)
-        : [];
-    return rings.map(ring =>
-      ring.map((pt, i) => {
-        const [x, y] = project(pt[0], pt[1]);
-        return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(' ') + 'Z'
-    ).join(' ');
-  }, [project]);
+  // Neural Grid Generation (Performance optimized)
+  const gridNodes = useMemo(() => {
+    if (countries.length === 0) return [];
+    
+    const nodes: any[] = [];
+    const step = 8; // Density of the grid
+    
+    // Create a simplified country bounding box/lookup for speed
+    // This is a mockup of the neural grid logic
+    // In a real implementation, we'd use a canvas or a more complex spatial check
+    // Here we'll use the existing FLAT_POSITIONS to create "hot zones"
+    Object.entries(FLAT_COORDS_MAP).forEach(([code, pos]) => {
+      const votes = mergedStats[code] || 0;
+      const x = (pos[0] / 100) * 1000;
+      const y = (pos[1] / 100) * 500;
+      
+      // Generate clusters around major nodes
+      const clusterSize = votes > 500 ? 5 : 3;
+      for (let i = 0; i < clusterSize; i++) {
+        for (let j = 0; j < clusterSize; j++) {
+           nodes.push({
+             id: `${code}-${i}-${j}`,
+             x: x + (i - clusterSize/2) * 12,
+             y: y + (j - clusterSize/2) * 12,
+             votes,
+             code
+           });
+        }
+      }
+    });
+    
+    return nodes;
+  }, [countries, mergedStats]);
 
   // Trigger ripple on vote
   useEffect(() => {
     if (!lastVoteCountry) return;
-    const pos = FLAT_POSITIONS[lastVoteCountry];
+    const pos = FLAT_COORDS_MAP[lastVoteCountry];
     if (!pos) return;
     const x = (pos[0] / 100) * 1000;
     const y = (pos[1] / 100) * 500;
@@ -102,137 +116,103 @@ export default function FlatMap({ stats, lastVoteCountry, userCountry, onCountry
     setTimeout(() => setRipples(r => r.filter(rp => rp.id !== id)), 2000);
   }, [lastVoteCountry]);
 
-  // Render country labels
-  const labelData = useMemo(() => {
-    return Object.entries(FLAT_POSITIONS)
-      .filter(([code]) => mergedStats[code] && mergedStats[code] > 0)
-      .map(([code, [px, py]]) => ({
-        code,
-        x: (px / 100) * 1000,
-        y: (py / 100) * 500,
-        votes: mergedStats[code] || 0,
-      }));
-  }, [mergedStats]);
-
   return (
-    <div className="relative glassmorphism rounded-[2rem] border border-white/5 overflow-hidden">
+    <div className="relative rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/40 backdrop-blur-3xl shadow-[0_0_80px_rgba(0,0,0,0.5)]">
       {/* Title */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 text-center pointer-events-none">
-        <p className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-500">{t('globeFrequency')}</p>
-        <h2 className="text-lg font-black italic tracking-tighter neon-text-cyan flex items-center gap-1.5 justify-center">
-          {t('globeTitle')} <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_red]" />
+      <div className="absolute top-6 left-6 z-10 pointer-events-none">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-1.5 h-1.5 bg-[#37C561] rounded-full animate-pulse shadow-[0_0_8px_#37C561]" />
+          <p className="text-[10px] uppercase tracking-[0.3em] font-black text-[#37C561]/80">Fandom Grid Active</p>
+        </div>
+        <h2 className="text-2xl font-black italic tracking-tighter text-white">
+          FAN <span className="text-neon-magenta">SYNC</span>
         </h2>
+      </div>
+
+      {/* Stats legend */}
+      <div className="absolute top-6 right-6 z-10 flex flex-col items-end gap-1">
+         <p className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Signal Strength</p>
+         <div className="flex gap-0.5">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className={`w-1.5 h-3 rounded-sm ${i < 3 ? 'bg-[#37C561]' : 'bg-zinc-800'}`} />
+            ))}
+         </div>
       </div>
 
       <svg
         viewBox="0 0 1000 500"
-        className="w-full h-auto"
-        style={{ background: 'linear-gradient(180deg, #020408 0%, #050510 100%)' }}
+        className="w-full h-auto cursor-crosshair"
       >
-        {/* Subtle grid lines */}
         <defs>
-          <pattern id="grid" width="100" height="50" patternUnits="userSpaceOnUse">
-            <path d="M100,0 L0,0 0,50" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+          <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+            <stop offset="0%" stopColor="rgba(55, 197, 97, 0.8)" />
+            <stop offset="100%" stopColor="rgba(55, 197, 97, 0)" />
+          </radialGradient>
+          <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+             <circle cx="1" cy="1" r="0.5" fill="rgba(255,255,255,0.05)" />
           </pattern>
         </defs>
-        <rect width="1000" height="500" fill="url(#grid)" />
+        
+        <rect width="1000" height="500" fill="url(#dotGrid)" />
 
-        {/* Country Polygons */}
-        {countries.map((feat: any, i: number) => {
-          const iso = feat?.properties?.ISO_A2 as string;
-          const votes = mergedStats[iso] || 0;
-          const color = getHeatColor(votes, maxVotes);
-          const path = geoToPath(feat.geometry);
-          if (!path) return null;
+        {/* Neural Grid Nodes */}
+        {gridNodes.map((node) => {
+          const ratio = Math.min(1, Math.sqrt(node.votes / maxVotes));
+          const color = node.votes > 800 ? '#37C561' : (node.votes > 400 ? '#7CFFAB' : '#FF00FF');
+          const size = 1.5 + ratio * 4;
+          
           return (
-            <path
-              key={i}
-              d={path}
-              fill={color}
-              stroke="rgba(255,255,255,0.1)"
-              strokeWidth="0.4"
-              className="cursor-pointer transition-all hover:brightness-150"
-              onClick={() => {
-                const name = feat?.properties?.NAME ?? iso;
-                onCountryClick(iso, name);
-              }}
-            />
+            <g key={node.id} className="transition-transform duration-500 hover:scale-150 cursor-pointer" 
+               onClick={() => onCountryClick(node.code, COUNTRY_DATA.find(c => c.code === node.code)?.name || node.code)}>
+              <circle 
+                cx={node.x} 
+                cy={node.y} 
+                r={size * 2} 
+                fill={color} 
+                opacity={0.1 * ratio}
+                className="animate-pulse"
+              />
+              <circle 
+                cx={node.x} 
+                cy={node.y} 
+                r={size} 
+                fill={color}
+              />
+            </g>
           );
         })}
 
-        {/* User country highlight */}
+        {/* User Node highlight */}
         {userCountry && (() => {
-          const [px, py] = FLAT_POSITIONS[userCountry.code] || [50, 50];
-          const x = (px / 100) * 1000;
-          const y = (py / 100) * 500;
+          const pos = FLAT_COORDS_MAP[userCountry.code] || [50, 50];
+          const x = (pos[0] / 100) * 1000;
+          const y = (pos[1] / 100) * 500;
           return (
             <g>
-              <circle cx={x} cy={y} r="12" fill="none" stroke="#00FF88" strokeWidth="2" className="animate-ping" opacity={0.6} />
-              <circle cx={x} cy={y} r="6" fill="#00FF88" opacity={0.9} />
-              <circle cx={x} cy={y} r="3" fill="white" />
+              <circle cx={x} cy={y} r="20" fill="none" stroke="#37C561" strokeWidth="1" className="animate-ping" opacity={0.4} />
+              <path d={`M${x-15},${y} L${x+15},${y} M${x},${y-15} L${x},${y+15}`} stroke="#37C561" strokeWidth="0.5" opacity={0.5} />
+              <rect x={x-2} y={y-2} width="4" height="4" fill="white" />
             </g>
           );
         })()}
 
-        {/* Vote Ripples */}
+        {/* Ripples */}
         {ripples.map(rp => (
-          <g key={rp.id}>
-            {[0, 1, 2].map(i => (
-              <circle
-                key={i}
-                cx={rp.x}
-                cy={rp.y}
-                r={20 + i * 20}
-                fill="none"
-                stroke="#00FF88"
-                strokeWidth="2"
-                opacity={0}
-              >
-                <animate attributeName="r" from={10} to={80 + i*20} dur="1.5s" begin={`${i*0.2}s`} fill="freeze" />
-                <animate attributeName="opacity" from="0.8" to="0" dur="1.5s" begin={`${i*0.2}s`} fill="freeze" />
-              </circle>
-            ))}
-            <circle cx={rp.x} cy={rp.y} r="8" fill="#00FF88">
-              <animate attributeName="r" from="8" to="2" dur="0.5s" fill="freeze" />
-              <animate attributeName="opacity" from="1" to="0" dur="0.5s" fill="freeze" />
-            </circle>
-          </g>
+           <circle key={rp.id} cx={rp.x} cy={rp.y} r="0" fill="none" stroke="#37C561" strokeWidth="2">
+             <animate attributeName="r" from="0" to="150" dur="2s" fill="freeze" />
+             <animate attributeName="opacity" from="0.6" to="0" dur="2s" fill="freeze" />
+           </circle>
         ))}
-
-        {/* Country name labels */}
-        {labelData.map(({ code, x, y, votes }) => (
-          <g key={code}>
-            <circle cx={x} cy={y} r={2 + 4 * Math.sqrt(votes / maxVotes)} fill={getHeatColor(votes, maxVotes)} />
-            <text x={x} y={y - 8} textAnchor="middle" fontSize="7" fontWeight="900"
-              fill="rgba(255,255,255,0.75)" fontFamily="monospace" style={{ pointerEvents: 'none' }}>
-              {code}
-            </text>
-          </g>
-        ))}
-
-        {/* Heat Legend */}
-        <g transform="translate(820, 460)">
-          <text x="0" y="-6" fontSize="6" fontWeight="900" fill="rgba(255,255,255,0.3)" fontFamily="monospace">HEAT SCALE</text>
-          <defs>
-            <linearGradient id="heatGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="rgba(138,43,226,0.7)" />
-              <stop offset="50%" stopColor="rgba(0,243,255,0.8)" />
-              <stop offset="100%" stopColor="rgba(0,255,136,1)" />
-            </linearGradient>
-          </defs>
-          <rect x="0" y="0" width="100" height="6" rx="3" fill="url(#heatGrad)" />
-          <text x="0" y="16" fontSize="5.5" fill="rgba(255,255,255,0.3)" fontFamily="monospace">Low</text>
-          <text x="78" y="16" fontSize="5.5" fill="rgba(255,255,255,0.3)" fontFamily="monospace">High</text>
-        </g>
       </svg>
 
-      {/* Active nodes */}
-      <div className="absolute bottom-4 left-4 hidden md:block pointer-events-none">
-        <div className="glassmorphism px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-          <p className="text-[9px] font-black uppercase text-zinc-400 tracking-widest">
-            {Object.keys(stats).length} {t('globeNodes')}
-          </p>
+      {/* Footer Info */}
+      <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end pointer-events-none">
+        <div className="space-y-1">
+          <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest leading-none">Global Sync Status</p>
+          <p className="text-xs font-mono text-[#37C561] font-black">ENCRYPTED_LINK_ESTABLISHED</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[24px] font-black italic tracking-tighter text-white opacity-20">2D_SCAN_V.2.0</p>
         </div>
       </div>
     </div>
