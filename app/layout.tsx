@@ -22,14 +22,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "STAN.DOM | Global Artist Fandom Grid",
     description: "Experience the next-gen cinematic leaderboard for global music fandom.",
-    images: ["/og-image.jpg"],
+    // 여기를 .jpeg로 정확하게 수정
+    images: ["/og-image.jpeg"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "STAN.DOM | Global Artist Fandom Grid",
     description: "Experience the next-gen cinematic leaderboard for global music fandom.",
-    images: ["/og-image.jpg"], // 여기도 .jpg로 변경
+    // 여기도 .jpeg로 수정
+    images: ["/og-image.jpeg"],
   },
 };
 
