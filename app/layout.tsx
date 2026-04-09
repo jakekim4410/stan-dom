@@ -16,20 +16,20 @@ const notoSans = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://localhost:3000'), // Change to actual production domain later
+  metadataBase: new URL('https://standom.online'),
   title: "STAN.DOM | Global Artist Fandom Grid",
   description: "The cinematic Cyberpunk dashboard for global K-POP fandom. Nominate, scan, and vote for your favorite artists on the global grid.",
   openGraph: {
     title: "STAN.DOM | Global Artist Fandom Grid",
     description: "Experience the next-gen cinematic leaderboard for global music fandom.",
-    images: ["/og-image.png"], 
+    images: ["/og-image.jpg"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "STAN.DOM | Global Artist Fandom Grid",
     description: "Experience the next-gen cinematic leaderboard for global music fandom.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"], // 여기도 .jpg로 변경
   },
 };
 

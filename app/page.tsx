@@ -150,23 +150,23 @@ export default function Dashboard() {
     );
 
     const result = await voteForArtist(id, userCountry.code);
-    if (!result.success) { 
-      setActiveVotes(prev => { const n = {...prev}; delete n[id]; return n; });
+    if (!result.success) {
+      setActiveVotes(prev => { const n = { ...prev }; delete n[id]; return n; });
       if (result.error === 'COOLDOWN_ACTIVE') {
-         alert(`${lang === 'KO' ? '하루 투표 제한을 초과했습니다.' : 'Daily vote limit exceeded.'}`);
+        alert(`${lang === 'KO' ? '하루 투표 제한을 초과했습니다.' : 'Daily vote limit exceeded.'}`);
       } else {
-         alert(`Vote failed: ${result.error}`);
+        alert(`Vote failed: ${result.error}`);
       }
-      fetchArtists(); 
+      fetchArtists();
     }
-    else { 
+    else {
       // Mark as success
       setActiveVotes(prev => ({ ...prev, [id]: 'success' }));
-      handleIncomingVote(userCountry.code, id); 
+      handleIncomingVote(userCountry.code, id);
 
       // Reset to original after 2 seconds
       setTimeout(() => {
-        setActiveVotes(prev => { const n = {...prev}; delete n[id]; return n; });
+        setActiveVotes(prev => { const n = { ...prev }; delete n[id]; return n; });
       }, 2000);
     }
   };
@@ -214,9 +214,9 @@ export default function Dashboard() {
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 glassmorphism border-b border-white/5 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center">
+          <a href="/" className="flex items-center">
             <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />
-          </Link>
+          </a>
           <div className="flex items-center gap-3">
             <LanguageSwitcher lang={lang} onToggle={() => setLang(l => l === 'EN' ? 'KO' : 'EN')} />
             {user ? (
@@ -241,7 +241,7 @@ export default function Dashboard() {
       {/* ── Operations Toolbar ── */}
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-4">
         <div className="glassmorphism rounded-3xl p-2 sm:p-3 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-white/5 shadow-2xl">
-          
+
           {/* Left: Input Node (Country) */}
           <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             <div className="w-full sm:w-72 relative group">
@@ -255,7 +255,7 @@ export default function Dashboard() {
 
             {/* Warning / Status Badge */}
             {!userCountry ? (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5 group border-dashed hover:border-red-500/30 transition-colors"
@@ -266,7 +266,7 @@ export default function Dashboard() {
                 </span>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#37C561]/10 border border-[#37C561]/30"
@@ -287,24 +287,22 @@ export default function Dashboard() {
             <div className="flex bg-zinc-900/50 p-1 rounded-2xl border border-white/5">
               <button
                 onClick={() => setMapView('globe')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${
-                  mapView === 'globe'
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'globe'
                     ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
                     : 'text-zinc-500 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
-                <GlobeIcon size={14} /> 
+                <GlobeIcon size={14} />
                 <span className="hidden sm:inline">{lang === 'KO' ? '지구본' : 'GLOBE'}</span>
               </button>
               <button
                 onClick={() => setMapView('flat')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${
-                  mapView === 'flat'
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'flat'
                     ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
                     : 'text-zinc-500 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
-                <Map size={14} /> 
+                <Map size={14} />
                 <span className="hidden sm:inline">{lang === 'KO' ? '평면지도' : 'FLAT'}</span>
               </button>
             </div>
@@ -358,38 +356,38 @@ export default function Dashboard() {
 
       {/* ── Ranking Section ── */}
       <div className="max-w-7xl mx-auto px-4 py-12 space-y-20">
-        
+
         {/* Search & Register - Relocated & New Feature */}
         <section className="flex flex-col md:flex-row items-center justify-between gap-6 pb-2 border-b border-white/5">
-           <div className="w-full md:w-auto">
-              <h2 className="text-4xl font-black italic tracking-tighter">{t('globalRanking')}</h2>
-              <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1">{t('realTimeTrends')}</p>
-           </div>
-           
-           <div className="flex items-center gap-3 w-full md:w-auto">
-              {/* Relocated Search */}
-              <div className="flex-1 md:w-64 flex items-center bg-white/5 rounded-2xl px-5 py-3 gap-3 border border-white/10 focus-within:border-[#37C561]/50 transition-all">
-                <Search size={16} className="text-zinc-500" />
-                <input
-                  type="text"
-                  placeholder={t('searchPlaceholder')}
-                  className="bg-transparent border-none outline-none text-sm font-bold w-full placeholder:text-zinc-700"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                />
-              </div>
+          <div className="w-full md:w-auto">
+            <h2 className="text-4xl font-black italic tracking-tighter">{t('globalRanking')}</h2>
+            <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1">{t('realTimeTrends')}</p>
+          </div>
 
-              {/* Restore Add Artist Feature */}
-              <button 
-                onClick={() => setIsAddArtistOpen(true)}
-                className="shrink-0 flex items-center gap-2 px-5 py-3 bg-[#37C561]/10 border border-[#37C561]/30 rounded-2xl text-[#37C561] hover:bg-[#37C561] hover:text-black transition-all group"
-              >
-                <PlusCircle size={18} className="group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-black uppercase tracking-widest hidden sm:inline">
-                   {lang === 'KO' ? '아티스트 등록' : 'Register Artist'}
-                </span>
-              </button>
-           </div>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            {/* Relocated Search */}
+            <div className="flex-1 md:w-64 flex items-center bg-white/5 rounded-2xl px-5 py-3 gap-3 border border-white/10 focus-within:border-[#37C561]/50 transition-all">
+              <Search size={16} className="text-zinc-500" />
+              <input
+                type="text"
+                placeholder={t('searchPlaceholder')}
+                className="bg-transparent border-none outline-none text-sm font-bold w-full placeholder:text-zinc-700"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            {/* Restore Add Artist Feature */}
+            <button
+              onClick={() => setIsAddArtistOpen(true)}
+              className="shrink-0 flex items-center gap-2 px-5 py-3 bg-[#37C561]/10 border border-[#37C561]/30 rounded-2xl text-[#37C561] hover:bg-[#37C561] hover:text-black transition-all group"
+            >
+              <PlusCircle size={18} className="group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-black uppercase tracking-widest hidden sm:inline">
+                {lang === 'KO' ? '아티스트 등록' : 'Register Artist'}
+              </span>
+            </button>
+          </div>
         </section>
 
         {/* ── Top 3 ── */}
@@ -480,9 +478,8 @@ export default function Dashboard() {
                       id={`vote-btn-${a.id}`}
                       onClick={() => handleVote(a.id, a.total_votes)}
                       disabled={!!activeVotes[a.id]}
-                      className={`w-full mt-6 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all relative overflow-hidden ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${
-                          activeVotes[a.id] === 'success' ? 'bg-emerald-500 !text-white' : activeVotes[a.id] === 'loading' ? 'bg-zinc-700 !text-zinc-400 cursor-not-allowed border-none' : ''
-                      }`}
+                      className={`w-full mt-6 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all relative overflow-hidden ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 !text-white' : activeVotes[a.id] === 'loading' ? 'bg-zinc-700 !text-zinc-400 cursor-not-allowed border-none' : ''
+                        }`}
                       style={{
                         background: activeVotes[a.id] ? undefined : color,
                         color: activeVotes[a.id] ? undefined : '#000',
@@ -562,13 +559,12 @@ export default function Dashboard() {
                     <button
                       onClick={() => handleVote(a.id, a.total_votes)}
                       disabled={!!activeVotes[a.id]}
-                      className={`shrink-0 ml-3 px-4 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-black transition-all ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${
-                        activeVotes[a.id] === 'success'
+                      className={`shrink-0 ml-3 px-4 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-black transition-all ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success'
                           ? 'bg-emerald-500 border-emerald-400 text-white'
                           : activeVotes[a.id] === 'loading'
                             ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
                             : 'border-zinc-700 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
-                      }`}
+                        }`}
                     >
                       {activeVotes[a.id] === 'success' ? (
                         <span className="font-black text-lg">✓</span>
@@ -601,7 +597,7 @@ export default function Dashboard() {
       </div>
 
       <footer className="mt-32 border-t border-white/5 bg-black/20 backdrop-blur-md pt-16 pb-12 flex flex-col items-center gap-8">
-        <button 
+        <button
           onClick={() => setIsInquiryModalOpen(true)}
           className="group flex flex-col items-center gap-3 transition-all hover:scale-105"
         >
@@ -618,10 +614,10 @@ export default function Dashboard() {
         </p>
       </footer>
 
-      <AddArtistModal 
-        isOpen={isAddArtistOpen} 
-        onClose={() => setIsAddArtistOpen(false)} 
-        lang={lang} 
+      <AddArtistModal
+        isOpen={isAddArtistOpen}
+        onClose={() => setIsAddArtistOpen(false)}
+        lang={lang}
       />
       <InquiryModal
         isOpen={isInquiryModalOpen}
