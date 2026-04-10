@@ -138,10 +138,10 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
         <div
           ref={dropdownRef}
           style={dropdownStyle}
-          className="glassmorphism rounded-xl border border-lime-500/30 shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(55,197,97,0.1)] overflow-hidden flex flex-col"
+          className="rounded-xl border border-lime-500/30 shadow-[0_15px_40px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col bg-[#0e0e0e]/95 backdrop-blur-xl"
         >
           {/* Search + Auto-detect row */}
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-black/40">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-black/70">
             <Search size={12} className="text-zinc-500 flex-shrink-0" />
             <input
               ref={inputRef}
