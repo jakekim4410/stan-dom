@@ -187,6 +187,14 @@ export default function Dashboard() {
       }));
   }, [countryArtistVotes, artists]);
 
+  // ── [추가] FlatMap용 artists 변환 ──────────────────────────
+  const flatMapArtists = artists.map(a => ({
+    id: a.id,
+    name: a.name,
+    image: a.image_url ?? undefined,
+  }));
+  // ──────────────────────────────────────────────────────────
+
   const filteredArtists = artists.filter(a =>
     a.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -325,19 +333,23 @@ export default function Dashboard() {
             </motion.div>
           ) : (
             <motion.div key="flat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+              {/* ── [수정] detailedVotes + artists 추가, onCountryClick 빈 함수 (팝업 대신 내부 패널 사용) ── */}
               <FlatMap
                 stats={countryStats}
+                detailedVotes={countryArtistVotes}
+                artists={flatMapArtists}
                 lastVoteCountry={lastVoteCountry}
                 userCountry={userCountry}
-                onCountryClick={(code, name) => setCountryPopup({ code, name })}
+                onCountryClick={() => { }}
                 lang={lang}
               />
             </motion.div>
           )}
         </AnimatePresence>
 
+        {/* GlobeMap 전용 팝업 — mapView === 'globe' 일 때만 렌더 */}
         <AnimatePresence>
-          {countryPopup && (
+          {countryPopup && mapView === 'globe' && (
             <CountryRankingPopup
               countryCode={countryPopup.code}
               countryName={countryPopup.name}
