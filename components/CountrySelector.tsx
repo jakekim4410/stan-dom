@@ -11,7 +11,6 @@ interface CountrySelectorProps {
   lang?: 'EN' | 'KO';
 }
 
-// Popular countries to show first for easy access
 const POPULAR_CODES = ['KR', 'US', 'JP', 'CN', 'GB', 'BR', 'ID', 'TH', 'PH', 'VN', 'MY', 'IN', 'AU', 'CA', 'MX'];
 
 export default function CountrySelector({ selected, onSelect, lang = 'EN' }: CountrySelectorProps) {
@@ -24,12 +23,12 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   const popularCountries = COUNTRY_DATA.filter(c => POPULAR_CODES.includes(c.code));
-  
+
   const filtered = query.trim()
     ? COUNTRY_DATA.filter(c => {
-        const q = query.toLowerCase();
-        return c.name.toLowerCase().includes(q) || c.nameKo.includes(q) || c.code.toLowerCase().includes(q);
-      })
+      const q = query.toLowerCase();
+      return c.name.toLowerCase().includes(q) || c.nameKo.includes(q) || c.code.toLowerCase().includes(q);
+    })
     : COUNTRY_DATA;
 
   const handleAutoDetect = () => {
@@ -40,43 +39,35 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
         const found = COUNTRY_DATA.find(c => c.code === code.toUpperCase());
         if (found) { onSelect(found); setOpen(false); return; }
       }
-    } catch(e) {}
+    } catch (e) { }
     alert(lang === 'KO' ? '국가 자동 감지에 실패했습니다.' : 'Could not auto-detect region.');
   };
 
-  // Close on outside click and window scroll/resize
+  // ✅ 수정: touchstart 제거, pointerdown으로 통합
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      // If click is outside container AND outside the portal dropdown
+    const handlePointerDown = (e: PointerEvent) => {
       const isOutsideTrigger = !containerRef.current?.contains(e.target as Node);
       const isOutsideDropdown = !dropdownRef.current?.contains(e.target as Node);
-      
       if (isOutsideTrigger && isOutsideDropdown) {
         setOpen(false);
       }
     };
-    
-    // Close on scroll to prevent detached float
-    const handleScroll = () => setOpen(false);
-    const handleResize = () => setOpen(false);
 
     if (open) {
-      document.addEventListener('mousedown', handleClick);
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      window.addEventListener('resize', handleResize);
+      document.addEventListener('pointerdown', handlePointerDown);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClick);
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('pointerdown', handlePointerDown);
     };
   }, [open]);
 
   // Focus input and calculate position when opened
   useEffect(() => {
     if (open) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-      
+      if (window.innerWidth > 768) {
+        setTimeout(() => inputRef.current?.focus(), 50);
+      }
+
       const updatePosition = () => {
         if (!triggerRef.current) return;
         const rect = triggerRef.current.getBoundingClientRect();
@@ -84,7 +75,6 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
         const spaceAbove = rect.top;
         const minHeightRequired = 300;
 
-        // If enough space below, or if below has more space than above
         if (spaceBelow >= minHeightRequired || spaceBelow >= spaceAbove) {
           setDropdownStyle({
             position: 'fixed',
@@ -95,7 +85,6 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
             zIndex: 99999
           });
         } else {
-          // Open upwards
           setDropdownStyle({
             position: 'fixed',
             bottom: `${window.innerHeight - rect.top + 8}px`,
@@ -125,9 +114,8 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
       <button
         ref={triggerRef}
         onClick={() => setOpen(v => !v)}
-        className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border transition-all ${
-          open ? 'border-neon-lime/50 bg-neon-lime/5' : 'border-white/10 bg-white/5 hover:border-white/20'
-        }`}
+        className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border transition-all ${open ? 'border-neon-lime/50 bg-neon-lime/5' : 'border-white/10 bg-white/5 hover:border-white/20'
+          }`}
       >
         <Globe size={14} className="text-zinc-500 flex-shrink-0" />
         {selected ? (
@@ -147,12 +135,11 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
 
       {/* ── Dropdown ── */}
       {open && typeof document !== 'undefined' && createPortal(
-        <div 
+        <div
           ref={dropdownRef}
           style={dropdownStyle}
           className="glassmorphism rounded-xl border border-lime-500/30 shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(55,197,97,0.1)] overflow-hidden flex flex-col"
         >
-          
           {/* Search + Auto-detect row */}
           <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-black/40">
             <Search size={12} className="text-zinc-500 flex-shrink-0" />
@@ -165,6 +152,7 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
               className="bg-transparent outline-none text-xs flex-1 text-white placeholder:text-zinc-600 font-medium"
             />
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={handleAutoDetect}
               title={lang === 'KO' ? '현재 위치 자동 감지' : 'Auto-detect my location'}
               className="flex items-center gap-1 px-2 py-1 rounded-md bg-neon-lime/10 border border-neon-lime/30 text-neon-lime hover:bg-neon-lime/20 transition-all text-[9px] font-black uppercase tracking-wider flex-shrink-0"
@@ -174,7 +162,7 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
             </button>
           </div>
 
-          {/* Popular shortcuts — only shown when not searching */}
+          {/* Popular shortcuts */}
           {!query.trim() && (
             <div className="px-3 py-2 border-b border-white/5">
               <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-2">
@@ -184,12 +172,12 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
                 {popularCountries.map(c => (
                   <button
                     key={c.code}
+                    onPointerDown={(e) => e.stopPropagation()} // ✅ 추가
                     onClick={() => { onSelect(c); setOpen(false); }}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs border transition-all ${
-                      selected?.code === c.code
-                        ? 'bg-neon-lime/20 border-neon-lime/50 text-neon-lime'
-                        : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10'
-                    }`}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs border transition-all ${selected?.code === c.code
+                      ? 'bg-neon-lime/20 border-neon-lime/50 text-neon-lime'
+                      : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10'
+                      }`}
                   >
                     <span>{c.flag}</span>
                     <span className="text-[10px] font-black">{c.code}</span>
@@ -204,10 +192,10 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
             {filtered.map(c => (
               <button
                 key={c.code}
+                onPointerDown={(e) => e.stopPropagation()} // ✅ 추가
                 onClick={() => { onSelect(c); setOpen(false); }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-white/10 transition-colors text-left ${
-                  selected?.code === c.code ? 'bg-neon-lime/10 text-neon-lime' : 'text-zinc-300'
-                }`}
+                className={`w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-white/10 transition-colors text-left ${selected?.code === c.code ? 'bg-neon-lime/10 text-neon-lime' : 'text-zinc-300'
+                  }`}
               >
                 <span className="text-base flex-shrink-0">{c.flag}</span>
                 <span className="font-medium text-xs flex-1 truncate">{lang === 'KO' ? c.nameKo : c.name}</span>
