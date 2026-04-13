@@ -5,16 +5,18 @@ import "./globals.css";
 
 const chakra = Chakra_Petch({
   weight: ['400', '600', '700'],
-  subsets: ["latin"],
+  // 🔴 "latin-ext"를 추가했습니다.
+  subsets: ["latin", "latin-ext"],
   variable: "--font-chakra",
 });
 
+// 12번째 줄 근처 notoSans 설정 수정
 const notoSans = Noto_Sans_KR({
   weight: ['400', '700', '900'],
+  // 🔴 여기도 "latin-ext"를 추가해주는 것이 안전합니다.
   subsets: ["latin"],
   variable: "--font-noto",
 });
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://standom.online'),
   title: "STAN.DOM | Global Artist Fandom Grid",

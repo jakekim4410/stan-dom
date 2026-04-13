@@ -93,9 +93,6 @@ h6,
   text-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
 }
 
-@utility neon-text-lime {
-  text-shadow: 0 0 10px var(--neon-lime), 0 0 20px var(--neon-lime);
-}
 
 @utility glassmorphism {
   background: var(--glass);
@@ -339,9 +336,17 @@ h6,
 }
 
 @keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .battle-zone-card {
@@ -365,8 +370,13 @@ h6,
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .vibrant-glow {
@@ -395,4 +405,26 @@ h6,
 * {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
   transition-duration: 250ms;
+}
+
+/* globals.css */
+
+/* 모든 제목 요소에 폰트와 다국어 최적화 강제 적용 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-heading {
+  font-family: var(--font-chakra), sans-serif !important;
+  font-display: swap;
+  /* 스페인어 액센트가 잘 보이도록 설정 */
+  font-variant-ligatures: no-common-ligatures;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 글자가 겹치거나 깨져 보일 때 자간을 살짝 넓힘 */
+.uppercase {
+  letter-spacing: 0.05em;
 }
