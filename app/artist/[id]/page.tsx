@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { addComment } from '@/actions/comment';
+import { addComment, updateComment, deleteComment } from '@/actions/comment';
 import { toggleLikeComment } from '@/actions/likeComment';
 import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { voteForArtist } from '@/actions/vote';
@@ -58,6 +58,7 @@ interface Comment {
   created_at: string;
   likes_count: number;
   is_liked?: boolean;
+  user_id?: string | null;
 }
 
 interface CountryStat {
@@ -110,6 +111,9 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const COMMENTS_PER_PAGE = 10;
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState('');
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
 
   const t = getT(lang);
 
@@ -315,7 +319,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     }
 
     setSending(true);
-    const result = await addComment(artistId, commentText);
+    const result = await addComment(artistId, commentText, userCountry?.code);
 
     if (result.success) {
       setCommentText('');
@@ -341,6 +345,33 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const handleSelectLang = (newLang: Language) => {
     setLang(newLang);
     localStorage.setItem('stan_lang', newLang);
+  };
+
+  const handleEditComment = async (commentId: string) => {
+    if (!editingText.trim()) return;
+    const result = await updateComment(commentId, editingText, artistId);
+    if (result.success) {
+      setComments(prev => prev.map(c =>
+        c.id === commentId ? { ...c, content: editingText.trim() } : c
+      ));
+      setEditingCommentId(null);
+      setEditingText('');
+    } else {
+      setToast({ isVisible: true, message: 'EDIT FAILED', subMessage: result.error || 'TRY AGAIN' });
+      setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    setDeletingCommentId(commentId);
+    const result = await deleteComment(commentId, artistId);
+    if (result.success) {
+      setComments(prev => prev.filter(c => c.id !== commentId));
+    } else {
+      setToast({ isVisible: true, message: 'DELETE FAILED', subMessage: result.error || 'TRY AGAIN' });
+      setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
+    }
+    setDeletingCommentId(null);
   };
 
   const handleLikeComment = async (commentId: string) => {
@@ -672,9 +703,23 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         isOpen={isOnboardingOpen}
         onClose={() => setIsOnboardingOpen(false)}
         lang={lang}
-        onComplete={(country) => {
+        onComplete={async (country) => {
           setUserCountry(country);
           localStorage.setItem('stan_user_country', JSON.stringify(country));
+
+          // 로그인 유저라면 user_metadata에도 country_code 저장
+          // → 이후 댓글 작성 시 user_metadata에서도 국적 읽힘
+          if (user) {
+            await supabase.auth.updateUser({
+              data: { country_code: country.code }
+            });
+            // 로컬 user state도 즉시 반영
+            setUser((prev: any) => prev ? {
+              ...prev,
+              user_metadata: { ...prev.user_metadata, country_code: country.code }
+            } : prev);
+          }
+
           setToast({
             isVisible: true,
             message: t('syncSuccess'),
@@ -911,21 +956,67 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                                   </span>
                                 )}
                               </div>
-                              <div className={`relative p-4 rounded-2xl rounded-tl-none border ${isPinned ? 'bg-neon-cyan/5 border-neon-cyan/30' : 'bg-white/5 border-white/10 hover:border-white/20'} transition-all`}>
-                                <p className="text-sm text-zinc-200 font-medium leading-relaxed font-chakra">{c.content}</p>
+                              {/* 수정 모드 */}
+                              {editingCommentId === c.id ? (
+                                <div className="relative">
+                                  <textarea
+                                    value={editingText}
+                                    onChange={e => setEditingText(e.target.value.slice(0, 140))}
+                                    rows={2}
+                                    className="w-full bg-zinc-900/80 rounded-xl p-4 pr-24 text-sm font-bold border border-neon-cyan/50 outline-none resize-none font-chakra text-white"
+                                  />
+                                  <div className="absolute bottom-3 right-3 flex gap-2">
+                                    <button
+                                      onClick={() => { setEditingCommentId(null); setEditingText(''); }}
+                                      className="px-3 py-1 rounded-lg bg-white/10 text-zinc-400 text-[10px] font-black uppercase hover:bg-white/20 transition-all"
+                                    >
+                                      취소
+                                    </button>
+                                    <button
+                                      onClick={() => handleEditComment(c.id)}
+                                      disabled={!editingText.trim()}
+                                      className="px-3 py-1 rounded-lg bg-neon-cyan text-black text-[10px] font-black uppercase disabled:opacity-40 hover:brightness-110 transition-all"
+                                    >
+                                      저장
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className={`relative p-4 rounded-2xl rounded-tl-none border ${isPinned ? 'bg-neon-cyan/5 border-neon-cyan/30' : 'bg-white/5 border-white/10 hover:border-white/20'} transition-all`}>
+                                  <p className="text-sm text-zinc-200 font-medium leading-relaxed font-chakra">{c.content}</p>
 
-                                <button
-                                  onClick={() => handleLikeComment(c.id)}
-                                  className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full border bg-zinc-950 flex items-center justify-center transition-all ${c.is_liked ? 'border-neon-magenta text-neon-magenta' : 'border-white/10 text-zinc-600 hover:text-white'}`}
-                                >
-                                  <Heart size={14} fill={c.is_liked ? 'currentColor' : 'none'} className={c.is_liked ? 'vibrant-glow' : ''} />
-                                </button>
-                                {c.likes_count > 0 && (
-                                  <span className="absolute -bottom-2 right-8 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/5 text-[10px] font-black tabular-nums text-zinc-400">
-                                    {c.likes_count}
-                                  </span>
-                                )}
-                              </div>
+                                  {/* 본인 댓글 수정/삭제 버튼 */}
+                                  {user && c.user_id === user.id && (
+                                    <div className="flex gap-1 mt-2 justify-end">
+                                      <button
+                                        onClick={() => { setEditingCommentId(c.id); setEditingText(c.content); }}
+                                        className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-zinc-600 hover:text-neon-cyan hover:border-neon-cyan/40 text-[9px] font-black uppercase tracking-wider transition-all"
+                                      >
+                                        수정
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteComment(c.id)}
+                                        disabled={deletingCommentId === c.id}
+                                        className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-zinc-600 hover:text-red-400 hover:border-red-400/40 text-[9px] font-black uppercase tracking-wider transition-all disabled:opacity-40"
+                                      >
+                                        {deletingCommentId === c.id ? '...' : '삭제'}
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  <button
+                                    onClick={() => handleLikeComment(c.id)}
+                                    className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full border bg-zinc-950 flex items-center justify-center transition-all ${c.is_liked ? 'border-neon-magenta text-neon-magenta' : 'border-white/10 text-zinc-600 hover:text-white'}`}
+                                  >
+                                    <Heart size={14} fill={c.is_liked ? 'currentColor' : 'none'} className={c.is_liked ? 'vibrant-glow' : ''} />
+                                  </button>
+                                  {c.likes_count > 0 && (
+                                    <span className="absolute -bottom-2 right-8 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/5 text-[10px] font-black tabular-nums text-zinc-400">
+                                      {c.likes_count}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </motion.div>
