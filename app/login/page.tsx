@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<AuthMode>('social');
   const [loading, setLoading] = useState(false);
   const [lang, setLang] = useState<Language>('EN');
-  
+
   // Initialize lang from localStorage
   useEffect(() => {
     const savedLang = localStorage.getItem('stan_lang') as Language;
@@ -33,7 +33,7 @@ export default function LoginPage() {
     setLang(l);
     localStorage.setItem('stan_lang', l);
   };
-  
+
   // Form State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,7 +49,8 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          // window.location.origin 대신 실제 도메인을 직접 입력합니다.
+          redirectTo: 'https://standom.online/auth/callback',
         },
       });
       if (error) throw error;
@@ -102,9 +103,9 @@ export default function LoginPage() {
           }
         }
       });
-      
+
       if (error) throw error;
-      
+
       if (data.user?.identities?.length === 0) {
         alert(t('emailExists'));
       } else {
@@ -127,9 +128,9 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md glassmorphism rounded-3xl p-8 space-y-6 relative z-10 border border-white/5 shadow-2xl mt-8 mb-8 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
         <div className="flex justify-center">
-           <LanguageSwitcher lang={lang} onSelect={handleSelectLang} />
+          <LanguageSwitcher lang={lang} onSelect={handleSelectLang} />
         </div>
-        
+
         <div className="text-center space-y-2">
           <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM Logo" className="h-24 mx-auto cursor-pointer object-contain" onClick={() => setMode('social')} />
           <p className="text-zinc-400 text-sm font-medium tracking-widest uppercase">
@@ -163,7 +164,7 @@ export default function LoginPage() {
               <button onClick={() => setMode('login')} className="py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-white hover:bg-white/10 transition-all">{t('login')}</button>
               <button onClick={() => setMode('signup')} className="py-3 bg-neon-lime/10 border border-neon-lime/50 rounded-xl text-xs font-bold text-neon-lime hover:bg-neon-lime/20 transition-all shadow-[0_0_15px_rgba(55,197,97,0.1)]">{t('nominate')}</button>
             </div>
-            
+
             <Link href="/" className="mt-8 flex items-center justify-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest">
               <span>{t('guest')}</span> <ChevronRight size={14} />
             </Link>
@@ -173,93 +174,93 @@ export default function LoginPage() {
         {/* --- LOGIN VIEW --- */}
         {mode === 'login' && (
           <form onSubmit={handleEmailSignIn} className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
-             <div className="space-y-3">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                  <input type="email" placeholder={t('email')} value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-cyan transition-colors" />
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                  <input type="password" placeholder={t('password')} value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-cyan transition-colors" />
-                </div>
-             </div>
-             
-             <button disabled={loading} type="submit" className="w-full py-4 bg-neon-lime text-black font-black rounded-xl hover:shadow-[0_0_20px_rgba(55,197,97,0.4)] transform active:scale-95 transition-all text-sm tracking-widest uppercase">
-                {loading ? t('authenticating') : t('signIn')}
-             </button>
+            <div className="space-y-3">
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                <input type="email" placeholder={t('email')} value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-cyan transition-colors" />
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                <input type="password" placeholder={t('password')} value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-cyan transition-colors" />
+              </div>
+            </div>
 
-             <div className="flex justify-between items-center text-xs pt-4 font-black text-zinc-500">
-               <button type="button" onClick={() => setMode('social')} className="hover:text-white transition-colors uppercase tracking-widest flex items-center gap-1"><ChevronLeft size={14} /> {t('back')}</button>
-               <button type="button" onClick={() => setMode('signup')} className="hover:text-neon-lime transition-colors uppercase tracking-widest">{t('signUp')}</button>
-             </div>
+            <button disabled={loading} type="submit" className="w-full py-4 bg-neon-lime text-black font-black rounded-xl hover:shadow-[0_0_20px_rgba(55,197,97,0.4)] transform active:scale-95 transition-all text-sm tracking-widest uppercase">
+              {loading ? t('authenticating') : t('signIn')}
+            </button>
+
+            <div className="flex justify-between items-center text-xs pt-4 font-black text-zinc-500">
+              <button type="button" onClick={() => setMode('social')} className="hover:text-white transition-colors uppercase tracking-widest flex items-center gap-1"><ChevronLeft size={14} /> {t('back')}</button>
+              <button type="button" onClick={() => setMode('signup')} className="hover:text-neon-lime transition-colors uppercase tracking-widest">{t('signUp')}</button>
+            </div>
           </form>
         )}
 
         {/* --- SIGN UP VIEW --- */}
         {mode === 'signup' && (
           <form onSubmit={handleEmailSignUp} className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="space-y-3">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                  <input type="email" placeholder={t('email')} value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                  <input type="password" placeholder={t('password')} value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
-                </div>
-                
-                <div className="flex gap-3">
-                  <div className="relative flex-1">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                    <input type="text" placeholder={t('name')} value={name} onChange={e => setName(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
-                  </div>
-                  <div className="relative flex-1">
-                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                    <input type="text" placeholder={t('nickname')} value={userId} onChange={e => setUserId(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
-                  </div>
-                </div>
+            <div className="space-y-3">
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                <input type="email" placeholder={t('email')} value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                <input type="password" placeholder={t('password')} value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
+              </div>
 
-                {/* Country Node Selector */}
-                <div className="bg-black/50 border border-white/10 rounded-xl p-1">
-                   <div className="flex items-center px-3 py-2 text-xs font-black tracking-widest text-zinc-400 uppercase gap-2 mb-1">
-                     <ShieldCheck size={14} className="text-neon-cyan" /> {t('selectCountry')}
-                   </div>
-                   <div className="px-2 pb-2">
-                     <CountrySelector selected={country} onSelect={setCountry} lang={lang} />
-                   </div>
+              <div className="flex gap-3">
+                <div className="relative flex-1">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                  <input type="text" placeholder={t('name')} value={name} onChange={e => setName(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
                 </div>
-
-                {/* Privacy Policy */}
-                <div className="flex items-start gap-3 mt-4 bg-white/5 p-4 rounded-xl border border-white/10">
-                  <button type="button" onClick={() => setPrivacyAgreed(!privacyAgreed)} className={`w-5 h-5 mt-0.5 rounded flex items-center justify-center border transition-all flex-shrink-0 ${privacyAgreed ? 'bg-neon-cyan border-neon-cyan text-black' : 'border-zinc-500 bg-transparent'}`}>
-                    {privacyAgreed && <Check size={14} />}
-                  </button>
-                  <label className="text-[10px] text-zinc-400 leading-relaxed cursor-pointer" onClick={() => setPrivacyAgreed(!privacyAgreed)}>
-                    {t('privacyRequired')}
-                  </label>
-                </div>
-
-                {/* Email Confirmation Explanation */}
-                <div className="bg-neon-magenta/10 border border-neon-magenta/30 rounded-xl p-3 mt-2 text-[10px] text-zinc-300 leading-relaxed">
-                  <strong className="text-neon-magenta font-black block mb-1">📧 {t('authEmailVerify')}</strong>
-                  {t('authEmailNote')}
+                <div className="relative flex-1">
+                  <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+                  <input type="text" placeholder={t('nickname')} value={userId} onChange={e => setUserId(e.target.value)} required className="w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-neon-magenta transition-colors" />
                 </div>
               </div>
 
-             <button disabled={loading} type="submit" className="w-full py-4 mt-2 bg-neon-magenta text-white font-black rounded-xl hover-glow-magenta transform active:scale-95 transition-all text-sm tracking-widest uppercase shadow-[0_0_15px_rgba(255,0,255,0.3)]">
-                {loading ? t('initializing') : t('register')}
-             </button>
+              {/* Country Node Selector */}
+              <div className="bg-black/50 border border-white/10 rounded-xl p-1">
+                <div className="flex items-center px-3 py-2 text-xs font-black tracking-widest text-zinc-400 uppercase gap-2 mb-1">
+                  <ShieldCheck size={14} className="text-neon-cyan" /> {t('selectCountry')}
+                </div>
+                <div className="px-2 pb-2">
+                  <CountrySelector selected={country} onSelect={setCountry} lang={lang} />
+                </div>
+              </div>
 
-             <div className="flex justify-between items-center text-xs pt-4 font-black text-zinc-500">
-               <button type="button" onClick={() => setMode('social')} className="hover:text-white transition-colors uppercase tracking-widest flex items-center gap-1"><ChevronLeft size={14} /> {t('back')}</button>
-               <button type="button" onClick={() => setMode('login')} className="hover:text-neon-magenta transition-colors uppercase tracking-widest flex items-center gap-1">{t('hasAccount')}</button>
-             </div>
+              {/* Privacy Policy */}
+              <div className="flex items-start gap-3 mt-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                <button type="button" onClick={() => setPrivacyAgreed(!privacyAgreed)} className={`w-5 h-5 mt-0.5 rounded flex items-center justify-center border transition-all flex-shrink-0 ${privacyAgreed ? 'bg-neon-cyan border-neon-cyan text-black' : 'border-zinc-500 bg-transparent'}`}>
+                  {privacyAgreed && <Check size={14} />}
+                </button>
+                <label className="text-[10px] text-zinc-400 leading-relaxed cursor-pointer" onClick={() => setPrivacyAgreed(!privacyAgreed)}>
+                  {t('privacyRequired')}
+                </label>
+              </div>
+
+              {/* Email Confirmation Explanation */}
+              <div className="bg-neon-magenta/10 border border-neon-magenta/30 rounded-xl p-3 mt-2 text-[10px] text-zinc-300 leading-relaxed">
+                <strong className="text-neon-magenta font-black block mb-1">📧 {t('authEmailVerify')}</strong>
+                {t('authEmailNote')}
+              </div>
+            </div>
+
+            <button disabled={loading} type="submit" className="w-full py-4 mt-2 bg-neon-magenta text-white font-black rounded-xl hover-glow-magenta transform active:scale-95 transition-all text-sm tracking-widest uppercase shadow-[0_0_15px_rgba(255,0,255,0.3)]">
+              {loading ? t('initializing') : t('register')}
+            </button>
+
+            <div className="flex justify-between items-center text-xs pt-4 font-black text-zinc-500">
+              <button type="button" onClick={() => setMode('social')} className="hover:text-white transition-colors uppercase tracking-widest flex items-center gap-1"><ChevronLeft size={14} /> {t('back')}</button>
+              <button type="button" onClick={() => setMode('login')} className="hover:text-neon-magenta transition-colors uppercase tracking-widest flex items-center gap-1">{t('hasAccount')}</button>
+            </div>
           </form>
         )}
       </div>
 
       {/* Decorative Elements Removed */}
-      
+
       <style jsx>{`
         .stroke-text {
           -webkit-text-stroke: 1px var(--neon-cyan);
@@ -270,5 +271,5 @@ export default function LoginPage() {
 }
 
 function ChevronLeft({ className, size }: { className?: string, size: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6" /></svg>
 }
