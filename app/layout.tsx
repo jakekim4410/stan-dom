@@ -43,9 +43,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${chakra.variable} ${notoSans.variable} h-full antialiased`}
+      className={`${chakra.variable} ${notoSans.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-black text-white selection:bg-[#37C561]/30 overflow-x-hidden">
+      <body className="min-h-[100dvh] flex flex-col font-sans bg-black text-white selection:bg-[#37C561]/30 overflow-x-hidden antialiased">
         <BackgroundEffects />
         {children}
       </body>

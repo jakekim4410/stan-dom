@@ -1,19 +1,20 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { TerminalSquare, Globe, Navigation, LogIn, User } from 'lucide-react';
 import Link from 'next/link';
+import { Language, getT } from '@/constants/i18n';
 
 interface MobileHeaderProps {
   topArtist: { name: string; thumbnail: string } | null;
   mode: 'global' | 'local';
   onToggleMode: () => void;
-  lang: string;
+  lang: Language;
   currentUser?: any;
 }
 
 export default function MobileHeader({ topArtist, mode, onToggleMode, lang, currentUser }: MobileHeaderProps) {
+  const t = getT(lang);
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-4 py-3 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -38,8 +39,9 @@ export default function MobileHeader({ topArtist, mode, onToggleMode, lang, curr
         <div className="flex flex-col">
           <span className="text-[8px] font-black text-zinc-500 uppercase tracking-tighter flex items-center gap-1">
             {mode === 'global' ? <Globe size={8} /> : <Navigation size={8} />}
-            {mode === 'global' ? (lang === 'KO' ? '글로벌 뱅가드' : 'GLOBAL LEADER') : (lang === 'KO' ? '로컬 유닛' : 'LOCAL LEADER')}
+            {mode === 'global' ? t('globalLeader') : t('localLeader')}
           </span>
+
           <span className="text-[10px] font-bold text-white tracking-widest truncate max-w-[80px]">
             {topArtist?.name || 'INITIALIZING...'}
           </span>

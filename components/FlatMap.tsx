@@ -17,24 +17,62 @@ const FLAT_COORDS_MAP: Record<string, [number, number]> = COUNTRY_DATA.reduce(
   {}
 );
 
+// ─── ISO_A2 → 표준 코드 정규화 맵 ───────────────────────────
+// GeoJSON의 ISO_A2가 -1이거나 비표준인 경우 대응
+const ISO_A2_OVERRIDE: Record<string, string> = {
+  '-99': '',   // 없는 국가
+  '-1': '',    // 없는 국가
+  'XK': 'XK', // 코소보 (비UN)
+};
+
+// ─── 숫자 코드 → ISO_A2 (TopoJSON 폴백용) ───────────────────
+// GeoJSON 소스가 숫자 ID를 쓸 경우에만 사용
 const NUM2CODE: Record<string, string> = {
-  '410': 'KR', '392': 'JP', '840': 'US', '156': 'CN', '764': 'TH', '608': 'PH', '360': 'ID',
-  '704': 'VN', '458': 'MY', '076': 'BR', '484': 'MX', '356': 'IN', '036': 'AU', '826': 'GB',
-  '124': 'CA', '250': 'FR', '276': 'DE', '702': 'SG', '032': 'AR', '643': 'RU', '380': 'IT',
-  '724': 'ES', '792': 'TR', '682': 'SA', '818': 'EG', '566': 'NG', '710': 'ZA', '586': 'PK',
-  '504': 'MA', '012': 'DZ', '788': 'TN', '218': 'EC', '604': 'PE', '862': 'VE', '152': 'CL',
-  '170': 'CO', '068': 'BO', '600': 'PY', '858': 'UY', '288': 'GH', '404': 'KE', '231': 'ET',
-  '834': 'TZ', '800': 'UG', '894': 'ZM', '716': 'ZW', '508': 'MZ', '450': 'MG', '384': 'CI',
-  '120': 'CM', '686': 'SN', '466': 'ML', '854': 'BF', '562': 'NE', '148': 'TD', '729': 'SD',
-  '706': 'SO', '262': 'DJ', '232': 'ER', '728': 'SS', '140': 'CF', '178': 'CG', '024': 'AO',
-  '516': 'NA', '072': 'BW', '040': 'AT', '056': 'BE', '100': 'BG', '191': 'HR', '196': 'CY',
-  '203': 'CZ', '208': 'DK', '372': 'IE', '300': 'GR', '348': 'HU', '428': 'LV', '440': 'LT',
-  '442': 'LU', '470': 'MT', '528': 'NL', '578': 'NO', '616': 'PL', '620': 'PT', '642': 'RO',
-  '703': 'SK', '705': 'SI', '752': 'SE', '756': 'CH', '804': 'UA', '246': 'FI', '352': 'IS',
-  '554': 'NZ', '144': 'LK', '050': 'BD', '104': 'MM', '116': 'KH', '418': 'LA', '096': 'BN',
-  '364': 'IR', '368': 'IQ', '400': 'JO', '414': 'KW', '422': 'LB', '512': 'OM', '634': 'QA',
-  '760': 'SY', '784': 'AE', '887': 'YE', '496': 'MN', '398': 'KZ', '417': 'KG', '762': 'TJ',
-  '795': 'TM', '860': 'UZ', '275': 'PS',
+  // 아시아
+  '410': 'KR', '392': 'JP', '156': 'CN', '764': 'TH', '608': 'PH', '360': 'ID',
+  '704': 'VN', '458': 'MY', '356': 'IN', '702': 'SG', '096': 'BN', '116': 'KH',
+  '418': 'LA', '104': 'MM', '050': 'BD', '144': 'LK', '524': 'NP', '064': 'BT',
+  '462': 'MV', '586': 'PK', '004': 'AF', '496': 'MN', '408': 'KP', '158': 'TW',
+  // 중동
+  '364': 'IR', '368': 'IQ', '400': 'JO', '414': 'KW', '422': 'LB', '512': 'OM',
+  '634': 'QA', '760': 'SY', '784': 'AE', '887': 'YE', '682': 'SA', '275': 'PS',
+  '048': 'BH', '376': 'IL',
+  // 중앙아시아
+  '398': 'KZ', '417': 'KG', '762': 'TJ', '795': 'TM', '860': 'UZ',
+  // 코카서스
+  '031': 'AZ', '051': 'AM', '268': 'GE',
+  // 아메리카
+  '840': 'US', '124': 'CA', '076': 'BR', '484': 'MX', '032': 'AR', '152': 'CL',
+  '170': 'CO', '604': 'PE', '862': 'VE', '218': 'EC', '068': 'BO', '600': 'PY',
+  '858': 'UY', '591': 'PA', '188': 'CR', '340': 'HN', '222': 'SV', '320': 'GT',
+  '558': 'NI', '192': 'CU', '214': 'DO', '332': 'HT', '388': 'JM', '630': 'PR',
+  '328': 'GY', '740': 'SR', '084': 'BZ', '780': 'TT',
+  // 유럽
+  '826': 'GB', '250': 'FR', '276': 'DE', '380': 'IT', '724': 'ES', '792': 'TR',
+  '643': 'RU', '040': 'AT', '056': 'BE', '100': 'BG', '191': 'HR', '196': 'CY',
+  '203': 'CZ', '208': 'DK', '372': 'IE', '300': 'GR', '348': 'HU', '428': 'LV',
+  '440': 'LT', '442': 'LU', '470': 'MT', '528': 'NL', '578': 'NO', '616': 'PL',
+  '620': 'PT', '642': 'RO', '703': 'SK', '705': 'SI', '752': 'SE', '756': 'CH',
+  '804': 'UA', '246': 'FI', '352': 'IS', '008': 'AL', '070': 'BA', '807': 'MK',
+  '499': 'ME', '688': 'RS', '112': 'BY', '498': 'MD', '233': 'EE',
+  // 오세아니아
+  '036': 'AU', '554': 'NZ', '598': 'PG', '242': 'FJ', '090': 'SB', '548': 'VU',
+  '882': 'WS', '776': 'TO',
+  // 아프리카 - 북부
+  '818': 'EG', '504': 'MA', '012': 'DZ', '788': 'TN', '434': 'LY', '729': 'SD',
+  // 아프리카 - 서부
+  '566': 'NG', '288': 'GH', '686': 'SN', '466': 'ML', '854': 'BF', '562': 'NE',
+  '384': 'CI', '694': 'SL', '324': 'GN', '624': 'GW', '430': 'LR', '204': 'BJ',
+  '768': 'TG', '270': 'GM', '132': 'CV',
+  // 아프리카 - 중부
+  '180': 'CD', '178': 'CG', '120': 'CM', '140': 'CF', '148': 'TD',
+  '266': 'GA', '226': 'GQ', '024': 'AO', '678': 'ST',
+  // 아프리카 - 동부
+  '404': 'KE', '231': 'ET', '834': 'TZ', '800': 'UG', '706': 'SO', '262': 'DJ',
+  '232': 'ER', '728': 'SS', '450': 'MG', '508': 'MZ', '454': 'MW', '894': 'ZM',
+  '646': 'RW', '108': 'BI', '174': 'KM',
+  // 아프리카 - 남부
+  '710': 'ZA', '516': 'NA', '072': 'BW', '716': 'ZW', '748': 'SZ', '426': 'LS',
 };
 
 const COUNTRY_FLAGS: Record<string, string> = Object.fromEntries(COUNTRY_DATA.map(c => [c.code, c.flag]));
@@ -53,10 +91,10 @@ function getHeatColor(votes: number, maxVotes: number): string {
 
 /* ─── 상수 ───────────────────────────────────────────────── */
 const SVG_W = 1000;
-const SVG_H = 520;
+const SVG_H = 480;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 8;
-const DRAG_THRESH = 4;
+const DRAG_THRESH = 6;
 
 /* ─── 타입 ───────────────────────────────────────────────── */
 export interface ArtistStat {
@@ -105,6 +143,26 @@ export default function FlatMap({
   const [panel, setPanel] = useState<PanelState>({ open: false, code: '' });
   const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
 
+  const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
+  const containerSizeRef = useRef({ w: 0, h: 0 });
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      const e = entries[0];
+      if (!e) return;
+      const { width, height } = e.contentRect;
+      containerSizeRef.current = { w: width, h: height };
+      setContainerSize({ w: width, h: height });
+    });
+    ro.observe(el);
+    const rect = el.getBoundingClientRect();
+    containerSizeRef.current = { w: rect.width, h: rect.height };
+    setContainerSize({ w: rect.width, h: rect.height });
+    return () => ro.disconnect();
+  }, []);
+
   const txRef = useRef<Transform>({ x: 0, y: 0, scale: 1 });
   txRef.current = transform;
 
@@ -126,10 +184,10 @@ export default function FlatMap({
   }, [detailedVotes, artists, countryArtistStats]);
 
   /* ─── clamp ───────────────────────────────────────────── */
-  const clamp = useCallback((t: Transform, w: number, h: number): Transform => {
+  const clamp = useCallback((t: Transform, _w: number, _h: number): Transform => {
     const scale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, t.scale));
-    const maxX = Math.max(0, (w * scale - w) / 2);
-    const maxY = Math.max(0, (h * scale - h) / 2);
+    const maxX = Math.max(0, (SVG_W * scale - SVG_W) / 2);
+    const maxY = Math.max(0, (SVG_H * scale - SVG_H) / 2);
     return {
       scale,
       x: Math.max(-maxX, Math.min(maxX, t.x)),
@@ -138,21 +196,22 @@ export default function FlatMap({
   }, []);
 
   /* ─── zoom helpers ────────────────────────────────────── */
-  const zoomAt = useCallback((cx: number, cy: number, factor: number) => {
-    if (!wrapRef.current) return;
-    const { width, height } = wrapRef.current.getBoundingClientRect();
+  const zoomAt = useCallback((screenCx: number, screenCy: number, factor: number) => {
+    const { w, h } = containerSizeRef.current;
+    if (!w || !h) return;
+    const renderScale = w / SVG_W;
+    const cx = screenCx / renderScale;
+    const cy = screenCy / renderScale;
     setTransform(prev => {
       const s = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, prev.scale * factor));
       const r = s / prev.scale;
-      return clamp({ scale: s, x: cx - r * (cx - prev.x), y: cy - r * (cy - prev.y) }, width, height);
+      return clamp({ scale: s, x: cx - r * (cx - prev.x), y: cy - r * (cy - prev.y) }, w, h);
     });
   }, [clamp]);
 
   const zoomIn = useCallback(() => zoomAt(0, 0, 1.5), [zoomAt]);
   const zoomOut = useCallback(() => {
-    if (!wrapRef.current) return;
-    const { width, height } = wrapRef.current.getBoundingClientRect();
-    setTransform(prev => clamp({ ...prev, scale: Math.max(MIN_ZOOM, prev.scale / 1.5) }, width, height));
+    setTransform(prev => clamp({ ...prev, scale: Math.max(MIN_ZOOM, prev.scale / 1.5) }, 0, 0));
   }, [clamp]);
   const resetZoom = useCallback(() => setTransform({ x: 0, y: 0, scale: 1 }), []);
 
@@ -163,9 +222,10 @@ export default function FlatMap({
     const handler = (e: WheelEvent) => {
       e.preventDefault();
       const rect = el.getBoundingClientRect();
+      const { w, h } = containerSizeRef.current;
       zoomAt(
-        e.clientX - rect.left - rect.width / 2,
-        e.clientY - rect.top - rect.height / 2,
+        e.clientX - rect.left - w / 2,
+        e.clientY - rect.top - h / 2,
         e.deltaY < 0 ? 1.15 : 1 / 1.15,
       );
     };
@@ -224,9 +284,11 @@ export default function FlatMap({
         const two = getTwo()!;
         const p = calcPinch(two[0], two[1]);
         const rect = el.getBoundingClientRect();
+        const { w } = containerSizeRef.current;
+        const renderScale = w / SVG_W;
         pinchSnap = {
-          midX: p.midX - rect.left - rect.width / 2,
-          midY: p.midY - rect.top - rect.height / 2,
+          midX: (p.midX - rect.left - w / 2) / renderScale,
+          midY: (p.midY - rect.top - (w / SVG_W * SVG_H) / 2) / renderScale,
           dist: p.dist,
           tx: txRef.current.x,
           ty: txRef.current.y,
@@ -236,36 +298,40 @@ export default function FlatMap({
     };
 
     const onMove = (e: PointerEvent) => {
-      e.preventDefault();
       if (!ptrs.has(e.pointerId)) return;
       ptrs.set(e.pointerId, { lastX: e.clientX, lastY: e.clientY });
 
-      if (!wrapRef.current) return;
-      const { width, height } = wrapRef.current.getBoundingClientRect();
-      const rect = wrapRef.current.getBoundingClientRect();
+      const { w } = containerSizeRef.current;
+      if (!w) return;
+      const renderScale = w / SVG_W;
+      const rect = el.getBoundingClientRect();
 
       if (ptrs.size >= 2 && pinchSnap) {
         const two = getTwo()!;
         const cur = calcPinch(two[0], two[1]);
-        const curMidX = cur.midX - rect.left - rect.width / 2;
-        const curMidY = cur.midY - rect.top - rect.height / 2;
+        const curMidX = (cur.midX - rect.left - w / 2) / renderScale;
+        const curMidY = (cur.midY - rect.top - (w / SVG_W * SVG_H) / 2) / renderScale;
         const ratio = cur.dist / pinchSnap.dist;
         const newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, pinchSnap.scale * ratio));
         const r = newScale / pinchSnap.scale;
         const newX = pinchSnap.midX + (pinchSnap.tx - pinchSnap.midX) * r + (curMidX - pinchSnap.midX);
         const newY = pinchSnap.midY + (pinchSnap.ty - pinchSnap.midY) * r + (curMidY - pinchSnap.midY);
-        setTransform(clamp({ scale: newScale, x: newX, y: newY }, width, height));
+        e.preventDefault();
+        setTransform(clamp({ scale: newScale, x: newX, y: newY }, 0, 0));
       } else if (ptrs.size === 1 && drag && e.pointerId === drag.pointerId) {
-        const dx = e.clientX - drag.startX;
-        const dy = e.clientY - drag.startY;
-        if (!drag.didDrag && (Math.abs(dx) > DRAG_THRESH || Math.abs(dy) > DRAG_THRESH)) {
+        const dxScreen = e.clientX - drag.startX;
+        const dyScreen = e.clientY - drag.startY;
+        if (!drag.didDrag && (Math.abs(dxScreen) > DRAG_THRESH || Math.abs(dyScreen) > DRAG_THRESH)) {
           drag.didDrag = true;
           setTooltip(t => ({ ...t, visible: false }));
         }
         if (!drag.didDrag) return;
+        e.preventDefault();
+        const dx = dxScreen / renderScale;
+        const dy = dyScreen / renderScale;
         setTransform(clamp(
           { scale: drag.snapScale, x: drag.snapX + dx, y: drag.snapY + dy },
-          width, height,
+          0, 0,
         ));
       }
     };
@@ -278,10 +344,15 @@ export default function FlatMap({
       ptrs.delete(e.pointerId);
 
       if (ptrs.size === 0) {
-        if (!wasDrag && wasThisPointer && downTarget) {
-          (downTarget as HTMLElement).dispatchEvent(
-            new MouseEvent('click', { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY })
-          );
+        if (!wasDrag && wasThisPointer) {
+          const upTarget = e.target as HTMLElement;
+          const countryPath =
+            upTarget.closest('[data-code]') ??
+            (downTarget as HTMLElement)?.closest('[data-code]');
+          const countryCode = countryPath?.getAttribute('data-code');
+          if (countryCode) {
+            handleCountryClick(countryCode);
+          }
         }
         drag = null;
         pinchSnap = null;
@@ -316,21 +387,21 @@ export default function FlatMap({
       el.removeEventListener('pointerup', onUp);
       el.removeEventListener('pointercancel', onCancel);
     };
-  }, [clamp]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clamp, panel]);
 
-  /* ─── projection ──────────────────────────────────────── */
+  /* ─── Mercator projection ─────────────────────────────── */
   const project = useCallback((lng: number, lat: number): [number, number] => {
     const cLat = Math.max(-85, Math.min(85, lat));
     const x = ((lng + 180) / 360) * SVG_W;
     const mercN = Math.log(Math.tan(Math.PI / 4 + (cLat * Math.PI / 180) / 2));
-    const y = 260 - (mercN / Math.PI) * 260;
+    const y = (SVG_H / 2) - (mercN / Math.PI) * (SVG_H / 2);
     return [x, Math.max(0, Math.min(SVG_H, y))];
   }, []);
 
   const coordsToPath = useCallback((coords: number[][]): string => {
     if (!coords || coords.length < 3) return '';
     const pts = coords.map(c => project(c[0], c[1]));
-    if (pts.some(([, py]) => py <= 0 || py >= SVG_H) && coords.length < 10) return '';
     return pts.map(([px, py], i) => `${i === 0 ? 'M' : 'L'}${px.toFixed(1)},${py.toFixed(1)}`).join('') + 'Z';
   }, [project]);
 
@@ -345,10 +416,17 @@ export default function FlatMap({
   }, [coordsToPath]);
 
   /* ─── GeoJSON 로드 ────────────────────────────────────── */
+  // ISO_A2를 직접 사용하는 Natural Earth GeoJSON 소스 사용
+  // → NUM2CODE 매핑 불필요, 누락 국가 문제 근본 해결
+  // → GlobeMap과 동일한 방식
   useEffect(() => {
     (async () => {
       try {
-        const topo = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
+        // 1순위: unpkg Natural Earth (CORS 안전)
+        const res = await fetch(
+          'https://unpkg.com/world-atlas@2/countries-110m.json'
+        );
+        const topo = await res.json();
         const sc = topo.transform?.scale || [1, 1];
         const tr = topo.transform?.translate || [0, 0];
         const arcs = topo.arcs.map((arc: number[][]) => {
@@ -366,16 +444,26 @@ export default function FlatMap({
           }
           return out;
         };
-        setGeoFeatures(topo.objects.countries.geometries.map((g: any) => ({
-          id: g.id != null ? String(g.id).padStart(3, '0') : null,
-          geometry:
-            g.type === 'Polygon'
-              ? { type: 'Polygon', coordinates: (g.arcs as any[][]).map((r: any[]) => stitch(r)) }
-              : g.type === 'MultiPolygon'
-                ? { type: 'MultiPolygon', coordinates: (g.arcs as any[][][]).map((p: any[][]) => p.map((r: any[]) => stitch(r))) }
-                : null,
-        })));
-      } catch (e) { console.error('GeoJSON load failed', e); }
+        setGeoFeatures(
+          topo.objects.countries.geometries
+            .map((g: any) => {
+              const numId = g.id != null ? String(g.id).padStart(3, '0') : null;
+              const code = numId ? (NUM2CODE[numId] || '') : '';
+              return {
+                code,
+                geometry:
+                  g.type === 'Polygon'
+                    ? { type: 'Polygon', coordinates: (g.arcs as any[][]).map((r: any[]) => stitch(r)) }
+                    : g.type === 'MultiPolygon'
+                      ? { type: 'MultiPolygon', coordinates: (g.arcs as any[][][]).map((p: any[][]) => p.map((r: any[]) => stitch(r))) }
+                      : null,
+              };
+            })
+            .filter((f: any) => f.code && f.code.length === 2)
+        );
+      } catch (e) {
+        console.error('GeoJSON load failed', e);
+      }
     })();
   }, []);
 
@@ -419,10 +507,11 @@ export default function FlatMap({
     const isToggle = panel.open && panel.code === code;
     setPanel(isToggle ? { open: false, code: '' } : { open: true, code });
     if (!isToggle) {
-      // 패널이 열릴 때 스크롤
-      setTimeout(() => {
-        panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 50);
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 80);
+      });
     }
     onCountryClick(code, COUNTRY_NAMES[code] || code);
   }, [panel, onCountryClick, hideTooltip]);
@@ -438,7 +527,6 @@ export default function FlatMap({
   const strokeW = Math.max(0.2, 0.4 / transform.scale);
   const strokeHoverW = Math.max(0.4, 0.8 / transform.scale);
 
-  /* ─── 글로벌 top stats (패널용) ────────────────────────── */
   const globalTotalVotes = Object.values(stats).reduce((a, b) => a + b, 0);
   const countryShare = globalTotalVotes > 0 ? ((panelTotal / globalTotalVotes) * 100).toFixed(1) : '0.0';
 
@@ -451,7 +539,7 @@ export default function FlatMap({
         ref={wrapRef}
         className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-[#090909] shadow-[0_0_60px_rgba(0,0,0,0.6)] select-none"
         style={{
-          touchAction: 'none',
+          touchAction: transform.scale <= 1.02 ? 'pan-y' : 'none',
           cursor: transform.scale > 1 ? 'grab' : 'default',
           userSelect: 'none',
           WebkitUserSelect: 'none',
@@ -461,44 +549,50 @@ export default function FlatMap({
         <svg
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
           className="w-full h-auto block"
-          style={{ display: 'block', pointerEvents: 'none', userSelect: 'none' }}
+          style={{ display: 'block', userSelect: 'none' }}
         >
           <defs>
             <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="1" cy="1" r="0.5" fill="rgba(255,255,255,0.03)" />
             </pattern>
+            <clipPath id="mapClip">
+              <rect x="0" y="0" width={SVG_W} height={SVG_H} />
+            </clipPath>
           </defs>
           <rect width={SVG_W} height={SVG_H} fill="#090909" />
           <rect width={SVG_W} height={SVG_H} fill="url(#dotGrid)" />
 
-          <g style={{
-            transform: `translate(${transform.x}px,${transform.y}px) scale(${transform.scale})`,
-            transformOrigin: '50% 50%',
-          }}>
+          <g
+            clipPath="url(#mapClip)"
+            style={{
+              transform: `translate(${transform.x}px,${transform.y}px) scale(${transform.scale})`,
+              transformOrigin: `${SVG_W / 2}px ${SVG_H / 2}px`,
+            }}
+          >
             {geoFeatures.map((feat, i) => {
-              if (!feat.id) return null;
-              const code = NUM2CODE[feat.id] || '';
+              const code = feat.code;
+              if (!code) return null;
               const votes = stats[code] || 0;
               const d = featureToPath(feat.geometry);
               if (!d) return null;
               const selected = panel.open && panel.code === code;
               return (
                 <path
-                  key={`f-${feat.id}-${i}`}
+                  key={`f-${code}-${i}`}
                   d={d}
+                  data-code={code}
                   fill={selected ? '#1a3d26' : getHeatColor(votes, maxVotes)}
                   stroke={selected ? '#bcfe00' : 'rgba(255,255,255,0.10)'}
                   strokeWidth={selected ? strokeHoverW * 2 : strokeW}
                   strokeLinejoin="round"
                   style={{
                     transition: 'fill 0.3s',
-                    cursor: code ? 'pointer' : 'default',
+                    cursor: 'pointer',
                     pointerEvents: 'all',
                   }}
-                  onPointerEnter={e => code && showTooltip(e, code, votes)}
+                  onPointerEnter={e => showTooltip(e, code, votes)}
                   onPointerMove={moveTooltip}
                   onPointerLeave={hideTooltip}
-                  onClick={() => code && handleCountryClick(code)}
                   onPointerOver={e => {
                     if (selected) return;
                     (e.target as SVGPathElement).setAttribute('stroke', 'rgba(255,255,255,0.45)');
@@ -512,22 +606,6 @@ export default function FlatMap({
                 />
               );
             })}
-
-            {/* 사용자 위치 마커 */}
-            {userCountry && (() => {
-              const pos = FLAT_COORDS_MAP[userCountry.code];
-              if (!pos) return null;
-              const x = (pos[0] / 100) * SVG_W;
-              const y = (pos[1] / 100) * SVG_H;
-              return (
-                <g style={{ pointerEvents: 'none' }}>
-                  <circle cx={x} cy={y} r="18" fill="none" stroke="#37C561" strokeWidth="1" opacity={0.35} className="animate-ping" />
-                  <circle cx={x} cy={y} r="4" fill="#37C561" opacity={0.9} />
-                  <line x1={x - 11} y1={y} x2={x + 11} y2={y} stroke="#37C561" strokeWidth="0.5" opacity={0.45} />
-                  <line x1={x} y1={y - 11} x2={x} y2={y + 11} stroke="#37C561" strokeWidth="0.5" opacity={0.45} />
-                </g>
-              );
-            })()}
 
             {/* ripple */}
             {ripples.map(rp => (
@@ -604,7 +682,7 @@ export default function FlatMap({
           <p className="text-[9px] uppercase tracking-[0.2em] font-black text-[#37C561]/60">Live</p>
         </div>
 
-        {/* 클릭 힌트 (패널 닫혀있을 때) */}
+        {/* 클릭 힌트 */}
         {!panel.open && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-10">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-sm">
@@ -618,7 +696,7 @@ export default function FlatMap({
           </div>
         )}
 
-        {/* 호버 툴팁 */}
+        {/* 호버 툴팁 (마우스 전용) */}
         {tooltip.visible && tooltip.code && !panel.open && (
           <div
             className="absolute pointer-events-none z-50 bg-[#0d0d0d]/95 border border-white/15 rounded-2xl px-3 py-2.5 min-w-[130px] backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
@@ -638,7 +716,7 @@ export default function FlatMap({
         )}
       </div>
 
-      {/* ══ 국가 랭킹 패널 (지도 아래) ══════════════════════ */}
+      {/* ══ 국가 랭킹 패널 ══════════════════════════════════ */}
       <div
         ref={panelRef}
         className="overflow-hidden transition-all duration-500 ease-out"
@@ -653,14 +731,11 @@ export default function FlatMap({
 
             {/* ── 헤더 ── */}
             <div className="relative px-5 pt-5 pb-4 border-b border-white/[0.05]">
-              {/* 배경 그라디언트 */}
               <div
                 className="absolute inset-0 opacity-[0.04] pointer-events-none"
                 style={{ background: 'radial-gradient(ellipse at top left, #37C561, transparent 60%)' }}
               />
-
               <div className="relative flex items-start justify-between gap-4">
-                {/* 국가 정보 */}
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="relative shrink-0">
                     <div className="text-4xl leading-none">{panelFlag}</div>
@@ -675,10 +750,7 @@ export default function FlatMap({
                     </h3>
                   </div>
                 </div>
-
-                {/* 통계 + 닫기 */}
                 <div className="flex items-center gap-3 shrink-0">
-                  {/* 투표 수 */}
                   <div className="text-right">
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-black text-[#bcfe00] tabular-nums leading-none">
@@ -692,8 +764,6 @@ export default function FlatMap({
                       {lang === 'KO' ? `글로벌 ${countryShare}%` : `${countryShare}% global`}
                     </p>
                   </div>
-
-                  {/* 닫기 버튼 */}
                   <button
                     onClick={() => setPanel({ open: false, code: '' })}
                     className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-500 hover:text-white transition-all"
@@ -710,7 +780,6 @@ export default function FlatMap({
             {/* ── 콘텐츠 ── */}
             <div className="p-5">
               {panelArtists.length === 0 ? (
-                /* 데이터 없음 */
                 <div className="py-10 flex flex-col items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -727,21 +796,17 @@ export default function FlatMap({
                 </div>
               ) : (
                 <div className="space-y-5">
-
-                  {/* ── TOP 3 포디엄 ── */}
                   {panelArtists.length >= 1 && (
                     <div>
                       <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.25em] mb-3">
                         {lang === 'KO' ? '🏆 TOP 아티스트' : '🏆 Top Artists'}
                       </p>
-
                       <div className={`grid gap-3 ${panelArtists.slice(0, 3).length === 1 ? 'grid-cols-1' : panelArtists.slice(0, 3).length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                         {panelArtists.slice(0, 3).map((artist, idx) => {
                           const medalColor = MEDAL_COLORS[idx];
                           const medals = ['🥇', '🥈', '🥉'];
                           const pct = Math.round((artist.votes / panelMax) * 100);
                           const isFirst = idx === 0;
-
                           return (
                             <div
                               key={artist.id}
@@ -754,12 +819,9 @@ export default function FlatMap({
                                 boxShadow: isFirst ? `0 0 20px ${medalColor}10` : 'none',
                               }}
                             >
-                              {/* 메달 */}
                               <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-base leading-none">
                                 {medals[idx]}
                               </span>
-
-                              {/* 아티스트 이미지 */}
                               {artist.image ? (
                                 <img
                                   src={artist.image}
@@ -779,8 +841,6 @@ export default function FlatMap({
                                   {artist.name.charAt(0).toUpperCase()}
                                 </div>
                               )}
-
-                              {/* 이름 */}
                               <span
                                 className="text-[11px] font-black text-center leading-tight w-full truncate px-1"
                                 style={{ color: isFirst ? medalColor : 'rgba(255,255,255,0.8)' }}
@@ -788,17 +848,10 @@ export default function FlatMap({
                               >
                                 {artist.name}
                               </span>
-
-                              {/* 투표 수 */}
                               <div className="flex flex-col items-center gap-1 w-full">
-                                <span
-                                  className="text-[13px] font-black tabular-nums"
-                                  style={{ color: medalColor }}
-                                >
+                                <span className="text-[13px] font-black tabular-nums" style={{ color: medalColor }}>
                                   {artist.votes.toLocaleString()}
                                 </span>
-
-                                {/* 미니 바 */}
                                 <div className="w-full h-[3px] rounded-full bg-white/5 overflow-hidden">
                                   <div
                                     className="h-full rounded-full"
@@ -813,8 +866,6 @@ export default function FlatMap({
                             </div>
                           );
                         })}
-
-                        {/* 빈 슬롯 (TOP3가 안 찰 경우) */}
                         {Array.from({ length: Math.max(0, 3 - Math.min(3, panelArtists.length)) }).map((_, i) => (
                           <div
                             key={`empty-${i}`}
@@ -830,7 +881,6 @@ export default function FlatMap({
                     </div>
                   )}
 
-                  {/* ── 4~5위 리스트 ── */}
                   {panelArtists.length > 3 && (
                     <div>
                       <div className="h-px bg-white/[0.04] mb-4" />
@@ -842,47 +892,25 @@ export default function FlatMap({
                           const realIdx = idx + 3;
                           const bar = Math.round((artist.votes / panelMax) * 100);
                           const color = RANK_BAR_COLORS[realIdx] ?? '#1a4a2a';
-
                           return (
                             <div key={artist.id} className="flex items-center gap-3">
-                              {/* 순위 번호 */}
-                              <span
-                                className="text-[11px] font-black w-4 text-right shrink-0 tabular-nums"
-                                style={{ color }}
-                              >
+                              <span className="text-[11px] font-black w-4 text-right shrink-0 tabular-nums" style={{ color }}>
                                 {realIdx + 1}
                               </span>
-
-                              {/* 이미지 */}
                               {artist.image ? (
-                                <img
-                                  src={artist.image}
-                                  alt={artist.name}
-                                  className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10"
-                                />
+                                <img src={artist.image} alt={artist.name} className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10" />
                               ) : (
                                 <div
                                   className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-xs font-black"
-                                  style={{
-                                    background: `${color}18`,
-                                    border: `1px solid ${color}30`,
-                                    color: `${color}99`,
-                                  }}
+                                  style={{ background: `${color}18`, border: `1px solid ${color}30`, color: `${color}99` }}
                                 >
                                   {artist.name.charAt(0).toUpperCase()}
                                 </div>
                               )}
-
-                              {/* 이름 + 바 */}
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1.5">
-                                  <span className="text-[13px] font-bold text-white/90 truncate leading-none">
-                                    {artist.name}
-                                  </span>
-                                  <span
-                                    className="text-[12px] font-black ml-2 shrink-0 tabular-nums"
-                                    style={{ color }}
-                                  >
+                                  <span className="text-[13px] font-bold text-white/90 truncate leading-none">{artist.name}</span>
+                                  <span className="text-[12px] font-black ml-2 shrink-0 tabular-nums" style={{ color }}>
                                     {artist.votes.toLocaleString()}
                                   </span>
                                 </div>

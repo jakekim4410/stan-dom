@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
+import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail } from 'lucide-react';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ import CountryRankingPopup from '@/components/CountryRankingPopup';
 import CountrySelector from '@/components/CountrySelector';
 import { Country } from '@/constants/countryData';
 import InquiryModal from '@/components/InquiryModal';
+import Toast from '@/components/Toast';
 
 const GlobeMap = dynamic(() => import('@/components/GlobeMap'), { ssr: false });
 const FlatMap = dynamic(() => import('@/components/FlatMap'), { ssr: false });
@@ -49,14 +51,21 @@ export default function Dashboard() {
   const [isAddArtistOpen, setIsAddArtistOpen] = useState(false);
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
+  const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
+  const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
 
   const t = getT(lang);
 
   useEffect(() => {
-    const browserLang = navigator.language?.startsWith('ko') ? 'KO' : 'EN';
-    setLang(browserLang);
+    // Initialize language from localStorage
+    const savedLang = localStorage.getItem('stan_lang') as Language;
+    if (savedLang && ['EN', 'KO', 'ES'].includes(savedLang)) {
+      setLang(savedLang);
+    } else {
+      setLang('EN');
+    }
     fetchInitialData();
     // Auth listener
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -81,6 +90,16 @@ export default function Dashboard() {
         })
       .subscribe();
 
+    // Load persisted country
+    const savedCountry = localStorage.getItem('stan_user_country');
+    if (savedCountry) {
+      try {
+        setUserCountry(JSON.parse(savedCountry));
+      } catch (e) {
+        console.error('Failed to parse saved country', e);
+      }
+    }
+
     return () => {
       subscription.unsubscribe();
       supabase.removeChannel(artistsChannel);
@@ -88,10 +107,24 @@ export default function Dashboard() {
     };
   }, []);
 
+  // Persist country selection
+  useEffect(() => {
+    if (userCountry) {
+      localStorage.setItem('stan_user_country', JSON.stringify(userCountry));
+    }
+  }, [userCountry]);
+
   const fetchInitialData = async () => {
     setLoading(true);
-    await Promise.all([fetchArtists(), fetchCountryStats()]);
+    await Promise.all([fetchArtists(), fetchCountryStats(), refreshQuota()]);
     setLoading(false);
+  };
+
+  const refreshQuota = async () => {
+    const res = await getRemainingVotes();
+    if (res.success) {
+      setVoteQuota({ remaining: res.remaining!, limit: res.limit! });
+    }
   };
 
   const fetchArtists = async () => {
@@ -153,9 +186,9 @@ export default function Dashboard() {
     if (!result.success) {
       setActiveVotes(prev => { const n = { ...prev }; delete n[id]; return n; });
       if (result.error === 'COOLDOWN_ACTIVE') {
-        alert(`${lang === 'KO' ? '하루 투표 제한을 초과했습니다.' : 'Daily vote limit exceeded.'}`);
+        alert(t('dailyLimitExceeded'));
       } else {
-        alert(`Vote failed: ${result.error}`);
+        alert(`${t('voteFailed')}: ${result.error}`);
       }
       fetchArtists();
     }
@@ -164,7 +197,15 @@ export default function Dashboard() {
       setActiveVotes(prev => ({ ...prev, [id]: 'success' }));
       handleIncomingVote(userCountry.code, id);
 
-      // Reset to original after 2 seconds
+      // Show Success Toast
+      setToast({
+        isVisible: true,
+        message: t('voteTransmitted'),
+        subMessage: t('voltageIncreased')
+      });
+      refreshQuota();
+
+      // Reset button state after 2 seconds
       setTimeout(() => {
         setActiveVotes(prev => { const n = { ...prev }; delete n[id]; return n; });
       }, 2000);
@@ -212,7 +253,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020205] text-white relative pb-20 selection:bg-[#37C561]/20">
+    <main className="flex-1 bg-[#020205] text-white relative flex flex-col selection:bg-[#37C561]/20">
       {/* Background glows */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-purple-600/5 blur-[120px] rounded-full" />
@@ -226,13 +267,19 @@ export default function Dashboard() {
             <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />
           </a>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher lang={lang} onToggle={() => setLang(l => l === 'EN' ? 'KO' : 'EN')} />
+            <LanguageSwitcher 
+              lang={lang} 
+              onSelect={(l) => {
+                setLang(l);
+                localStorage.setItem('stan_lang', l);
+              }} 
+            />
             {user ? (
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-full text-xs font-black uppercase tracking-tighter hover:bg-white hover:text-black transition-colors"
               >
-                {lang === 'KO' ? '로그아웃' : 'Logout'}
+                {t('logout')}
               </button>
             ) : (
               <Link
@@ -247,7 +294,7 @@ export default function Dashboard() {
       </nav>
 
       {/* ── Operations Toolbar ── */}
-      <div className="max-w-7xl mx-auto px-4 pt-8 pb-4">
+      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 pt-8 pb-4">
         <div className="glassmorphism rounded-3xl p-2 sm:p-3 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-white/5 shadow-2xl">
 
           {/* Left: Input Node (Country) */}
@@ -270,7 +317,7 @@ export default function Dashboard() {
               >
                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_red]" />
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
-                  {lang === 'KO' ? '참여를 위해 국가를 연결하세요' : 'CONNECT COUNTRY NODE TO JOIN'}
+                  {t('connectNode')}
                 </span>
               </motion.div>
             ) : (
@@ -281,7 +328,21 @@ export default function Dashboard() {
               >
                 <div className="w-1.5 h-1.5 bg-[#37C561] rounded-full shadow-[0_0_8px_#37C561]" />
                 <span className="text-[10px] font-black text-[#37C561] uppercase tracking-widest leading-none">
-                  {lang === 'KO' ? '안정적으로 연결됨' : 'NODE STABLE'}
+                  {t('nodeStable')}
+                </span>
+              </motion.div>
+            )}
+
+            {/* Vote Quota Badge */}
+            {voteQuota && (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5"
+              >
+                <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[#37C561]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
+                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
+                  {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
                 </span>
               </motion.div>
             )}
@@ -290,7 +351,7 @@ export default function Dashboard() {
           {/* Right: Map preference */}
           <div className="flex items-center justify-between sm:justify-start gap-4 px-2 sm:px-0 bg-black/20 lg:bg-transparent rounded-2xl py-2 lg:py-0 border border-white/5 lg:border-none">
             <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.2em] whitespace-nowrap">
-              {lang === 'KO' ? '시각화 모드' : 'VIS_MODE'}
+              {t('visMode')}
             </span>
             <div className="flex bg-zinc-900/50 p-1 rounded-2xl border border-white/5">
               <button
@@ -301,7 +362,7 @@ export default function Dashboard() {
                   }`}
               >
                 <GlobeIcon size={14} />
-                <span className="hidden sm:inline">{lang === 'KO' ? '지구본' : 'GLOBE'}</span>
+                <span className="hidden sm:inline">{t('globe')}</span>
               </button>
               <button
                 onClick={() => setMapView('flat')}
@@ -311,15 +372,29 @@ export default function Dashboard() {
                   }`}
               >
                 <Map size={14} />
-                <span className="hidden sm:inline">{lang === 'KO' ? '평면지도' : 'FLAT'}</span>
+                <span className="hidden sm:inline">{t('flatMap')}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* ── Notice Banner (Voting Rules) ── */}
+      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 mt-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl py-3 px-6 text-center text-[10px] sm:text-xs font-black tracking-[0.1em] flex items-center justify-center gap-3 border border-white/5 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 backdrop-blur-md"
+        >
+          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+          <span className="text-zinc-400 uppercase tracking-widest">{t('votingRuleNotice')}</span>
+          <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+        </motion.div>
+      </div>
+
+
       {/* ── Map Section ── */}
-      <section className="relative w-full max-w-7xl mx-auto px-4 pb-4">
+      <section className="relative w-full max-w-[1400px] mx-auto px-2 sm:px-4 pb-4">
         <AnimatePresence mode="wait">
           {mapView === 'globe' ? (
             <motion.div key="globe" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
@@ -361,13 +436,14 @@ export default function Dashboard() {
         </AnimatePresence>
       </section>
 
+
       {/* ── Divider ── */}
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4">
         <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
 
       {/* ── Ranking Section ── */}
-      <div className="max-w-7xl mx-auto px-4 py-12 space-y-20">
+      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 py-12 space-y-20">
 
         {/* Search & Register - Relocated & New Feature */}
         <section className="flex flex-col md:flex-row items-center justify-between gap-6 pb-2 border-b border-white/5">
@@ -396,7 +472,7 @@ export default function Dashboard() {
             >
               <PlusCircle size={18} className="group-hover:scale-110 transition-transform" />
               <span className="text-xs font-black uppercase tracking-widest hidden sm:inline">
-                {lang === 'KO' ? '아티스트 등록' : 'Register Artist'}
+                {t('registerArtist')}
               </span>
             </button>
           </div>
@@ -421,66 +497,76 @@ export default function Dashboard() {
                   <motion.div
                     key={a.id}
                     layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className={`relative flex flex-col items-center justify-between glassmorphism rounded-[2.5rem] p-8 border ${orderClass} ${heightClass} transition-all duration-500`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`relative flex flex-col items-center justify-between glassmorphism-premium rounded-[2.5rem] p-8 border ${orderClass} ${heightClass} transition-all duration-500 group overflow-hidden`}
                     style={{ borderColor: `${color}30` }}
                   >
-                    {/* Rank badge */}
-                    <div
-                      className={`absolute -top-4 px-6 py-1.5 rounded-full font-black text-xs italic ${RANK_LABELS[index]}`}
-                    >
-                      {t('rank')} {rank}
+                    {/* Dynamic Background Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
+                    <div 
+                      className="absolute -inset-20 bg-radial opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none"
+                      style={{ background: `radial-gradient(circle at center, ${color} 0%, transparent 70%)` }}
+                    />
+
+                    {/* Rank badge - Updated Design */}
+                    <div className={`absolute top-8 left-8 flex flex-col items-start gap-0 opacity-40 group-hover:opacity-100 transition-all duration-500 scale-90 group-hover:scale-100`}>
+                      <div className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-500 mb-1">{t('rank')}</div>
+                      <div className="relative">
+                        <span className="text-5xl font-black tracking-tighter tabular-nums leading-none" style={{ color }}>{rank}</span>
+                        <div className="absolute -bottom-1 left-0 w-full h-1 rounded-full opacity-30" style={{ backgroundColor: color }} />
+                      </div>
                     </div>
 
-                    {/* Glow for 1st */}
-                    {isFirst && (
-                      <div
-                        className="absolute inset-0 rounded-[2.5rem] pointer-events-none"
-                        style={{ boxShadow: `0 0 40px ${color}20, inset 0 0 30px ${color}08` }}
-                      />
-                    )}
-
-                    <div className="flex flex-col items-center flex-1 justify-center w-full gap-4">
-                      {/* Artist image */}
-                      <Link href={`/artist/${a.id}`} className="relative w-28 h-28 block group">
-                        <div
-                          className="absolute inset-0 blur-2xl opacity-30 rounded-full group-hover:opacity-70 transition-opacity"
-                          style={{ background: color }}
-                        />
-                        <div className="relative w-full h-full rounded-full border-2 overflow-hidden bg-zinc-900 flex items-center justify-center group-hover:scale-105 transition-transform"
-                          style={{ borderColor: `${color}60` }}>
+                    <div className="flex flex-col items-center flex-1 justify-center w-full gap-6 relative z-10">
+                      {/* Artist image with collectibe frame */}
+                      <Link href={`/artist/${a.id}`} className="relative w-36 h-36 block group/img">
+                        <div className="absolute -inset-4 bg-white/5 rounded-full blur-2xl group-hover/img:bg-white/10 transition-colors" />
+                        <div className="relative w-full h-full rounded-full border-4 overflow-hidden bg-zinc-900 flex items-center justify-center shadow-2xl group-hover/img:scale-105 transition-transform duration-500"
+                          style={{ borderColor: `${color}40`, boxShadow: `0 0 30px ${color}20` }}>
                           {a.image_url
-                            ? <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />
-                            : <span className="text-4xl font-black text-zinc-600">{a.name[0]}</span>
+                            ? <img src={a.image_url} alt={a.name} className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700" />
+                            : <span className="text-5xl font-black text-zinc-700">{a.name[0]}</span>
                           }
                         </div>
                         {isFirst && (
-                          <div className="absolute -top-2 -right-2 bg-yellow-400 text-black p-1.5 rounded-lg rotate-12 z-10 crown-neon">
-                            <Trophy size={18} />
+                          <div className="absolute -top-3 -right-3 bg-yellow-400 text-black p-2 rounded-xl rotate-12 z-10 shadow-xl shadow-yellow-400/20">
+                            <Trophy size={20} />
                           </div>
                         )}
                       </Link>
 
-                      {/* Name */}
-                      <Link href={`/artist/${a.id}`} className="hover:opacity-80 transition-opacity text-center w-full">
-                        <h3 className="text-2xl font-black tracking-tighter truncate w-full">{a.name}</h3>
-                      </Link>
-
-                      {/* Progress bar */}
-                      <div className="w-full space-y-1.5">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">{t('totalVotes')}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono font-black text-lg italic">{(a.total_votes || 0).toLocaleString()}</span>
-                            <span className="text-[10px] font-black" style={{ color }}>{pct}%</span>
+                      {/* Name & Stats */}
+                      <div className="text-center w-full">
+                        <Link href={`/artist/${a.id}`} className="hover:opacity-80 transition-opacity inline-block group/title">
+                          <h3 className="text-3xl font-black tracking-tighter truncate max-w-[200px] group-hover/title:text-white">{a.name}</h3>
+                          <div className="h-0.5 w-0 group-hover/title:w-full bg-current mx-auto transition-all duration-300" style={{ color }} />
+                        </Link>
+                        
+                        <div className="mt-4 flex items-center justify-center gap-3">
+                          <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 flex items-center gap-2">
+                             <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: color }} />
+                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Phase</span>
                           </div>
                         </div>
-                        <div className="progress-bar-track">
-                          <div
-                            className={`progress-bar-fill progress-bar-fill-${rank}`}
-                            style={{ width: `${pct}%` }}
-                          />
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="w-full space-y-2">
+                        <div className="flex justify-between items-end">
+                          <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">{t('voltage')}</span>
+                          <span className="font-mono font-black text-xl" style={{ color }}>{(a.total_votes || 0).toLocaleString()}</span>
+                        </div>
+                        <div className="h-2 bg-zinc-900/80 rounded-full overflow-hidden p-[1px] border border-white/5">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 2, ease: 'circOut' }}
+                            className="h-full rounded-full relative overflow-hidden"
+                            style={{ backgroundColor: color }}
+                          >
+                            <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                          </motion.div>
                         </div>
                       </div>
                     </div>
@@ -490,20 +576,22 @@ export default function Dashboard() {
                       id={`vote-btn-${a.id}`}
                       onClick={() => handleVote(a.id, a.total_votes)}
                       disabled={!!activeVotes[a.id]}
-                      className={`w-full mt-6 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all relative overflow-hidden ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 !text-white' : activeVotes[a.id] === 'loading' ? 'bg-zinc-700 !text-zinc-400 cursor-not-allowed border-none' : ''
-                        }`}
+                      className={`w-full mt-8 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all relative z-10 ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${
+                        activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' : 
+                        activeVotes[a.id] === 'loading' ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : ''
+                      }`}
                       style={{
                         background: activeVotes[a.id] ? undefined : color,
                         color: activeVotes[a.id] ? undefined : '#000',
-                        boxShadow: activeVotes[a.id] === 'success' ? '0 0 15px rgba(16,185,129,0.5)' : (userCountry && !activeVotes[a.id] ? `0 0 20px ${color}50` : 'none'),
+                        boxShadow: activeVotes[a.id] === 'success' ? '0 0 20px rgba(16,185,129,0.4)' : (userCountry && !activeVotes[a.id] ? `0 0 30px ${color}30` : 'none'),
                       }}
                     >
                       {activeVotes[a.id] === 'success' ? (
-                        <><span>✓</span> <span>{lang === 'KO' ? '투표 완료' : 'Voted'}</span></>
+                        <><span>✓</span> <span>{t('voted')}</span></>
                       ) : activeVotes[a.id] === 'loading' ? (
                         <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                       ) : (
-                        <><Vote size={16} /> <span>{t('vote')}</span></>
+                        <><Vote size={18} /> <span>{t('transmitVote')}</span></>
                       )}
                     </button>
                   </motion.div>
@@ -606,9 +694,115 @@ export default function Dashboard() {
             </div>
           )}
         </section>
+
+        {/* ── Divider ── */}
+        <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        </div>
+
+        {/* ── Battle Zone ── */}
+        <section className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+            <div className="battle-zone-card rounded-[2.5rem] p-8 md:p-12 relative group h-full overflow-hidden">
+              <div className="relative z-10">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
+                  <div>
+                    <h2 className="text-4xl md:text-5xl font-black tracking-tighter neon-text-lime mb-2">
+                      {t('battleZoneTitle')}
+                    </h2>
+                    <p className="text-zinc-400 text-xs font-black uppercase tracking-[0.3em] mb-4">
+                      {t('battleZoneSub')}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3 px-4 py-3 rounded-[1.25rem] bg-white/5 border border-white/10 max-w-fit">
+                      <div className="flex items-center gap-2">
+                         <span className="w-2 h-2 bg-[#37C561] rounded-full animate-pulse shadow-[0_0_10px_#37C561]" />
+                         <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest break-keep">
+                           {t('votingRuleNotice')}
+                         </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-6 py-2 bg-black/40 border border-[#37C561]/30 rounded-full text-[#37C561] text-[10px] font-black uppercase tracking-widest animate-pulse">
+                    LIVE_SYNC_ACTIVE
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {['RIIZE', 'BOYNEXTDOOR', 'TWS'].map((name, i) => {
+                    const artist = artists.find(a => a.name.toUpperCase() === name);
+                    const votes = artist?.total_votes || 0;
+                    const isTop = i === 0;
+
+                    return (
+                      <div key={name} className="glassmorphism p-6 rounded-3xl border-white/5 hover:border-[#37C561]/40 transition-all flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 uppercase font-black text-[8px] text-zinc-500 tracking-widest">
+                            <span className="opacity-50">{t('rank')}</span>
+                            <span className="text-[#37C561]">{i + 1}</span>
+                          </div>
+                          {isTop && <Trophy size={14} className="text-yellow-400 vibrant-glow" />}
+                        </div>
+                        
+                        {/* Artist Link Wrapper */}
+                        {artist ? (
+                          <Link href={`/artist/${artist.id}`} className="flex items-center gap-4 group/artist">
+                            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 overflow-hidden shrink-0 group-hover/artist:border-[#37C561]/50 transition-all">
+                              {artist.image_url ? (
+                                <img src={artist.image_url} alt={name} className="w-full h-full object-cover group-hover/artist:scale-110 transition-transform" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center font-black text-xl text-zinc-700">{name[0]}</div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="font-black text-xl tracking-tighter truncate group-hover/artist:text-[#37C561] transition-colors">{name}</h4>
+                              <span className="text-[10px] font-black text-zinc-600 uppercase">VOLTAGE: {votes.toLocaleString()}</span>
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex items-center gap-4 opacity-50">
+                            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center font-black text-xl text-zinc-700">{name[0]}</div>
+                            <div className="min-w-0">
+                              <h4 className="font-black text-xl tracking-tighter truncate">{name}</h4>
+                              <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest animate-pulse">DETECTING...</span>
+                            </div>
+                          </div>
+                        )}
+
+                        <button 
+                          onClick={() => artist && handleVote(artist.id, votes)}
+                          disabled={!artist || !!activeVotes[artist.id]}
+                          className={`w-full py-3 border rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                            artist && activeVotes[artist.id] === 'success' 
+                              ? 'bg-[#37C561] text-black border-[#37C561] shadow-[0_0_15px_rgba(55,197,97,0.4)]' 
+                              : artist && activeVotes[artist.id] === 'loading'
+                              ? 'bg-zinc-800 text-zinc-500 border-white/5 cursor-not-allowed'
+                              : 'bg-white/5 border-white/10 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
+                          }`}
+                        >
+                          {artist ? (
+                            activeVotes[artist.id] === 'success' ? (
+                              <span className="flex items-center justify-center gap-1">✓ {t('voted')}</span>
+                            ) : activeVotes[artist.id] === 'loading' ? (
+                              <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin mx-auto" />
+                            ) : (
+                              t('vote')
+                            )
+                          ) : 'PENDING_NODE'}
+                        </button>
+
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <footer className="mt-32 border-t border-white/5 bg-black/20 backdrop-blur-md pt-16 pb-12 flex flex-col items-center gap-8">
+      <footer className="mt-auto border-t border-white/5 bg-black/20 backdrop-blur-md pt-12 pb-6 flex flex-col items-center gap-6">
         {/* 1. 관리자 문의 버튼 */}
         <button
           onClick={() => setIsInquiryModalOpen(true)}
@@ -642,11 +836,19 @@ export default function Dashboard() {
         isOpen={isAddArtistOpen}
         onClose={() => setIsAddArtistOpen(false)}
         lang={lang}
+        user={user}
       />
       <InquiryModal
         isOpen={isInquiryModalOpen}
         onClose={() => setIsInquiryModalOpen(false)}
         lang={lang}
+      />
+      
+      <Toast
+        isVisible={toast.isVisible}
+        message={toast.message}
+        subMessage={toast.subMessage}
+        onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
       />
     </main>
   );

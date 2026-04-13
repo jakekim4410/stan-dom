@@ -39,11 +39,11 @@ export default function CountryRankingPopup({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, scale: 0.85, y: 20 }}
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 10 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="absolute top-6 right-6 z-50 w-72"
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+        className="fixed inset-x-4 bottom-20 md:bottom-auto md:absolute md:top-6 md:right-6 md:inset-x-auto z-50 md:w-72"
       >
         <div className="glassmorphism rounded-[1.5rem] border border-white/10 overflow-hidden shadow-[0_0_40px_rgba(0,255,255,0.1)]">
           {/* Header */}

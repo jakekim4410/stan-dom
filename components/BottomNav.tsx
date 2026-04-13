@@ -4,18 +4,22 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Globe, User } from 'lucide-react';
 
+import { Language, getT } from '@/constants/i18n';
+
 interface BottomNavProps {
   activeTab: 'ranking' | 'map' | 'activity';
   onTabChange: (tab: 'ranking' | 'map' | 'activity') => void;
-  lang: string;
+  lang: Language;
 }
 
 export default function BottomNav({ activeTab, onTabChange, lang }: BottomNavProps) {
+  const t = getT(lang);
   const tabs = [
-    { id: 'ranking', icon: Trophy, label: lang === 'KO' ? '랭킹' : 'RANKING' },
-    { id: 'map', icon: Globe, label: lang === 'KO' ? '지도' : 'MAP' },
-    { id: 'activity', icon: User, label: lang === 'KO' ? '활동' : 'ACTIVITY' },
+    { id: 'ranking', icon: Trophy, label: t('ranking') },
+    { id: 'map', icon: Globe, label: t('map') },
+    { id: 'activity', icon: User, label: t('activity') },
   ] as const;
+
 
   return (
     <nav className="fixed bottom-0 left-0 w-full z-50 bg-black/80 backdrop-blur-2xl border-t border-white/5 px-6 pb-8 pt-3 flex justify-between items-center">

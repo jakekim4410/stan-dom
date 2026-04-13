@@ -4,12 +4,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { List, Globe, Plus, Search, Languages, TerminalSquare } from 'lucide-react';
 
+import { Language, getT } from '@/constants/i18n';
+
 interface FloatingNavProps {
   activeTab: 'ranking' | 'map';
   onTabChange: (tab: 'ranking' | 'map') => void;
   onAddArtist: () => void;
   onToggleLang: () => void;
-  lang: string;
+  lang: Language;
   searchQuery: string;
   onSearchChange: (query: string) => void;
 }
@@ -23,6 +25,8 @@ export default function FloatingNav({
   searchQuery,
   onSearchChange
 }: FloatingNavProps) {
+  const t = getT(lang);
+
   return (
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-4xl">
       <motion.nav 
@@ -61,7 +65,7 @@ export default function FloatingNav({
            <Search size={14} className="text-zinc-500" />
            <input 
              type="text" 
-             placeholder={lang === 'KO' ? '아티스트를 스캔하세요...' : 'SCAN FOR ARTIST NODE...'}
+             placeholder={t('scanArtist')}
              value={searchQuery}
              onChange={(e) => onSearchChange(e.target.value)}
              className="bg-transparent border-none outline-none text-[10px] font-bold tracking-widest text-white placeholder:text-zinc-700 w-full"
@@ -81,7 +85,7 @@ export default function FloatingNav({
              className="flex items-center gap-2 bg-neon-magenta text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-[0_0_15px_rgba(255,0,255,0.3)] hover:scale-105 active:scale-95 transition-all"
            >
              <Plus size={18} />
-             <span className="hidden sm:inline">{lang === 'KO' ? '노미네이트' : 'NOMINATE'}</span>
+             <span className="hidden sm:inline">{t('nominate')}</span>
            </button>
         </div>
       </motion.nav>

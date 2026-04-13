@@ -1,24 +1,29 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Loader2, Music, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Search, X, Loader2, Music, CheckCircle2, AlertCircle, Lock } from 'lucide-react';
 import { searchForArtists } from '@/actions/searchDeezer';
 import { DeezerArtist } from '@/lib/deezer';
 import { addArtist } from '@/actions/addArtist';
+import { Language, getT } from '@/constants/i18n';
+import Link from 'next/link';
 
 interface AddArtistModalProps {
   isOpen: boolean;
   onClose: () => void;
-  lang: string;
+  lang: Language;
+  user: any;
 }
 
-export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModalProps) {
+export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtistModalProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<DeezerArtist[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+  const t = getT(lang);
 
   // Debounce search
   useEffect(() => {
@@ -49,6 +54,11 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
   };
 
   const handleSelectArtist = async (artist: DeezerArtist) => {
+    if (!user) {
+      setNotification({ type: 'error', message: t('loginRequired') });
+      return;
+    }
+
     setSubmitting(true);
     setNotification(null);
 
@@ -57,16 +67,26 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
     setSubmitting(false);
 
     if (res.success) {
-      setNotification({ type: 'success', message: `${artist.name} has been nominated successfully!` });
+      const successMsgs = {
+        KO: '노미네이트 성공!',
+        EN: 'nominated successfully!',
+        ES: '¡nominado con éxito!'
+      };
+      setNotification({ type: 'success', message: `${artist.name} ${successMsgs[lang] || successMsgs.EN}` });
       setTimeout(() => {
         handleClose();
       }, 2000);
     } else {
-      setNotification({ type: 'error', message: res.error || 'Failed to nominate artist.' });
+      let errorMsg = res.error || 'Failed to nominate artist.';
+      if (res.error === 'AUTHENTICATION_REQUIRED') errorMsg = t('loginRequired');
+      if (res.error === 'DUPLICATE_NODE_DETECTED') errorMsg = t('artistAlreadyExists');
+      
+      setNotification({ type: 'error', message: errorMsg });
       setTimeout(() => {
         setNotification(null);
-      }, 3000);
+      }, 5000); // Increased time for error visibility
     }
+
   };
 
   return (
@@ -93,7 +113,7 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
             <div className="flex items-center justify-between p-5 border-b border-white/5">
               <h2 className="text-xl font-black italic tracking-tighter neon-text-cyan flex items-center gap-2">
                 <Music size={20} className="text-neon-magenta" />
-                {lang === 'KO' ? '새 아티스트 노미네이트' : 'NOMINATE ARTIST'}
+                {t('nominateArtist')}
               </h2>
               <button 
                 onClick={handleClose}
@@ -119,17 +139,36 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
               )}
             </AnimatePresence>
 
+            {/* Login Required Overlay for unauthenticated users (Optional: just show warning instead of overlay if preferred, but user said "registered users can add") */}
+            {!user && (
+              <div className="absolute inset-0 top-[72px] bg-black/60 backdrop-blur-[2px] z-50 flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+                  <Lock size={24} className="text-zinc-500" />
+                </div>
+                <h3 className="text-lg font-black italic tracking-tighter mb-2">{t('accessRestricted')}</h3>
+                <p className="text-zinc-400 text-sm font-bold mb-6 max-w-[240px] leading-relaxed">
+                  {t('loginNote')}
+                </p>
+                <Link
+                  href="/login"
+                  className="px-8 py-3 bg-[#37C561] text-black rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform"
+                >
+                  {t('login')}
+                </Link>
+              </div>
+            )}
+
             {/* Search Input */}
             <div className="p-5 relative">
               <div className="relative">
                 <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neon-cyan" />
                 <input
                   type="text"
-                  placeholder={lang === 'KO' ? '글로벌 데이터베이스 아티스트 검색...' : 'Search global artist database...'}
+                  placeholder={t('photoModalSearchPlaceholder')}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  disabled={submitting || notification?.type === 'success'}
-                  className="w-full bg-black/50 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-white placeholder:text-zinc-600 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                  disabled={!user || submitting || notification?.type === 'success'}
+                  className="w-full bg-black/50 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-white placeholder:text-zinc-600 focus:outline-none focus:border-neon-cyan/50 transition-colors disabled:opacity-30"
                   autoFocus
                 />
                 {loading && (
@@ -142,7 +181,7 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
             <div className="flex-1 overflow-y-auto custom-scrollbar px-2 pb-2">
               {query.trim().length > 1 && !loading && results.length === 0 && (
                 <div className="p-8 text-center text-zinc-500 font-bold text-sm">
-                  {lang === 'KO' ? '검색 결과가 없습니다.' : 'No artists found.'}
+                  {lang === 'KO' ? '검색 결과가 없습니다.' : (lang === 'ES' ? 'No se encontraron artistas.' : 'No artists found.')}
                 </div>
               )}
 
@@ -151,7 +190,7 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
                   <button
                     key={artist.id}
                     onClick={() => handleSelectArtist(artist)}
-                    disabled={submitting || notification?.type === 'success'}
+                    disabled={!user || submitting || notification?.type === 'success'}
                     className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group disabled:opacity-50"
                   >
                     <div className="flex items-center gap-4">
@@ -168,13 +207,13 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
                       <div className="text-left flex flex-col">
                         <span className="font-black text-lg tracking-tight group-hover:neon-text-cyan transition-all">{artist.name}</span>
                         <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block -mt-1">
-                          {artist.followers.toLocaleString()} {lang === 'KO' ? '팔로워' : 'Followers'}
+                          {artist.followers.toLocaleString()} {lang === 'KO' ? '팔로워' : (lang === 'ES' ? 'SEGUIDORES' : 'Followers')}
                         </span>
                       </div>
                     </div>
 
                     <div className="px-4 py-1.5 rounded-full border border-neon-lime/30 text-[10px] font-black uppercase text-neon-lime opacity-0 group-hover:opacity-100 transition-opacity">
-                      {lang === 'KO' ? '추가' : 'ADD'}
+                      {t('add')}
                     </div>
                   </button>
                 ))}
@@ -187,3 +226,4 @@ export default function AddArtistModal({ isOpen, onClose, lang }: AddArtistModal
     </AnimatePresence>
   );
 }
+

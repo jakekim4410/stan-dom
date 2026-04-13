@@ -40,7 +40,7 @@ export default function ReportModal({ isOpen, onClose, artistId, artistName, onS
         onSuccess();
         onClose();
       } else {
-        alert(result.error || 'Failed to submit report.');
+        alert(result.error || t('reportFailed'));
       }
     } catch (err) {
       console.error(err);

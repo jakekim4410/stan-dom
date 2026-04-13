@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { addComment } from '@/actions/comment';
+import { toggleLikeComment } from '@/actions/likeComment';
+import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import {
   ArrowLeft,
   Share2,
@@ -12,13 +15,18 @@ import {
   Music,
   Play,
   Pause,
-  Globe2,
+  Globe,
   MessageCircle,
   Send,
   ShieldAlert,
   Mail,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Heart,
+  Crown,
+  Database,
+  Terminal,
+  Check
 } from 'lucide-react';
 import Link from 'next/link';
 import { COUNTRY_DATA } from '@/constants/countryData';
@@ -45,6 +53,8 @@ interface Comment {
   country_code: string | null;
   display_name: string | null;
   created_at: string;
+  likes_count: number;
+  is_liked?: boolean;
 }
 
 interface CountryStat {
@@ -63,6 +73,7 @@ const COUNTRY_NAMES: Record<string, string> = Object.fromEntries(
 
 export default function ArtistPage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = createClient();
+  const router = useRouter();
   const resolvedParams = use(params);
   const artistId = resolvedParams.id;
 
@@ -76,6 +87,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
 
   const [topTrack, setTopTrack] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [user, setUser] = useState<any>(null);
@@ -95,10 +107,10 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   // ✅ 언어 초기화 — localStorage 우선, 없으면 브라우저 언어 감지
   useEffect(() => {
     const saved = localStorage.getItem('stan_lang') as Language | null;
-    if (saved === 'EN' || saved === 'KO') {
+    if (saved && ['EN', 'KO', 'ES'].includes(saved)) {
       setLang(saved);
     } else {
-      const browserLang = navigator.language?.startsWith('ko') ? 'KO' : 'EN';
+      const browserLang = navigator.language?.startsWith('ko') ? 'KO' : (navigator.language?.startsWith('es') ? 'ES' : 'EN');
       setLang(browserLang);
     }
 
@@ -114,6 +126,10 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
       .channel('artist_comments')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments', filter: `artist_id=eq.${artistId}` },
         payload => setComments(prev => [payload.new as Comment, ...prev].slice(0, 50)))
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'comments', filter: `artist_id=eq.${artistId}` },
+        payload => {
+          setComments(prev => prev.map(c => c.id === payload.new.id ? { ...c, likes_count: payload.new.likes_count } : c));
+        })
       .subscribe();
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -148,7 +164,23 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
       if (trackRes.success) setTopTrack(trackRes.track);
     }
 
-    if (commentsRes.data) setComments(commentsRes.data);
+    if (commentsRes.data) {
+      const fetchedComments = commentsRes.data as Comment[];
+      // If user logged in, check which they liked
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: userLikes } = await supabase
+          .from('comment_likes')
+          .select('comment_id')
+          .eq('user_id', session.user.id)
+          .in('comment_id', fetchedComments.map(c => c.id));
+        
+        const likedIds = new Set(userLikes?.map(ul => ul.comment_id) || []);
+        setComments(fetchedComments.map(c => ({ ...c, is_liked: likedIds.has(c.id) })));
+      } else {
+        setComments(fetchedComments);
+      }
+    }
 
     if (votesRes.data) {
       const stats: Record<string, number> = {};
@@ -174,6 +206,14 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
       );
     }
     setLoading(false);
+    refreshQuota();
+  };
+
+  const refreshQuota = async () => {
+    const res = await getRemainingVotes();
+    if (res.success) {
+      setVoteQuota({ remaining: res.remaining!, limit: res.limit! });
+    }
   };
 
   const togglePlayback = () => {
@@ -191,8 +231,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     navigator.clipboard.writeText(window.location.href);
     setToast({
       isVisible: true,
-      message: 'TRANSMISSION LINK COPIED',
-      subMessage: 'SYNC_PROTOCOL_SUCCESS'
+      message: t('linkCopied'),
+      subMessage: t('syncSuccess')
     });
     setTimeout(() => setToast(prev => ({ ...prev, isVisible: false })), 3000);
   };
@@ -203,8 +243,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     if (!user) {
       setToast({
         isVisible: true,
-        message: 'AUTHENTICATION_REQUIRED',
-        subMessage: 'LOGIN TO TRANSMIT SIGNALS',
+        message: t('authRequired'),
+        subMessage: t('loginToTransmit'),
       });
       setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
       return;
@@ -226,22 +266,69 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     } else {
       setToast({
         isVisible: true,
-        message: 'TRANSMISSION FAILED',
-        subMessage: 'NETWORK ERROR',
+        message: t('transmissionFailed'),
+        subMessage: t('networkError'),
       });
       setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
     }
     setSending(false);
   };
 
-  // ✅ 언어 토글 — localStorage에 저장
-  const handleToggleLang = () => {
-    setLang(prev => {
-      const next = prev === 'EN' ? 'KO' : 'EN';
-      localStorage.setItem('stan_lang', next);
-      return next;
-    });
+  // ✅ 언어 선택 — localStorage에 저장
+  const handleSelectLang = (newLang: Language) => {
+    setLang(newLang);
+    localStorage.setItem('stan_lang', newLang);
   };
+
+  const handleLikeComment = async (commentId: string) => {
+    if (!user) {
+      setToast({ isVisible: true, message: 'AUTHENTICATION_REQUIRED', subMessage: 'LOGIN TO LIKE TRANSMISSIONS' });
+      setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
+      return;
+    }
+
+    // Optimistic UI
+    setComments(prev => prev.map(c => {
+      if (c.id === commentId) {
+        const is_liked = !c.is_liked;
+        return { ...c, is_liked, likes_count: c.likes_count + (is_liked ? 1 : -1) };
+      }
+      return c;
+    }));
+
+    const result = await toggleLikeComment(commentId);
+    if (!result.success) {
+      // Revert if failed
+      setComments(prev => prev.map(c => {
+        if (c.id === commentId) {
+          const is_liked = !c.is_liked;
+          return { ...c, is_liked, likes_count: c.likes_count + (is_liked ? 1 : -1) };
+        }
+        return c;
+      }));
+    }
+  };
+
+  const sortedComments = useMemo(() => {
+    if (comments.length === 0) return [];
+    
+    // 1. Find the top liked comment (min 1 like)
+    let topComment: Comment | null = null;
+    let maxLikes = 0;
+    
+    for (const c of comments) {
+      if (c.likes_count > maxLikes) {
+        maxLikes = c.likes_count;
+        topComment = c;
+      }
+    }
+    
+    if (!topComment) return comments;
+    
+    // 2. Put top comment first, then others by date
+    const others = comments.filter(c => c.id !== topComment!.id);
+    return [topComment, ...others];
+  }, [comments]);
 
   if (loading) {
     return (
@@ -266,42 +353,41 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const maxBarCount = countryStats[0]?.count || 1;
 
   return (
-    <main className="min-h-screen bg-[#020202] text-white selection:bg-[#37C561]/30 overflow-x-hidden relative">
-      {/* Background Ambience */}
+    <main className="flex-1 bg-[#020202] text-white selection:bg-[#37C561]/30 overflow-x-hidden relative flex flex-col">
       <div className="fixed inset-0 -z-10">
         <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-neon-cyan/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 right-1/4 w-1/2 h-1/2 bg-neon-magenta/5 blur-[120px] rounded-full" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50" />
       </div>
 
-      {/* Glass Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4 backdrop-blur-md border-b border-white/5 bg-black/20">
-        <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
-          <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-neon-cyan/50 transition-all">
-              <ArrowLeft size={16} className="group-hover:text-neon-cyan" />
+      <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4 backdrop-blur-md border-b border-zinc-500/10 bg-black/40">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <button
+            onClick={() => router.push('/')}
+            className="group flex items-center gap-2 text-zinc-400 hover:text-neon-cyan transition-all"
+          >
+            <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center group-hover:border-neon-cyan/50 group-hover:bg-neon-cyan/5">
+              <ArrowLeft size={16} />
             </div>
-            <span className="font-black text-[10px] tracking-widest uppercase text-zinc-500 group-hover:text-zinc-200 transition-colors hidden sm:block">
-              {lang === 'KO' ? '순위로 돌아가기' : 'Return to Rankings'}
-            </span>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            {/* ✅ onToggle을 handleToggleLang으로 교체 */}
-            <LanguageSwitcher lang={lang} onToggle={handleToggleLang} />
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 bg-neon-lime rounded-full shadow-[0_0_8px_#bcfe00] flex-shrink-0" />
-              <span className="font-black text-[10px] tracking-tighter uppercase text-neon-lime whitespace-nowrap">System Online</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">{t('returnToRankings')}</span>
+          </button>
+
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full border border-white/5 bg-white/5">
+              <div className="w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse" />
+              <span className="text-[10px] font-black tracking-widest uppercase text-neon-cyan">{t('systemOnline')}</span>
             </div>
+            <LanguageSwitcher lang={lang} onSelect={handleSelectLang} />
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <div className="relative pt-24 pb-12 px-4 sm:px-6">
+      <div className="relative pt-32 pb-12 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Info & Audio */}
-            <div className="space-y-8">
+          <div className="grid lg:grid-cols-12 gap-6 md:gap-12 items-center">
+            {/* Left: Info & Audio (lg:col-span-8) */}
+            <div className="lg:col-span-8 space-y-8">
               <div>
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
@@ -313,111 +399,111 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                 <motion.h1
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="text-5xl sm:text-6xl md:text-8xl font-black italic tracking-tighter leading-none mb-6"
+                  className="text-5xl md:text-8xl font-black tracking-tighter leading-none mb-8"
                 >
                   {artist.name}
                 </motion.h1>
 
-                {/* ✅ 스탯 패널 — whitespace-nowrap, flex-wrap, min-w-0 적용 */}
-                <div className="flex gap-2 flex-wrap">
-                  <div className="glass-panel px-4 py-3 flex flex-col gap-1 min-w-0">
-                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">{t('globalPower')}</span>
-                    <span className="text-3xl font-black italic text-neon-lime">{(artist.total_votes || 0).toLocaleString()}</span>
+                <div className="flex flex-row items-center justify-between sm:justify-start gap-4 sm:gap-10 py-8 border-y border-white/5 w-full">
+                  <div className="flex flex-col min-w-0 flex-1 sm:flex-none">
+                    <span className="text-[9px] sm:text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 truncate">{t('globalPower')}</span>
+                    <span className="text-3xl sm:text-4xl font-black text-neon-cyan drop-shadow-[0_0_15px_rgba(55,197,97,0.3)]">
+                      {(artist.total_votes || 0).toLocaleString()}
+                    </span>
                   </div>
-                  <div className="glass-panel px-4 py-3 flex flex-col gap-1 min-w-0">
-                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">{t('coverage')}</span>
-                    <span className="text-3xl font-black italic text-neon-cyan whitespace-nowrap">
-                      {countryStats.length}<span className="text-sm not-italic opacity-50 ml-1">{t('regions')}</span>
+                  <div className="flex flex-col min-w-0 flex-1 sm:flex-none">
+                    <span className="text-[9px] sm:text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 truncate">{t('coverage')}</span>
+                    <span className="text-3xl sm:text-4xl font-black text-white flex items-baseline gap-1">
+                      {countryStats.length}<span className="text-xs sm:text-sm not-italic opacity-50 font-bold uppercase tracking-tighter">{t('regions')}</span>
                     </span>
                   </div>
                   <button
                     onClick={handleShare}
-                    className="glass-panel px-4 py-3 flex flex-col items-center justify-center gap-1 group/share hover:border-neon-cyan/50 transition-all border-white/10 min-w-0"
+                    className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-neon-cyan/50 hover:bg-neon-cyan/5 transition-all group/share flex-shrink-0"
                   >
-                    <Share2 size={16} className="text-neon-cyan group-hover/share:scale-110 transition-transform" />
-                    <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">{t('shareSync')}</span>
+                    <Share2 size={18} className="text-neon-cyan group-hover/share:scale-110 transition-transform" />
+                    <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest mt-1 hidden sm:block">{t('shareSync')}</span>
                   </button>
                 </div>
               </div>
 
-              {/* Audio Preview Card */}
+              {/* Audio Preview Card (Restore) */}
               {topTrack ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="glass-panel p-6 border-l-4 border-l-neon-magenta group"
+                  className="glass-panel p-6 border-l-4 border-l-white/10 group overflow-hidden"
                 >
                   <div className="scanner-line opacity-10 group-hover:opacity-20 transition-opacity" />
-                  <div className="flex items-center gap-4 sm:gap-6 relative z-10">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-white/10 shadow-lg relative flex-shrink-0">
+                  <div className="flex items-center gap-6 relative z-10">
+                    <div className="w-20 h-20 rounded-xl overflow-hidden border border-white/10 shadow-2xl relative flex-shrink-0 group-hover:border-neon-magenta/50 transition-colors">
                       <img src={topTrack.albumCover} alt="Album Cover" className="w-full h-full object-cover" />
                       <button
                         onClick={togglePlayback}
-                        className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/20 transition-all"
+                        className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/20 transition-all backdrop-blur-[2px]"
                       >
                         {isPlaying ? <Pause fill="white" size={28} /> : <Play fill="white" size={28} className="translate-x-0.5" />}
                       </button>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[10px] font-black text-neon-magenta tracking-widest uppercase mb-1 flex items-center gap-2">
-                        <Music size={10} /> {t('nowScanning')}
+                        <Music size={10} className="animate-pulse" /> {t('nowScanning')}
                       </p>
-                      <h3 className="text-base sm:text-lg font-black truncate mb-1">{topTrack.title}</h3>
-                      <p className="text-xs text-zinc-500 font-bold whitespace-nowrap">{lang === 'KO' ? '대표곡 미리듣기' : 'Representative Track Preview'}</p>
-                    </div>
-                    <div className={`w-10 flex flex-col gap-1 pr-2 flex-shrink-0 ${isPlaying ? 'opacity-100' : 'opacity-20'}`}>
-                      {[1, 2, 3, 4].map(i => (
-                        <div key={i} className={`h-1 bg-neon-magenta rounded-full ${isPlaying ? 'animate-pulse' : ''}`} style={{ width: `${Math.random() * 100}%`, animationDelay: `${i * 0.1}s` }} />
-                      ))}
+                      <h3 className="text-xl font-black truncate mb-1 italic tracking-tight">{topTrack.title}</h3>
+                      <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest opacity-60">Representative Track Preview</p>
                     </div>
                   </div>
                   <audio ref={audioRef} src={topTrack.preview} onEnded={() => setIsPlaying(false)} className="hidden" />
                 </motion.div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="glass-panel p-5 border-l-4 border-l-zinc-700 flex items-center gap-4"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center flex-shrink-0">
-                    <Music size={20} className="text-zinc-600" />
+                <div className="glass-panel p-6 border-l-4 border-l-zinc-800 flex items-center gap-6 opacity-60">
+                  <div className="w-16 h-16 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center flex-shrink-0">
+                    <Music size={24} className="text-zinc-700" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-black text-zinc-500 tracking-widest uppercase mb-1 whitespace-nowrap">{t('audioUnavailable')}</p>
-                    <p className="text-sm font-bold text-zinc-400">{lang === 'KO' ? '미리듣기를 제공하지 않는 곡입니다' : 'No licensed preview on Deezer'}</p>
+                    <p className="text-[10px] font-black text-zinc-600 tracking-widest uppercase mb-1">{t('audioUnavailable')}</p>
+                    <p className="text-sm font-bold text-zinc-500 uppercase tracking-tighter">Licensed preview not available for this node</p>
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
 
-            {/* Right: Artist Image Visual */}
-            <div className="relative max-w-md mx-auto lg:mx-0 lg:ml-auto">
-              <div className="absolute -inset-10 bg-neon-cyan/20 blur-[100px] rounded-full animate-pulse pointer-events-none" />
+            {/* Right: Artist Image Visual (lg:col-span-4 - Restore) */}
+            <div className="lg:col-span-4 relative">
+              <div className="absolute -inset-10 bg-neon-cyan/10 blur-[100px] rounded-full animate-pulse-slow pointer-events-none" />
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="relative aspect-square w-full rounded-[3rem] overflow-hidden border-2 border-white/10 shadow-[0_0_50px_rgba(55,197,97,0.2)]"
+                whileHover={{ scale: 1.02 }}
+                className="relative aspect-[4/5] w-full max-w-[340px] mx-auto rounded-[2rem] overflow-hidden border-2 border-white/10 shadow-[0_0_60px_rgba(0,243,255,0.15)] group/card"
               >
-                <div className="scanner-line" />
-                {artist.image_url
-                  ? <img src={artist.image_url} alt={artist.name} className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700 hover:scale-105" />
-                  : <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-8xl font-black text-zinc-800 uppercase">{artist.name[0]}</div>
-                }
+                <div className="scanner-line group-hover/card:bg-neon-lime transition-colors" />
+                {artist.image_url ? (
+                  <img 
+                    src={artist.image_url} 
+                    alt={artist.name} 
+                    className="w-full h-full object-cover grayscale-[30%] group-hover/card:grayscale-0 transition-all duration-1000 group-hover/card:scale-110" 
+                  />
+                ) : (
+                  <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-9xl font-black text-zinc-800 uppercase leading-none">
+                    {artist.name[0]}
+                  </div>
+                )}
               </motion.div>
 
-              <div className="mt-6 flex justify-center gap-3 px-2 relative z-10 flex-wrap">
+              <div className="mt-8 flex justify-center gap-4 relative z-10">
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 hover:border-[#37C561]/50 hover:bg-[#37C561]/5 transition-all group/edit"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:border-neon-lime/50 hover:bg-neon-lime/5 transition-all group/edit"
                 >
-                  <Edit2 size={12} className="text-zinc-500 group-hover/edit:text-[#37C561] transition-colors flex-shrink-0" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover/edit:text-[#37C561] transition-colors whitespace-nowrap">{t('curatePhoto')}</span>
+                  <Edit2 size={12} className="text-zinc-500 group-hover/edit:text-neon-lime transition-colors" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover/edit:text-neon-lime transition-colors whitespace-nowrap">{t('curatePhoto')}</span>
                 </button>
                 <button
                   onClick={() => setIsReportModalOpen(true)}
-                  className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 hover:border-red-500/50 hover:bg-red-500/5 transition-all group/flag"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:border-red-500/50 hover:bg-red-500/5 transition-all group/flag"
                 >
-                  <Flag size={12} className="text-zinc-500 group-hover/flag:text-red-500 transition-colors flex-shrink-0" />
+                  <Flag size={12} className="text-zinc-500 group-hover/flag:text-red-500 transition-colors" />
                   <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover/flag:text-red-500 transition-colors whitespace-nowrap">{t('reportNode')}</span>
                 </button>
               </div>
@@ -458,236 +544,238 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         lang={lang}
       />
 
-      {/* Dashboard Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-8 pb-24">
-
-        {/* Analytics Scanner (Left 7) */}
-        <section className="lg:col-span-7 space-y-6">
-          <div className="flex items-center justify-between mb-4 gap-2">
-            <h2 className="text-xl font-black italic flex items-center gap-3 whitespace-nowrap">
-              <Globe2 className="text-neon-cyan flex-shrink-0" size={24} />
-              {t('fandomDensity')}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-6 md:gap-12 pb-20">
+        {/* Analytics (Left 5) */}
+        <section className="lg:col-span-5 space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 className="text-xl font-black italic flex items-center gap-3 min-w-0">
+              <Globe className="text-neon-cyan flex-shrink-0" size={24} />
+              <span className="truncate uppercase tracking-tighter">{t('fandomDensity')}</span>
             </h2>
-            <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[8px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">
-              {lang === 'KO' ? '실시간' : 'Real-time'}
+            <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 self-start sm:self-auto">
+              <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{t('realTimeTrends')}</span>
             </div>
           </div>
 
-          <div className="glass-panel p-6 sm:p-8 min-h-[500px] relative overflow-hidden">
+          <div className="glass-panel p-6 sm:p-8 min-h-[500px] relative overflow-hidden border border-white/5">
             <div className="scanner-line opacity-5" />
-
             {countryStats.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-zinc-600 gap-4">
-                <ShieldAlert size={48} className="opacity-20 text-neon-cyan" />
-                <p className="font-black text-sm uppercase tracking-widest text-center">{lang === 'KO' ? '해당 지역의 데이터가 아직 없습니다' : 'No Fandom Patterns Detected'}</p>
-                <Link href="/" className="text-neon-cyan text-[10px] font-black hover:underline">{lang === 'KO' ? '지금 투표하여 지도에 표시하세요' : 'VOTE NOW TO MAP THIS SYNC'}</Link>
+              <div className="h-full flex flex-col items-center justify-center text-zinc-700 gap-4 py-20 translate-y-20">
+                <Database size={48} className="opacity-20" />
+                <p className="font-black text-sm uppercase tracking-widest text-center">{t('noFandomPatterns')}</p>
+                <Link href="/" className="text-neon-cyan text-[10px] font-black hover:underline uppercase tracking-tighter">{t('voteNowToMap')}</Link>
               </div>
             ) : (
-              <div className="space-y-6">
-                {countryStats.slice(0, 8).map((s, i) => (
+              <div className="space-y-8 relative z-10">
+                {countryStats.slice(0, 10).map((s, i) => (
                   <motion.div
                     key={s.code}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="group"
+                    className="space-y-3"
                   >
-                    <div className="flex justify-between items-end mb-2 gap-2">
-                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <span className="font-mono text-[10px] text-zinc-600 w-4 font-black flex-shrink-0">0{i + 1}</span>
-                        <span className="text-2xl flex-shrink-0">{s.flag}</span>
-                        <span className="font-black text-sm tracking-tight group-hover:text-neon-cyan transition-colors uppercase truncate">{s.name}</span>
+                    <div className="flex justify-between items-end mb-1 gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-zinc-600 font-black italic text-sm flex-shrink-0">{(i + 1).toString().padStart(2, '0')}</span>
+                        <span className="text-xs w-6 h-6 flex items-center justify-center bg-zinc-900 rounded border border-white/5 flex-shrink-0">
+                          {COUNTRY_FLAGS[s.code] ?? '🌐'}
+                        </span>
+                        <span className="text-sm font-black uppercase text-zinc-300 tracking-tight truncate">{COUNTRY_NAMES[s.code] ?? s.code}</span>
                       </div>
-                      <div className="flex items-baseline gap-1 flex-shrink-0">
-                        <span className="font-mono font-black text-neon-lime text-lg">{s.count.toLocaleString()}</span>
-                        <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-tighter">{lang === 'KO' ? '표' : 'Hits'}</span>
-                      </div>
+                      <span className="text-sm font-black italic text-neon-cyan flex-shrink-0">
+                        {s.count.toLocaleString()} <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-tighter ml-1">{t('hits')}</span>
+                      </span>
                     </div>
-                    <div className="h-4 bg-zinc-900 shadow-inner rounded-md overflow-hidden p-[2px] border border-white/5">
+                    <div className="h-2 bg-zinc-950 rounded-full overflow-hidden p-[1px] border border-white/5">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${(s.count / maxBarCount) * 100}%` }}
-                        transition={{ duration: 1, ease: 'easeOut', delay: i * 0.1 }}
-                        className="h-full rounded-sm relative"
-                        style={{ background: 'linear-gradient(to right, #00f3ff, #bcfe00)' }}
+                        transition={{ duration: 1.5, ease: 'circOut', delay: i * 0.1 }}
+                        className="h-full rounded-full bg-gradient-to-r from-neon-cyan/40 to-neon-cyan relative"
                       >
-                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
-                        <div className="absolute inset-0 overflow-hidden">
-                          <div className="w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] w-[30%] animate-[scan-horizontal_2s_infinite]" />
-                        </div>
+                        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] w-1/3 animate-[scan-horizontal_3s_infinite]" />
                       </motion.div>
                     </div>
                   </motion.div>
                 ))}
-
-                <div className="pt-8 grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-white/5 rounded-xl border border-white/5 font-mono text-[9px] text-zinc-600">
-                    [SIGNAL FREQUENCY: ACTIVE]<br />
-                    [LATENCY: 14ms]<br />
-                    [NODE: {artistId.slice(0, 8)}]
-                  </div>
-                  <div className="p-4 bg-white/5 rounded-xl border border-white/5 font-mono text-[9px] text-zinc-600">
-                    [VOTES_SYNC: OK]<br />
-                    [SYSTEM_POWER: 100.0%]<br />
-                    [VERIFIED_DATA]
-                  </div>
-                </div>
               </div>
             )}
           </div>
         </section>
 
-        {/* Cheering Board (Right 5) */}
-        <section className="lg:col-span-5 space-y-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-black italic flex items-center gap-3">
+        {/* Cheering Board (Right 7) */}
+        <section className="lg:col-span-7 space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 className="text-xl font-black italic flex items-center gap-3 min-w-0">
               <MessageCircle className="text-neon-magenta flex-shrink-0" size={24} />
-              <span className="whitespace-nowrap">{t('liveHub')}</span>
+              <span className="truncate uppercase tracking-tighter">{t('liveHub')}</span>
             </h2>
+            <div className="flex items-center gap-3 self-start sm:self-auto">
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="w-6 h-6 rounded-full border border-black bg-zinc-800 flex items-center justify-center text-[8px] font-black">U</div>
+                ))}
+              </div>
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">{comments.length} SYNCED</span>
+            </div>
           </div>
 
-          <div className="glass-panel p-6 flex flex-col h-[650px] border-neon-magenta/20">
+          <div className="glass-panel p-0 flex flex-col h-[700px] border-neon-magenta/10 overflow-hidden relative">
             <div className="scanner-line opacity-5 bg-neon-magenta" />
+            
+            {/* Comment Input (Top Fixed) */}
+            <div className="p-6 bg-black/40 border-b border-white/5 relative z-20">
+              <div className="space-y-4">
+                {user ? (
+                  <div className="flex items-center gap-4 border-b border-white/5 pb-4 min-w-0">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 bg-zinc-900 flex-shrink-0">
+                      {user.user_metadata?.avatar_url
+                        ? <img src={user.user_metadata.avatar_url} alt="User Avatar" className="w-full h-full object-cover" />
+                        : <div className="w-full h-full flex items-center justify-center text-xs font-black">{user.user_metadata?.full_name?.[0] || 'U'}</div>
+                      }
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-black text-white uppercase tracking-widest truncate">
+                          {user.user_metadata?.full_name || user.user_metadata?.custom_id || 'Global Fan'}
+                        </p>
+                        <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-neon-cyan/10 border border-neon-cyan/20 flex-shrink-0">
+                          <Check size={8} className="text-neon-cyan" />
+                          <span className="text-[8px] font-black text-neon-cyan uppercase tracking-tighter">{t('verifiedSync')}</span>
+                        </div>
+                      </div>
+                      <p className="text-[10px] font-black text-zinc-500 uppercase flex items-center gap-1.5 mt-0.5 truncate">
+                        {user.user_metadata?.country_code ? (
+                          <>
+                            <span className="w-4 h-3 flex items-center justify-center bg-zinc-900 rounded-sm overflow-hidden text-[10px] flex-shrink-0">
+                              {COUNTRY_FLAGS[user.user_metadata.country_code] ?? '🌐'}
+                            </span> 
+                            <span className="truncate">{COUNTRY_NAMES[user.user_metadata.country_code] ?? user.user_metadata.country_code}</span>
+                          </>
+                        ) : (
+                          <span className="opacity-50 italic">NODE_UNSYNC</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-4 gap-3 bg-neon-magenta/5 border border-neon-magenta/20 rounded-2xl mb-2">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-neon-magenta uppercase tracking-widest">
+                      <ShieldAlert size={14} className="animate-pulse" />
+                      Unauthorized Access
+                    </div>
+                    <Link
+                      href="/login"
+                      className="px-8 py-2.5 bg-neon-magenta text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-neon-magenta/20"
+                    >
+                      Login to participation Hub
+                    </Link>
+                  </div>
+                )}
 
-            {/* Comment Input */}
-            <div className="relative z-20 space-y-4 mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
-              {user ? (
-                <div className="flex items-center gap-3 border-b border-white/10 pb-3">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 bg-zinc-900 flex-shrink-0">
-                    {user.user_metadata?.avatar_url
-                      ? <img src={user.user_metadata.avatar_url} alt="User Avatar" className="w-full h-full object-cover" />
-                      : <div className="w-full h-full flex items-center justify-center text-[10px] font-black">{user.user_metadata?.full_name?.[0] || 'U'}</div>
-                    }
+                <div className="relative group">
+                  <textarea
+                    placeholder={user ? t('commentPlaceholder') : t('loginRequiredPlaceholder')}
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value.slice(0, 140))}
+                    maxLength={140}
+                    rows={2}
+                    disabled={!user}
+                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && user) { e.preventDefault(); handleSendComment(); } }}
+                    className="w-full bg-zinc-900/50 rounded-xl p-4 text-sm font-bold border border-white/5 outline-none focus:border-neon-magenta/50 focus:bg-zinc-900/80 transition-all placeholder:text-zinc-700 resize-none font-chakra"
+                  />
+                  <div className="absolute bottom-3 right-3 flex items-center gap-4">
+                    <span className="text-[10px] font-bold text-zinc-700">{commentText.length}/140</span>
+                    <button
+                      onClick={handleSendComment}
+                      disabled={!commentText.trim() || sending || !user}
+                      className="w-10 h-10 rounded-xl bg-neon-magenta text-white flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale transition-all shadow-lg shadow-neon-magenta/20"
+                    >
+                      <Send size={18} className={sending ? 'animate-pulse' : ''} />
+                    </button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-black text-neon-cyan uppercase tracking-widest truncate">
-                      {user.user_metadata?.full_name || user.user_metadata?.custom_id || 'Global Fan'}
-                      <span className="text-zinc-600 ml-2">Verified Sync</span>
-                    </p>
-                    <p className="text-[8px] font-black text-zinc-500 uppercase flex items-center gap-1">
-                      {user.user_metadata?.country_code ? (
-                        <><span>{COUNTRY_FLAGS[user.user_metadata.country_code] ?? '🌐'}</span> {COUNTRY_NAMES[user.user_metadata.country_code] ?? user.user_metadata.country_code}</>
-                      ) : (lang === 'KO' ? '팬 노드 미연결' : 'GUEST_NODE_UNSYNC')}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-2 gap-3 border-b border-white/10 pb-4">
-                  <div className="flex items-center gap-2 text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                    <ShieldAlert size={14} className="text-neon-magenta/50 flex-shrink-0" />
-                    Unauthorized Access Detected
-                  </div>
-                  <Link
-                    href="/login"
-                    className="px-6 py-2 bg-neon-magenta/20 border border-neon-magenta/50 text-neon-magenta rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-neon-magenta hover:text-white transition-all shadow-[0_0_15px_rgba(255,0,255,0.1)] whitespace-nowrap"
-                  >
-                    Login to participation Hub
-                  </Link>
-                </div>
-              )}
-
-              <div className="space-y-3">
-                <textarea
-                  placeholder={user ? (lang === 'KO' ? `${artist.name} 팬들에게 메시지를 남기세요...` : `Transmit message to ${artist.name} fans...`) : (lang === 'KO' ? "로그인하고 글로벌 팬 허브에 참여하세요..." : "Login to join the global fan synchronization...")}
-                  value={commentText}
-                  onChange={e => setCommentText(e.target.value.slice(0, 140))}
-                  maxLength={140}
-                  rows={2}
-                  disabled={!user}
-                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && user) { e.preventDefault(); handleSendComment(); } }}
-                  className="w-full bg-transparent text-sm font-bold outline-none placeholder:text-zinc-800 resize-none leading-relaxed disabled:opacity-20 transition-all font-chakra shadow-sm"
-                />
-                <div className="flex items-center justify-between">
-                  <span className="text-[8px] font-black text-zinc-700 tracking-widest">{commentText.length}/140</span>
-                  <button
-                    onClick={handleSendComment}
-                    disabled={!commentText.trim() || sending || !user}
-                    className="px-6 py-2 rounded-lg bg-neon-magenta text-white font-black text-[10px] uppercase tracking-[0.2em] hover:bg-magenta-600 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_10px_rgba(255,0,255,0.3)] whitespace-nowrap"
-                  >
-                    {t('transmit')}
-                  </button>
                 </div>
               </div>
             </div>
 
             {/* Feed Scroll */}
-            <div className="flex-1 overflow-y-auto space-y-4 relative z-10 custom-scrollbar pr-2 mb-4">
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6 custom-scrollbar relative">
               <AnimatePresence initial={false} mode="popLayout">
                 {comments.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-zinc-700 gap-3 grayscale opacity-30">
-                    <Send size={32} />
-                    <p className="font-black text-[10px] uppercase tracking-widest text-center">{lang === 'KO' ? '첫 번째 메시지를 기다리고 있습니다...' : 'Awaiting First Transmission...'}</p>
+                  <div className="h-full flex flex-col items-center justify-center text-zinc-800 gap-4 py-20 grayscale opacity-40">
+                    <div className="w-16 h-16 rounded-full border-4 border-dashed border-zinc-900 flex items-center justify-center">
+                      <Terminal size={32} />
+                    </div>
+                    <p className="font-black text-xs uppercase tracking-[0.2em] italic">{t('awaitingFirstTransmission')}</p>
                   </div>
                 ) : (
-                  comments
-                    .slice((currentPage - 1) * COMMENTS_PER_PAGE, currentPage * COMMENTS_PER_PAGE)
-                    .map(c => (
-                      <motion.div
-                        layout
-                        key={c.id}
-                        initial={{ opacity: 0, scale: 0.9, x: 10 }}
-                        animate={{ opacity: 1, scale: 1, x: 0 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="p-4 bg-white/3 rounded-xl border border-white/5 hover:border-neon-magenta/30 transition-all group"
-                      >
-                        <div className="flex justify-between items-start mb-2 gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="w-6 h-6 rounded-md bg-zinc-800 flex items-center justify-center text-xs border border-white/10 group-hover:border-neon-magenta/50 transition-colors flex-shrink-0">
-                              {c.country_code ? (COUNTRY_FLAGS[c.country_code] ?? '🌐') : '💜'}
-                            </span>
-                            <span className="text-[10px] font-black uppercase text-zinc-400 group-hover:text-neon-magenta transition-colors truncate">{c.display_name || 'Anonymous Fan'}</span>
-                          </div>
-                          <span className="text-[8px] font-bold text-zinc-700 flex-shrink-0">
-                            {new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-                        <p className="text-sm text-zinc-300 font-medium leading-relaxed break-words">{c.content}</p>
-                      </motion.div>
-                    ))
+                  <>
+                    {sortedComments
+                      .slice((currentPage - 1) * COMMENTS_PER_PAGE, currentPage * COMMENTS_PER_PAGE)
+                      .map((c, idx) => {
+                        const isPinned = currentPage === 1 && idx === 0 && c.likes_count > 0;
+                        return (
+                          <motion.div
+                            layout
+                            key={c.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative group"
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center text-lg flex-shrink-0 group-hover:border-neon-magenta/50 transition-colors shadow-lg">
+                                {c.country_code ? (COUNTRY_FLAGS[c.country_code] ?? '🌐') : '💜'}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-3 mb-1.5">
+                                  <span className="text-xs font-black uppercase text-zinc-300 group-hover:text-neon-magenta transition-colors">
+                                    {c.display_name || 'Anonymous Fan'}
+                                  </span>
+                                  <span className="text-[10px] font-bold text-zinc-700 italic">
+                                    {new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                  {isPinned && (
+                                    <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-neon-cyan/10 border border-neon-cyan/20 text-[8px] font-black text-neon-cyan uppercase">
+                                      <Crown size={8} /> TOP SYNC
+                                    </span>
+                                  )}
+                                </div>
+                                <div className={`relative p-4 rounded-2xl rounded-tl-none border ${
+                                  isPinned ? 'bg-neon-cyan/5 border-neon-cyan/30' : 'bg-white/5 border-white/10 hover:border-white/20'
+                                } transition-all`}>
+                                  <p className="text-sm text-zinc-200 font-medium leading-relaxed font-chakra">{c.content}</p>
+                                  
+                                  {/* Like Area */}
+                                  <button
+                                    onClick={() => handleLikeComment(c.id)}
+                                    className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full border bg-zinc-950 flex items-center justify-center transition-all ${
+                                      c.is_liked ? 'border-neon-magenta text-neon-magenta' : 'border-white/10 text-zinc-600 hover:text-white'
+                                    }`}
+                                  >
+                                    <Heart size={14} fill={c.is_liked ? 'currentColor' : 'none'} className={c.is_liked ? 'vibrant-glow' : ''} />
+                                  </button>
+                                  {c.likes_count > 0 && (
+                                    <span className="absolute -bottom-2 right-8 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/5 text-[10px] font-black tabular-nums text-zinc-400">
+                                      {c.likes_count}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                  </>
                 )}
               </AnimatePresence>
             </div>
-
-            {/* Pagination */}
-            {comments.length > COMMENTS_PER_PAGE && (
-              <div className="relative z-10 flex items-center justify-center gap-2 py-2 border-t border-white/5 bg-black/20">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-zinc-500 disabled:opacity-20 hover:text-white transition-all"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.ceil(comments.length / COMMENTS_PER_PAGE) }).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrentPage(i + 1)}
-                      className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all ${currentPage === i + 1
-                          ? 'bg-neon-magenta text-white border border-neon-magenta shadow-[0_0_10px_rgba(255,0,255,0.3)]'
-                          : 'bg-white/5 border border-white/10 text-zinc-500 hover:text-zinc-300'
-                        }`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  disabled={currentPage === Math.ceil(comments.length / COMMENTS_PER_PAGE)}
-                  onClick={() => setCurrentPage(p => p + 1)}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-zinc-500 disabled:opacity-20 hover:text-white transition-all"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            )}
           </div>
         </section>
       </div>
 
-      <footer className="mt-16 border-t border-white/5 bg-black/20 backdrop-blur-md pt-16 pb-12 flex flex-col items-center gap-8">
+      <footer className="mt-auto border-t border-white/5 bg-black/20 backdrop-blur-md pt-6 pb-2 flex flex-col items-center gap-6">
         <button
           onClick={() => setIsInquiryModalOpen(true)}
           className="group flex flex-col items-center gap-3 transition-all hover:scale-105"

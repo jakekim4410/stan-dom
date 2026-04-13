@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import SkeletonLoader from './SkeletonLoader';
 
+import { Language, getT } from '@/constants/i18n';
+
 interface Artist {
   id: string;
   name: string;
@@ -16,12 +18,13 @@ interface RankingBoardProps {
   totalVotes: number;
   votedArtistIds: string[];
   onVote: (artistId: string, currentVotes: number) => void;
-  lang: string;
+  lang: Language;
   disabled: boolean;
   voting?: boolean;
   isMobile?: boolean;
   isLoading?: boolean;
 }
+
 
 // ── Percentage Count-Up Component ──
 function AnimatedNumber({ value }: { value: number }) {
@@ -57,6 +60,7 @@ export default function RankingBoard({
   isMobile = false,
   isLoading = false
 }: RankingBoardProps) {
+  const t = getT(lang);
   const sortedArtists = [...artists].sort((a, b) => (b.total_votes || 0) - (a.total_votes || 0));
 
   if (isLoading) {
@@ -71,7 +75,7 @@ export default function RankingBoard({
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-2xl font-black italic tracking-tighter flex items-center gap-3">
               <Trophy className="text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]" size={24} />
-              <span className="neon-text-lime">{lang === 'KO' ? '글로벌 랭킹' : 'GLOBAL RANKING'}</span>
+              <span className="neon-text-lime">{t('globalRanking')}</span>
             </h2>
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_red]" />
@@ -222,7 +226,7 @@ export default function RankingBoard({
                         if (!isOnCooldown && !isDisabled) onVote(artist.id, artist.total_votes);
                       }}
                       disabled={isDisabled || isOnCooldown}
-                      title={isOnCooldown ? (lang === 'KO' ? '이미 투표함' : 'Already voted') : isDisabled && !userCountryMissing ? '' : (lang === 'KO' ? '국가를 먼저 선택하세요' : 'Select your country first')}
+                      title={isOnCooldown ? t('alreadyVoted') : isDisabled && !userCountryMissing ? '' : t('selectCountryFirst')}
                       className={`relative overflow-hidden px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all flex-shrink-0 ${
                         isOnCooldown
                           ? 'bg-zinc-900 text-zinc-600 border border-white/5 cursor-not-allowed' 
@@ -233,7 +237,7 @@ export default function RankingBoard({
                               : 'bg-white/5 text-white border border-white/10 hover:bg-neon-lime hover:text-black hover:border-transparent active:scale-90')
                       }`}
                     >
-                      {isOnCooldown ? '✓ Voted' : (lang === 'KO' ? '전송' : 'Transmit')}
+                      {isOnCooldown ? `✓ ${t('voted')}` : t('transmit')}
                     </button>
                   </div>
 

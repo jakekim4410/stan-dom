@@ -4,12 +4,14 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, Globe, Navigation } from 'lucide-react';
 import { COUNTRY_DATA, Country } from '@/constants/countryData';
+import { Language, getT } from '@/constants/i18n';
 
 interface CountrySelectorProps {
   selected: Country | null;
   onSelect: (country: Country) => void;
-  lang?: 'EN' | 'KO';
+  lang?: Language;
 }
+
 
 const POPULAR_CODES = ['KR', 'US', 'JP', 'CN', 'GB', 'BR', 'ID', 'TH', 'PH', 'VN', 'MY', 'IN', 'AU', 'CA', 'MX'];
 
@@ -31,6 +33,8 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
     })
     : COUNTRY_DATA;
 
+  const t = getT(lang);
+
   const handleAutoDetect = () => {
     try {
       const locale = navigator.language || navigator.languages?.[0];
@@ -40,7 +44,12 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
         if (found) { onSelect(found); setOpen(false); return; }
       }
     } catch (e) { }
-    alert(lang === 'KO' ? '국가 자동 감지에 실패했습니다.' : 'Could not auto-detect region.');
+    const failMsgs = {
+      KO: '국가 자동 감지에 실패했습니다.',
+      EN: 'Could not auto-detect region.',
+      ES: 'No se pudo detectar la región automáticamente.'
+    };
+    alert(failMsgs[lang] || failMsgs.EN);
   };
 
   // ✅ 수정: touchstart 제거, pointerdown으로 통합
@@ -122,13 +131,13 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
           <>
             <span className="text-lg flex-shrink-0">{selected.flag}</span>
             <span className="font-bold text-sm flex-1 text-left text-white truncate">
-              {lang === 'KO' ? selected.nameKo : selected.name}
+              {lang === 'KO' ? selected.nameKo : (lang === 'ES' ? (selected as any).nameEs || selected.name : selected.name)}
             </span>
             <span className="text-[10px] text-zinc-500 font-black flex-shrink-0">{selected.code}</span>
           </>
         ) : (
           <span className="text-zinc-500 text-sm flex-1 text-left">
-            {lang === 'KO' ? '내 국가 선택...' : 'Select country...'}
+            {lang === 'KO' ? '내 국가 선택...' : (lang === 'ES' ? 'Seleccionar país...' : 'Select country...')}
           </span>
         )}
       </button>
@@ -146,7 +155,7 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
             <input
               ref={inputRef}
               type="text"
-              placeholder={lang === 'KO' ? '국가 검색...' : 'Search...'}
+              placeholder={lang === 'KO' ? '국가 검색...' : (lang === 'ES' ? 'Buscar país...' : 'Search...')}
               value={query}
               onChange={e => setQuery(e.target.value)}
               className="bg-transparent outline-none text-xs flex-1 text-white placeholder:text-zinc-600 font-medium"
@@ -154,11 +163,11 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
             <button
               onPointerDown={(e) => e.stopPropagation()}
               onClick={handleAutoDetect}
-              title={lang === 'KO' ? '현재 위치 자동 감지' : 'Auto-detect my location'}
+              title={t('autoDetectTitle')}
               className="flex items-center gap-1 px-2 py-1 rounded-md bg-neon-lime/10 border border-neon-lime/30 text-neon-lime hover:bg-neon-lime/20 transition-all text-[9px] font-black uppercase tracking-wider flex-shrink-0"
             >
               <Navigation size={10} />
-              {lang === 'KO' ? '자동' : 'Auto'}
+              {t('autoDetectBtn')}
             </button>
           </div>
 
@@ -166,7 +175,7 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
           {!query.trim() && (
             <div className="px-3 py-2 border-b border-white/5">
               <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-2">
-                {lang === 'KO' ? '빠른 선택' : 'Quick Pick'}
+                {lang === 'KO' ? '빠른 선택' : (lang === 'ES' ? 'SELECCIÓN RÁPIDA' : 'Quick Pick')}
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {popularCountries.map(c => (
@@ -198,7 +207,9 @@ export default function CountrySelector({ selected, onSelect, lang = 'EN' }: Cou
                   }`}
               >
                 <span className="text-base flex-shrink-0">{c.flag}</span>
-                <span className="font-medium text-xs flex-1 truncate">{lang === 'KO' ? c.nameKo : c.name}</span>
+                <span className="font-medium text-xs flex-1 truncate">
+                  {lang === 'KO' ? c.nameKo : (lang === 'ES' ? (c as any).nameEs || c.name : c.name)}
+                </span>
                 <span className="text-[9px] text-zinc-600 font-black flex-shrink-0">{c.code}</span>
               </button>
             ))}

@@ -68,7 +68,7 @@ export default function InquiryModal({ isOpen, onClose, lang }: InquiryModalProp
                 </div>
                 <div>
                    <h3 className="text-xl font-black italic uppercase tracking-tight">{t('inquiryTitle')}</h3>
-                   <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Direct Transmission to Network Admin</p>
+                   <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">{t('directTransmission')}</p>
                 </div>
               </div>
               <button 
@@ -89,7 +89,7 @@ export default function InquiryModal({ isOpen, onClose, lang }: InquiryModalProp
                    <CheckCircle2 size={32} className="text-emerald-500" />
                 </div>
                 <h4 className="text-lg font-black italic text-emerald-500 uppercase tracking-tight">{t('inquirySuccess')}</h4>
-                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Network Log Updated</p>
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">{t('networkLogUpdated')}</p>
               </motion.div>
             ) : (
               <div className="space-y-6">
@@ -109,7 +109,7 @@ export default function InquiryModal({ isOpen, onClose, lang }: InquiryModalProp
                 <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5 flex gap-4">
                    <Mail size={16} className="text-zinc-600 shrink-0 mt-0.5" />
                    <p className="text-[10px] font-bold text-zinc-500 leading-relaxed uppercase tracking-tight">
-                     Our support team monitors this channel 24/7. Response priority is calculated based on network activity and reputation.
+                     {t('supportTeamNotice')}
                    </p>
                 </div>
 
@@ -118,7 +118,8 @@ export default function InquiryModal({ isOpen, onClose, lang }: InquiryModalProp
                     onClick={onClose}
                     className="flex-1 py-4 font-black text-[10px] uppercase tracking-widest text-zinc-600 hover:text-white transition-all"
                   >
-                    {lang === 'KO' ? '취소' : 'Cancel'}
+                    {t('cancel')}
+
                   </button>
                   <button 
                     onClick={handleSubmit}

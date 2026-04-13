@@ -9,7 +9,7 @@ const Globe = dynamic(() => import('react-globe.gl'), {
   ssr: false,
   loading: () => (
     <div className="h-[400px] w-full flex items-center justify-center text-zinc-500 font-bold uppercase tracking-widest animate-pulse">
-      Establishing Fan Connections...
+      {getT(localStorage.getItem('stan_lang') as any || 'EN')('loadingGlobe')}
     </div>
   ),
 });
@@ -154,7 +154,7 @@ export default function GlobeMap({
   const getTopThreeList = useCallback((iso: string) => {
     const countryVotes = detailedVotes[iso] || {};
     const top3 = Object.entries(countryVotes).sort((a, b) => b[1] - a[1]).slice(0, 3);
-    if (top3.length === 0) return `<li style="color: #666; font-size: 10px; font-weight: 900; letter-spacing: 0.1em;">AWAITING FAN SYNC...</li>`;
+    if (top3.length === 0) return `<li style="color: #666; font-size: 10px; font-weight: 900; letter-spacing: 0.1em;">${t('noCountryData')}</li>`;
     return top3.map(([id, count], idx) => {
       const name = artists.find(a => a.id === id)?.name || 'SYNC_ERROR';
       const color = idx === 0 ? C_MAGENTA : idx === 1 ? C_GREEN : C_LIME;
@@ -218,11 +218,11 @@ export default function GlobeMap({
                   <span style="font-size:10px;color:#666;font-weight:900;">[${iso}]</span>
                 </div>
                 <div style="margin-bottom:12px;">
-                  <div style="font-size:8px;color:${C_LIME};font-weight:900;text-transform:uppercase;letter-spacing:0.3em;margin-bottom:8px;">Top Status Feed</div>
+                  <div style="font-size:8px;color:${C_LIME};font-weight:900;text-transform:uppercase;letter-spacing:0.3em;margin-bottom:8px;">${t('countryTop3')}</div>
                   <ul style="list-style:none;padding:0;margin:0;">${getTopThreeList(iso)}</ul>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.05);padding-top:8px;">
-                  <span style="font-size:8px;color:#444;font-weight:900;text-transform:uppercase;">Sync Power</span>
+                  <span style="font-size:8px;color:#444;font-weight:900;text-transform:uppercase;">${t('totalVotes')}</span>
                   <span style="color:${votes > 0 ? C_LIME : '#666'};font-weight:900;font-size:14px;">${votes.toLocaleString()}</span>
                 </div>
               </div>`;
@@ -295,7 +295,7 @@ export default function GlobeMap({
 
         {/* Hint */}
         <div className="absolute top-5 right-5 pointer-events-none hidden md:block">
-          <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">← Click country for details</p>
+          <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">← {t('clickCountryHint')}</p>
         </div>
       </div>
     </div>

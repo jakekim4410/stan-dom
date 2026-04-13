@@ -1,6 +1,6 @@
 'use server';
 
-import { supabase } from '@/utils/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { getArtistImage } from '@/lib/deezer';
 
@@ -15,6 +15,14 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
   }
 
   try {
+    const supabase = await createClient();
+    
+    // Check authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return { success: false, error: 'AUTHENTICATION_REQUIRED' };
+    }
+
     // 0. Check for exact duplicate in DB (Case-Insensitive)
     const { data: existing } = await supabase
       .from('artists')
@@ -63,4 +71,5 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
     return { success: false, error: error.message || 'An unexpected error occurred.' };
   }
 }
+
 

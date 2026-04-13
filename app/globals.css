@@ -29,12 +29,21 @@
   --spotlight-color: rgba(55, 197, 97, 0.04);
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-noto), sans-serif;
   overflow-x: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 h1,
@@ -317,6 +326,53 @@ h6,
   animation: border-pulse 2s ease-in-out infinite;
 }
 
+/* ── Reward Banner & Battle Zone ── */
+.reward-banner {
+  background: linear-gradient(90deg, #37C561 0%, #00F3FF 50%, #FF00FF 100%);
+  background-size: 200% auto;
+  animation: gradient-flow 5s linear infinite;
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 30px rgba(55, 197, 97, 0.4);
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.battle-zone-card {
+  background: linear-gradient(135deg, rgba(55, 197, 97, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.battle-zone-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent 0%, var(--neon-lime) 25%, transparent 50%, var(--neon-magenta) 75%, transparent 100%);
+  animation: rotate 10s linear infinite;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vibrant-glow {
+  filter: drop-shadow(0 0 15px currentColor);
+}
+
 /* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
   width: 4px;
@@ -338,5 +394,5 @@ h6,
 /* ── Smooth transitions ── */
 * {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
-  transition-duration: 200ms;
+  transition-duration: 250ms;
 }

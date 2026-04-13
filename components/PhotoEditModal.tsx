@@ -77,7 +77,7 @@ export default function PhotoEditModal({
       } else if (result.error === 'LOG_IN_REQUIRED') {
         setErrorStatus({ code: 'LOG_IN_REQUIRED' });
       } else {
-        alert(result.error || 'Failed to update photo.');
+        alert(result.error || t('photoUpdateFailed'));
       }
     } catch (err) {
       console.error(err);
@@ -135,8 +135,9 @@ export default function PhotoEditModal({
                     <h4 className="text-xl font-black italic uppercase tracking-tight">{t('accessRestricted')}</h4>
                     <p className="text-sm font-bold text-zinc-500 leading-relaxed uppercase tracking-tighter max-w-xs">
                       {errorStatus.code === 'VOTES_INSUFFICIENT'
-                        ? (lang === 'KO' ? `요청하신 작업을 수행하기 위해 평판값이 부족합니다. ${errorStatus.required! - errorStatus.current!}번 더 투표하면 잠금이 해제됩니다.` : t('votesRequired'))
+                        ? t('votesRequired')
                         : t('loginRequired')}
+
                     </p>
                   </div>
                   <button onClick={() => setErrorStatus(null)} className="w-full max-w-xs py-4 rounded-2xl border border-white/10 font-black text-[10px] uppercase tracking-widest text-[#37C561]">
