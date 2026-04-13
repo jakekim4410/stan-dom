@@ -63,7 +63,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
     setNotification(null);
 
     const res = await addArtist(artist.name, artist.imageUrl);
-    
+
     setSubmitting(false);
 
     if (res.success) {
@@ -80,7 +80,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
       let errorMsg = res.error || 'Failed to nominate artist.';
       if (res.error === 'AUTHENTICATION_REQUIRED') errorMsg = t('loginRequired');
       if (res.error === 'DUPLICATE_NODE_DETECTED') errorMsg = t('artistAlreadyExists');
-      
+
       setNotification({ type: 'error', message: errorMsg });
       setTimeout(() => {
         setNotification(null);
@@ -107,7 +107,8 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg glass-panel p-1 border border-white/10 shadow-[0_0_50px_rgba(0,243,255,0.15)] flex flex-col max-h-[85vh] overflow-hidden bg-black/40"
+            // 아래 className을 전체 교체하세요
+            className="relative w-full max-w-lg glass-panel p-1 border border-white/10 shadow-[0_0_50px_rgba(0,243,255,0.15)] flex flex-col min-h-[500px] max-h-[90vh] overflow-y-auto bg-black/40 pb-12"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-white/5">
@@ -115,7 +116,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                 <Music size={20} className="text-neon-magenta" />
                 {t('nominateArtist')}
               </h2>
-              <button 
+              <button
                 onClick={handleClose}
                 className="text-zinc-500 hover:text-white transition-colors"
                 disabled={submitting}
@@ -141,7 +142,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
 
             {/* Login Required Overlay for unauthenticated users (Optional: just show warning instead of overlay if preferred, but user said "registered users can add") */}
             {!user && (
-              <div className="absolute inset-0 top-[72px] bg-black/60 backdrop-blur-[2px] z-50 flex flex-col items-center justify-center p-6 text-center">
+              <div className="absolute inset-0 top-[72px] bg-black/60 backdrop-blur-[2px] z-50 flex flex-col items-center justify-center p-6 pb-12 text-center">
                 <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
                   <Lock size={24} className="text-zinc-500" />
                 </div>
@@ -203,7 +204,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                           <Music size={18} className="text-zinc-600" />
                         </div>
                       )}
-                      
+
                       <div className="text-left flex flex-col">
                         <span className="font-black text-lg tracking-tight group-hover:neon-text-cyan transition-all">{artist.name}</span>
                         <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block -mt-1">
