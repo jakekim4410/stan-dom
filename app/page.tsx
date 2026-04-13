@@ -12,6 +12,7 @@ import { Language, getT } from '@/constants/i18n';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import CountryRankingPopup from '@/components/CountryRankingPopup';
 import CountrySelector from '@/components/CountrySelector';
+import OnboardingModal from '@/components/OnboardingModal';
 import { Country } from '@/constants/countryData';
 import InquiryModal from '@/components/InquiryModal';
 import Toast from '@/components/Toast';
@@ -50,6 +51,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [isAddArtistOpen, setIsAddArtistOpen] = useState(false);
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
@@ -162,10 +164,7 @@ export default function Dashboard() {
 
   const handleVote = async (id: string, currentVotes: number) => {
     if (!userCountry) {
-      const el = document.getElementById('country-selector-wrap');
-      el?.classList.add('animate-shake');
-      setTimeout(() => el?.classList.remove('animate-shake'), 600);
-      selectorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setIsOnboardingOpen(true);
       return;
     }
 
@@ -267,12 +266,12 @@ export default function Dashboard() {
             <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />
           </a>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher 
-              lang={lang} 
+            <LanguageSwitcher
+              lang={lang}
               onSelect={(l) => {
                 setLang(l);
                 localStorage.setItem('stan_lang', l);
-              }} 
+              }}
             />
             {user ? (
               <button
@@ -381,7 +380,7 @@ export default function Dashboard() {
 
       {/* ── Notice Banner (Voting Rules) ── */}
       <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 mt-4">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="rounded-2xl py-3 px-6 text-center text-[10px] sm:text-xs font-black tracking-[0.1em] flex items-center justify-center gap-3 border border-white/5 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 backdrop-blur-md"
@@ -504,7 +503,7 @@ export default function Dashboard() {
                   >
                     {/* Dynamic Background Glow */}
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
-                    <div 
+                    <div
                       className="absolute -inset-20 bg-radial opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none"
                       style={{ background: `radial-gradient(circle at center, ${color} 0%, transparent 70%)` }}
                     />
@@ -542,11 +541,11 @@ export default function Dashboard() {
                           <h3 className="text-3xl font-black tracking-tighter truncate max-w-[200px] group-hover/title:text-white">{a.name}</h3>
                           <div className="h-0.5 w-0 group-hover/title:w-full bg-current mx-auto transition-all duration-300" style={{ color }} />
                         </Link>
-                        
+
                         <div className="mt-4 flex items-center justify-center gap-3">
                           <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 flex items-center gap-2">
-                             <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: color }} />
-                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Phase</span>
+                            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: color }} />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Phase</span>
                           </div>
                         </div>
                       </div>
@@ -576,10 +575,9 @@ export default function Dashboard() {
                       id={`vote-btn-${a.id}`}
                       onClick={() => handleVote(a.id, a.total_votes)}
                       disabled={!!activeVotes[a.id]}
-                      className={`w-full mt-8 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all relative z-10 ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${
-                        activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' : 
-                        activeVotes[a.id] === 'loading' ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : ''
-                      }`}
+                      className={`w-full mt-8 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all relative z-10 ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' :
+                          activeVotes[a.id] === 'loading' ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : ''
+                        }`}
                       style={{
                         background: activeVotes[a.id] ? undefined : color,
                         color: activeVotes[a.id] ? undefined : '#000',
@@ -715,10 +713,10 @@ export default function Dashboard() {
                     </p>
                     <div className="flex flex-wrap items-center gap-3 px-4 py-3 rounded-[1.25rem] bg-white/5 border border-white/10 max-w-fit">
                       <div className="flex items-center gap-2">
-                         <span className="w-2 h-2 bg-[#37C561] rounded-full animate-pulse shadow-[0_0_10px_#37C561]" />
-                         <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest break-keep">
-                           {t('votingRuleNotice')}
-                         </span>
+                        <span className="w-2 h-2 bg-[#37C561] rounded-full animate-pulse shadow-[0_0_10px_#37C561]" />
+                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest break-keep">
+                          {t('votingRuleNotice')}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -727,7 +725,7 @@ export default function Dashboard() {
                     LIVE_SYNC_ACTIVE
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {['RIIZE', 'BOYNEXTDOOR', 'TWS'].map((name, i) => {
                     const artist = artists.find(a => a.name.toUpperCase() === name);
@@ -743,7 +741,7 @@ export default function Dashboard() {
                           </div>
                           {isTop && <Trophy size={14} className="text-yellow-400 vibrant-glow" />}
                         </div>
-                        
+
                         {/* Artist Link Wrapper */}
                         {artist ? (
                           <Link href={`/artist/${artist.id}`} className="flex items-center gap-4 group/artist">
@@ -769,16 +767,15 @@ export default function Dashboard() {
                           </div>
                         )}
 
-                        <button 
+                        <button
                           onClick={() => artist && handleVote(artist.id, votes)}
                           disabled={!artist || !!activeVotes[artist.id]}
-                          className={`w-full py-3 border rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                            artist && activeVotes[artist.id] === 'success' 
-                              ? 'bg-[#37C561] text-black border-[#37C561] shadow-[0_0_15px_rgba(55,197,97,0.4)]' 
+                          className={`w-full py-3 border rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${artist && activeVotes[artist.id] === 'success'
+                              ? 'bg-[#37C561] text-black border-[#37C561] shadow-[0_0_15px_rgba(55,197,97,0.4)]'
                               : artist && activeVotes[artist.id] === 'loading'
-                              ? 'bg-zinc-800 text-zinc-500 border-white/5 cursor-not-allowed'
-                              : 'bg-white/5 border-white/10 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
-                          }`}
+                                ? 'bg-zinc-800 text-zinc-500 border-white/5 cursor-not-allowed'
+                                : 'bg-white/5 border-white/10 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
+                            }`}
                         >
                           {artist ? (
                             activeVotes[artist.id] === 'success' ? (
@@ -843,7 +840,21 @@ export default function Dashboard() {
         onClose={() => setIsInquiryModalOpen(false)}
         lang={lang}
       />
-      
+
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        lang={lang}
+        onComplete={(country) => {
+          setUserCountry(country);  // ← handleSelectCountry(country) 를 이걸로 교체
+          setToast({
+            isVisible: true,
+            message: t('syncSuccess'),
+            subMessage: t('nodeStable')
+          });
+        }}
+      />
+
       <Toast
         isVisible={toast.isVisible}
         message={toast.message}
