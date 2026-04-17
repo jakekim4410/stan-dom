@@ -80,7 +80,7 @@ export default function RankingBoard({
             </h2>
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 shrink-0">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Live</span>
+              <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">{t('live')}</span>
             </div>
           </div>
         </div>

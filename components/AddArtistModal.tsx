@@ -69,17 +69,12 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
     setSubmitting(false);
 
     if (res.success) {
-      const successMsgs = {
-        KO: '노미네이트 성공!',
-        EN: 'nominated successfully!',
-        ES: '¡nominado con éxito!'
-      };
-      setNotification({ type: 'success', message: `${artist.name} ${successMsgs[lang] || successMsgs.EN}` });
+      setNotification({ type: 'success', message: `${artist.name} ${t('nominateSuccess')}` });
       setTimeout(() => {
         handleClose();
       }, 2000);
     } else {
-      let errorMsg = res.error || 'Failed to nominate artist.';
+      let errorMsg = res.error || t('nominateFail');
       if (res.error === 'AUTHENTICATION_REQUIRED') errorMsg = t('loginRequired');
       if (res.error === 'DUPLICATE_NODE_DETECTED') errorMsg = t('artistAlreadyExists');
 
@@ -166,7 +161,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
               <div className="px-5 pb-2">
                 <div className="flex flex-col gap-2 p-4 bg-white/5 border border-white/10 rounded-2xl">
                   <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                    {lang === 'KO' ? '생일 지정 (선택)' : 'SET BIRTHDAY (OPTIONAL)'}
+                    {t('birthdayOptional')}
                   </span>
                   <input
                     type="date"
@@ -175,7 +170,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                     className="bg-transparent border-none outline-none text-white font-bold text-sm [color-scheme:dark]"
                   />
                   <p className="text-[9px] text-zinc-600 font-bold uppercase leading-relaxed">
-                    {lang === 'KO' ? '지정하지 않으면 자동으로 검색을 시도합니다.' : 'Will attempt auto-sync if left empty.'}
+                    {t('birthdayAutoSync')}
                   </p>
                 </div>
               </div>
@@ -204,7 +199,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
             <div className="flex-1 overflow-y-auto custom-scrollbar px-2 pb-2">
               {query.trim().length > 1 && !loading && results.length === 0 && (
                 <div className="p-8 text-center text-zinc-500 font-bold text-sm">
-                  {lang === 'KO' ? '검색 결과가 없습니다.' : (lang === 'ES' ? 'No se encontraron artistas.' : 'No artists found.')}
+                  {t('noArtistsFound')}
                 </div>
               )}
 
@@ -230,7 +225,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                       <div className="text-left flex flex-col">
                         <span className="font-black text-lg tracking-tight group-hover:neon-text-cyan transition-all">{getLangName(artist.name, lang)}</span>
                         <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block -mt-1">
-                          {artist.followers.toLocaleString()} {lang === 'KO' ? '팔로워' : (lang === 'ES' ? 'SEGUIDORES' : 'Followers')}
+                          {artist.followers.toLocaleString()} {t('followers')}
                         </span>
                       </div>
                     </div>

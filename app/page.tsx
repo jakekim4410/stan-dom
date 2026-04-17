@@ -805,7 +805,7 @@ export default function Dashboard() {
                 {/* LIVE badge */}
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-red-500/30 bg-red-500/10">
                   <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                  <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">LIVE</span>
+                  <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">{t('live')}</span>
                 </div>
               </div>
             </div>
@@ -869,7 +869,7 @@ export default function Dashboard() {
                           onClick={() => setSelectedIssue(issue)}
                           className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition-all text-white"
                         >
-                          {lang === 'KO' ? '기사 상세보기' : lang === 'ES' ? 'Ver Detalles' : 'Read Full Article'}
+                          {t('viewDetails')}
                         </button>
                       </div>
                     </div>
@@ -950,7 +950,7 @@ export default function Dashboard() {
                                   onClick={() => setSelectedIssue(issue)}
                                   className="text-[10px] font-black uppercase text-zinc-500 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-lg border border-white/10 whitespace-nowrap"
                                 >
-                                  {lang === 'KO' ? '상세보기' : lang === 'ES' ? 'Detalles' : 'Details'}
+                                  {t('details')}
                                 </button>
                               </div>
                             </motion.div>
@@ -1078,7 +1078,7 @@ export default function Dashboard() {
                         <div className="mt-4 flex items-center justify-center gap-3">
                           <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10 flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: color }} />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Phase</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{t('currentPhase')}</span>
                           </div>
                         </div>
                       </div>
@@ -1428,10 +1428,10 @@ export default function Dashboard() {
         {/* 2. 구글 검토용 법적 공지 링크 (Privacy & Terms) */}
         <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-zinc-500">
           <Link href="/privacy" className="hover:text-[var(--neon-lime)] transition-colors">
-            Privacy Policy
+            {t('privacyPolicy')}
           </Link>
           <Link href="/terms" className="hover:text-[var(--neon-lime)] transition-colors">
-            Terms of Service
+            {t('termsOfService')}
           </Link>
         </div>
 
@@ -1532,7 +1532,7 @@ export default function Dashboard() {
                   <div className="w-full h-px bg-white/10" />
 
                   <div className="text-sm text-zinc-300 leading-loose whitespace-pre-wrap font-medium">
-                    {selectedIssue.body ? ((selectedIssue.body as Record<string,string>)[lang] ?? selectedIssue.body['EN']) : (lang === 'KO' ? '상세 보도자료 내용을 불러오고 있습니다...' : 'Loading detailed press release...')}
+                    {selectedIssue.body ? ((selectedIssue.body as Record<string,string>)[lang] ?? selectedIssue.body['EN']) : t('loadingArticle')}
                   </div>
 
                   <div className="flex flex-wrap gap-2 pt-4">

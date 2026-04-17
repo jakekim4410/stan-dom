@@ -44,12 +44,7 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
     } catch (e) { }
     
     // Fallback or Alert
-    const failMsgs = {
-      KO: '국가 자동 감지에 실패했습니다. 수동으로 선택해주세요.',
-      EN: 'Could not auto-detect region. Please select manually.',
-      ES: 'No se pudo detectar la región. Por favor seleccione manualmente.'
-    };
-    alert(failMsgs[lang] || failMsgs.EN);
+    alert(t('autoDetectFail'));
   };
 
   const handleNext = () => {
@@ -121,7 +116,7 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
                     title={t('autoDetectIP')}
                   >
                     <Navigation size={20} className="group-hover/auto:scale-110 transition-transform" />
-                    <span className="text-[7px] font-black mt-1 uppercase tracking-tighter whitespace-nowrap opacity-60 group-hover/auto:opacity-100">AUTO</span>
+                    <span className="text-[7px] font-black mt-1 uppercase tracking-tighter whitespace-nowrap opacity-60 group-hover/auto:opacity-100">{t('autoDetectBtn')}</span>
                   </button>
                 </div>
 
@@ -191,10 +186,10 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
                     </div>
                     <div>
                         <h4 className="font-black text-white text-lg tracking-tight mb-1">
-                          {lang === 'KO' ? '생일 2배 보너스' : 'Birthday x2 Bonus'}
+                          {t('birthdayBonusTitle')}
                         </h4>
                         <p className="text-neon-magenta/80 text-xs font-bold leading-relaxed uppercase tracking-tight">
-                            {lang === 'KO' ? '오늘의 생일 스타에게 투표하면 볼티지가 2배로 쌓입니다!' : 'Voting for today\'s birthday stars grants 2x Voltage points!'}
+                            {t('birthdayBonusSub')}
                         </p>
                     </div>
                   </div>
@@ -210,7 +205,7 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
                     onClick={() => setStep(1)}
                     className="flex-1 py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all sm:order-1"
                    >
-                     {lang === 'KO' ? '이전으로' : 'Back'}
+                     {t('back')}
                    </button>
                )}
                <button

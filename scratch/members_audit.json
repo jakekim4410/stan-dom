@@ -1,0 +1,3332 @@
+[
+  {
+    "id": "2f79a3a1-2456-473e-ba9b-cfeab65bb991",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "승한",
+    "birthday": "2003-10-02",
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0e695ed7-10e9-40a2-8ad2-d754ea6ef940",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "ANTON",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "80062b15-cfbb-4080-85eb-e5c35ce0562d",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "은석",
+    "birthday": "2001-03-19",
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e125fd29-b77e-4331-bbd5-f74b23d16561",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "ショウタロウ",
+    "birthday": "2000-11-25",
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ca40ff40-119a-404f-871c-17e0ea012b54",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "소희",
+    "birthday": "1999-12-31",
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0211c1f8-1eb0-488b-846a-52e474e825d3",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "성찬",
+    "birthday": "2001-09-13",
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f8744491-50d2-4c05-8243-ff8798918123",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "원빈",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T05:06:59.955848+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1729b4d9-5167-400c-89a7-b0c1b444ee65",
+    "artist_id": "242da795-772b-44e6-b5a8-c76f38123830",
+    "name": "{\"EN\":\"Yujin\",\"KO\":\"안유진\",\"ES\":\"Yujin\"}",
+    "birthday": "2003-09-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:19.558362+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "22f9fe37-5c43-4cfd-ba35-9dfeec22b5a0",
+    "artist_id": "242da795-772b-44e6-b5a8-c76f38123830",
+    "name": "{\"EN\":\"Gaeul\",\"KO\":\"가을\",\"ES\":\"Gaeul\"}",
+    "birthday": "2002-09-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:19.558362+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8507cbcd-e8c2-48bb-949b-4edcec24d3bb",
+    "artist_id": "242da795-772b-44e6-b5a8-c76f38123830",
+    "name": "{\"EN\":\"JANGWONYOUNG\",\"KO\":\"장원영\",\"ES\":\"JANGWONYOUNG\"}",
+    "birthday": "2004-08-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:19.558362+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ddf486ff-d6bc-472e-85b1-1ce9fcf150cf",
+    "artist_id": "242da795-772b-44e6-b5a8-c76f38123830",
+    "name": "{\"EN\":\"LIZ\",\"KO\":\"김지원\",\"ES\":\"LIZ\"}",
+    "birthday": "2004-11-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:19.558362+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "44b9cd45-871c-4a61-9950-af4ebe19d889",
+    "artist_id": "242da795-772b-44e6-b5a8-c76f38123830",
+    "name": "{\"EN\":\"Naoi Rei\",\"KO\":\"나오이레이\",\"ES\":\"Naoi Rei\"}",
+    "birthday": "2004-02-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:19.558362+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5189724d-ed7f-480f-ba13-2fd8cf8a733d",
+    "artist_id": "242da795-772b-44e6-b5a8-c76f38123830",
+    "name": "{\"EN\":\"Leeseo\",\"KO\":\"이서\",\"ES\":\"Leeseo\"}",
+    "birthday": "2007-02-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:19.558362+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1f40999e-0f4a-4c94-bce3-8841f0430528",
+    "artist_id": "043f9336-664b-4e90-b323-9b6938868b28",
+    "name": "{\"EN\":\"Eunchae\",\"KO\":\"홍은채\",\"ES\":\"Eunchae\"}",
+    "birthday": "2006-11-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:32.426493+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "00f5ce52-ec3d-4316-9829-d09cd2c986a7",
+    "artist_id": "043f9336-664b-4e90-b323-9b6938868b28",
+    "name": "{\"EN\":\"Jennifer Huh\",\"KO\":\"허윤진\",\"ES\":\"Jennifer Huh\"}",
+    "birthday": "2001-10-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:32.426493+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "aae339d1-9847-478b-ba19-818b50e3b9d9",
+    "artist_id": "043f9336-664b-4e90-b323-9b6938868b28",
+    "name": "{\"EN\":\"一葉\",\"KO\":\"一葉\",\"ES\":\"一葉\"}",
+    "birthday": "1975-04-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:32.426493+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "68e90ae3-28ec-4bb9-8f85-7dce9ed083e6",
+    "artist_id": "043f9336-664b-4e90-b323-9b6938868b28",
+    "name": "{\"EN\":\"Chaewon\",\"KO\":\"김채원\",\"ES\":\"Chaewon\"}",
+    "birthday": "2000-08-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:32.426493+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "756d9fa1-4aaf-4313-89a7-589019e5e8fa",
+    "artist_id": "043f9336-664b-4e90-b323-9b6938868b28",
+    "name": "{\"EN\":\"SAKURA\",\"KO\":\"미야와키 사쿠라\",\"ES\":\"SAKURA\"}",
+    "birthday": "1998-03-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:32.426493+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5c9b1b95-edd1-4934-ac27-6f630558c0e6",
+    "artist_id": "c5758c72-4a3f-42af-b4ac-df7aabbae9cf",
+    "name": "{\"EN\":\"GISELLE\",\"KO\":\"지젤\",\"ES\":\"GISELLE\"}",
+    "birthday": "2000-10-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:41.806164+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e83d4eb8-0ed7-4778-9d55-88b055c166e9",
+    "artist_id": "c5758c72-4a3f-42af-b4ac-df7aabbae9cf",
+    "name": "{\"EN\":\"KARINA\",\"KO\":\"유지민\",\"ES\":\"KARINA\"}",
+    "birthday": "2000-04-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:41.806164+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2fff584a-2234-4cc3-949b-e1e7edb21139",
+    "artist_id": "c5758c72-4a3f-42af-b4ac-df7aabbae9cf",
+    "name": "{\"EN\":\"NINGNING\",\"KO\":\"닝닝\",\"ES\":\"NINGNING\"}",
+    "birthday": "2002-10-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:41.806164+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1108b451-6697-45a8-95f2-b9c9940bf199",
+    "artist_id": "c5758c72-4a3f-42af-b4ac-df7aabbae9cf",
+    "name": "{\"EN\":\"WINTER\",\"KO\":\"김민정\",\"ES\":\"WINTER\"}",
+    "birthday": "2001-01-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:41.806164+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2c31cd67-feef-4234-b769-b75aa539f704",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"Heeseung\",\"KO\":\"이희승\",\"ES\":\"Heeseung\"}",
+    "birthday": "2001-10-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0184630c-0d9e-4bbf-9be3-018a72d30055",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"JAKE\",\"KO\":\"JAKE\",\"ES\":\"JAKE\"}",
+    "birthday": "1988-06-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "51d6465d-3759-4646-8c39-cd8b6c15f869",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"JAY\",\"KO\":\"JAY\",\"ES\":\"JAY\"}",
+    "birthday": "1977-09-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ff469df1-39bb-498f-8592-28c5992b9255",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"SUNOO\",\"KO\":\"김선우\",\"ES\":\"SUNOO\"}",
+    "birthday": "2003-06-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "04d85c2e-2ef6-4e26-b5c9-56f26ca8eb7c",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"NI-KI\",\"KO\":\"니시무라 리키\",\"ES\":\"NI-KI\"}",
+    "birthday": "2005-12-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3992da72-d4da-4b7a-9ec7-4d074ae2deef",
+    "artist_id": "7747b06e-0919-4a05-8af6-9ac5189900e4",
+    "name": "{\"EN\":\"JENNIE of BLACKPINK\",\"KO\":\"김제니\",\"ES\":\"JENNIE of BLACKPINK\"}",
+    "birthday": "1996-01-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:04.039663+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5b5c8422-2ac2-4426-b4de-93c0d2162f44",
+    "artist_id": "7747b06e-0919-4a05-8af6-9ac5189900e4",
+    "name": "{\"EN\":\"JISOO of BLACKPINK\",\"KO\":\"Kim Ji-soo\",\"ES\":\"JISOO of BLACKPINK\"}",
+    "birthday": "1995-01-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:04.039663+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "86d18004-89b4-4966-972a-693b6f1b153f",
+    "artist_id": "7747b06e-0919-4a05-8af6-9ac5189900e4",
+    "name": "{\"EN\":\"LISA\",\"KO\":\"LISA\",\"ES\":\"LISA\"}",
+    "birthday": "1987-06-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:04.039663+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1c4a6940-2b90-4e62-a0e5-6827240b3938",
+    "artist_id": "7747b06e-0919-4a05-8af6-9ac5189900e4",
+    "name": "{\"EN\":\"Chae Young Park\",\"KO\":\"로제\",\"ES\":\"Chae Young Park\"}",
+    "birthday": "1997-02-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:04.039663+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f20997d3-2f59-4211-a5ff-cc1867ab6b5d",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"Chaeyoung\",\"KO\":\"손채영\",\"ES\":\"Chaeyoung\"}",
+    "birthday": "1999-04-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "545a4de3-369a-4fe5-8883-f66a1444ee24",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"Dahyun\",\"KO\":\"김다현\",\"ES\":\"Dahyun\"}",
+    "birthday": "1998-05-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1f0e1751-29bf-401a-a996-6e901c991fa5",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"Jeongyeon\",\"KO\":\"유정연\",\"ES\":\"Jeongyeon\"}",
+    "birthday": "1996-11-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "32f587fb-b6db-404c-9411-7b07ae08ab09",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"JIHYO\",\"KO\":\"박지효\",\"ES\":\"JIHYO\"}",
+    "birthday": "1997-02-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ef4702f2-0176-4ed0-8589-51c975e074ed",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"MINA\",\"KO\":\"MINA\",\"ES\":\"MINA\"}",
+    "birthday": "1940-03-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e22b59c6-35a6-4469-9779-bb97bffd4df7",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"Momo\",\"KO\":\"もも\",\"ES\":\"Momo\"}",
+    "birthday": "1993-04-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f20c4ac3-ce8e-49e7-9769-98cddb4a3e7d",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"Nayeon\",\"KO\":\"나연\",\"ES\":\"Nayeon\"}",
+    "birthday": "1995-09-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "450ccf2b-ce24-4ae4-b05c-f90af1f67ec6",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"SANA\",\"KO\":\"SANA\",\"ES\":\"SANA\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "59b5ddb9-0ea4-4632-bdc1-02652c02f279",
+    "artist_id": "32353d38-6110-43ff-86f1-aca14b11d46b",
+    "name": "{\"EN\":\"Tzuyu\",\"KO\":\"쯔위\",\"ES\":\"Tzuyu\"}",
+    "birthday": "1999-06-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:21.122846+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "198666d7-80ae-4d26-942a-6aa1208a48bf",
+    "artist_id": "884cffe7-a97a-4665-a90f-1ba8a0712400",
+    "name": "{\"EN\":\"Danielle\",\"KO\":\"Danielle\",\"ES\":\"Danielle\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:31.447008+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d3eb9261-9f68-49c2-a3ae-449ac6eda13b",
+    "artist_id": "884cffe7-a97a-4665-a90f-1ba8a0712400",
+    "name": "{\"EN\":\"Haerin\",\"KO\":\"강해린\",\"ES\":\"Haerin\"}",
+    "birthday": "2006-05-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:31.447008+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "dee46132-9d74-4696-bb06-1c9c7e3eeb6d",
+    "artist_id": "884cffe7-a97a-4665-a90f-1ba8a0712400",
+    "name": "{\"EN\":\"Hanni\",\"KO\":\"Hanni\",\"ES\":\"Hanni\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:31.447008+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "48f0e16a-967f-468d-82e7-f2d2ef1e0680",
+    "artist_id": "884cffe7-a97a-4665-a90f-1ba8a0712400",
+    "name": "{\"EN\":\"Hyein\",\"KO\":\"이혜인\",\"ES\":\"Hyein\"}",
+    "birthday": "2008-04-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:31.447008+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "dd1ec959-9379-4dbb-89a1-231182a6f4ac",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"TAEIL\",\"KO\":\"태일\",\"ES\":\"TAEIL\"}",
+    "birthday": "1994-06-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "915497f9-af06-4a93-9c51-7df818571c52",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"MARK\",\"KO\":\"MARK\",\"ES\":\"MARK\"}",
+    "birthday": "1949-08-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "985d83b9-aa0b-4a27-ba9a-950603cffe64",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"WINWIN\",\"KO\":\"윈윈\",\"ES\":\"WINWIN\"}",
+    "birthday": "1999-01-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3c020bfc-3753-4416-b52a-5c476c67fd5a",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"HAECHAN\",\"KO\":\"이동혁\",\"ES\":\"HAECHAN\"}",
+    "birthday": "2000-06-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "de758d58-d96e-4605-8ad6-5d5fce917fa0",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"JAEHYUN\",\"KO\":\"재현\",\"ES\":\"JAEHYUN\"}",
+    "birthday": "1997-02-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "461577e2-aa2e-4cd2-9ece-c1916ef80531",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"TAEYONG\",\"KO\":\"이태용\",\"ES\":\"TAEYONG\"}",
+    "birthday": "1995-07-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4e8689a3-d4c0-4957-a464-192b6c6a3433",
+    "artist_id": "043f9336-664b-4e90-b323-9b6938868b28",
+    "name": "{\"EN\":\"Kim, Garam\",\"KO\":\"김가람\",\"ES\":\"Kim, Garam\"}",
+    "birthday": "2005-11-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:32.426493+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "57b71bcc-9d8f-44c1-a5c2-6559a892c55f",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"Park, Sung-Hoon\",\"KO\":\"박성훈\",\"ES\":\"Park, Sung-Hoon\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d4025752-5e58-4ee7-83be-b214e91ddee9",
+    "artist_id": "1158daab-5a0d-43a8-9e05-a10305de7364",
+    "name": "{\"EN\":\"Yang, Jung-won\",\"KO\":\"양정원\",\"ES\":\"Yang, Jung-won\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:31:55.980053+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a67e250b-5b3f-42d0-b8bb-c5f8685a5b88",
+    "artist_id": "884cffe7-a97a-4665-a90f-1ba8a0712400",
+    "name": "{\"EN\":\"Park, Min Ji\",\"KO\":\"박민지\",\"ES\":\"Park, Min Ji\"}",
+    "birthday": "1999-03-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:31.447008+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1096d62b-5ba3-4794-88c3-34f4d453312c",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"Yuta Tsurumaru\",\"KO\":\"YUTA\",\"ES\":\"Yuta Tsurumaru\"}",
+    "birthday": "1990-07-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "944e201d-47f3-44f8-950d-71bbe5d79d85",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"DOYOUNG\",\"KO\":\"도영\",\"ES\":\"DOYOUNG\"}",
+    "birthday": "1996-02-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "82a2cdf2-9b04-4275-a207-9244d9c8f938",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"JOHNNY\",\"KO\":\"JOHNNY\",\"ES\":\"JOHNNY\"}",
+    "birthday": "1932-02-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1ba3fac5-6f30-4270-abaf-4956ac7b1150",
+    "artist_id": "4ef49e07-784b-43e0-b8c8-d5532ff8b29e",
+    "name": "{\"EN\":\"JUNGWOO\",\"KO\":\"박정우\",\"ES\":\"JUNGWOO\"}",
+    "birthday": "1997-10-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:32:50.690421+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f1d9e4c6-dc51-4dfb-894a-fbae503067a9",
+    "artist_id": "4feba0e0-ab52-4ae5-8ce3-787f112c914e",
+    "name": "{\"EN\":\"Jonghyun\",\"KO\":\"Kim Jong-hyun\",\"ES\":\"Jonghyun\"}",
+    "birthday": "1990-04-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:22.045629+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "37c6a22e-d698-4731-ae3d-df120c3da652",
+    "artist_id": "4feba0e0-ab52-4ae5-8ce3-787f112c914e",
+    "name": "{\"EN\":\"KEY\",\"KO\":\"김기범\",\"ES\":\"KEY\"}",
+    "birthday": "1991-09-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:22.045629+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f97e2dc4-b8be-484b-9f85-e4c63ccf1e7b",
+    "artist_id": "4feba0e0-ab52-4ae5-8ce3-787f112c914e",
+    "name": "{\"EN\":\"MINHO\",\"KO\":\"민호\",\"ES\":\"MINHO\"}",
+    "birthday": "1991-12-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:22.045629+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5418ac9f-2ea5-4f40-9bfc-153d40aa58ee",
+    "artist_id": "4feba0e0-ab52-4ae5-8ce3-787f112c914e",
+    "name": "{\"EN\":\"ONEW\",\"KO\":\"온유\",\"ES\":\"ONEW\"}",
+    "birthday": "1989-12-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:22.045629+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "dc658796-6df9-40a3-af9d-30d1d2eba226",
+    "artist_id": "4feba0e0-ab52-4ae5-8ce3-787f112c914e",
+    "name": "{\"EN\":\"TAEMIN\",\"KO\":\"Lee Tae-min\",\"ES\":\"TAEMIN\"}",
+    "birthday": "1993-07-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:22.045629+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5ed195e4-7105-45f7-b334-74f4228466c8",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"KIM WOOJIN\",\"KO\":\"김우진\",\"ES\":\"KIM WOOJIN\"}",
+    "birthday": "1997-04-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5de83bf9-00ae-41fa-a15e-efffa265c036",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"Bang Chan\",\"KO\":\"방찬\",\"ES\":\"Bang Chan\"}",
+    "birthday": "1997-10-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b2014dc6-cdd5-4694-893f-e1ca6c1c7055",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"Seo Chang-bin\",\"KO\":\"서창빈\",\"ES\":\"Seo Chang-bin\"}",
+    "birthday": "1999-08-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "37103a0e-78c2-4c6d-a255-047d3081d5df",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"Lee Felix\",\"KO\":\"이용복\",\"ES\":\"Lee Felix\"}",
+    "birthday": "2000-09-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "30ba7e72-c998-4203-903a-910f581539b7",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"HAN\",\"KO\":\"한지성\",\"ES\":\"HAN\"}",
+    "birthday": "2000-09-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2456596b-365d-4f05-b5da-2b2853be6c11",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"Hwang Hyun-jin\",\"KO\":\"황현진\",\"ES\":\"Hwang Hyun-jin\"}",
+    "birthday": "2000-03-20",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d3d32969-fae8-42b6-8a5d-6141a38aef76",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"I.N\",\"KO\":\"양정인\",\"ES\":\"I.N\"}",
+    "birthday": "2001-02-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0553cf1c-9e78-453b-99c9-acdd0b3802ac",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"Lee Know\",\"KO\":\"이민호\",\"ES\":\"Lee Know\"}",
+    "birthday": "1998-10-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "22df9261-4818-4c36-8cc5-e4ab0f0d9cfe",
+    "artist_id": "39e887fa-3bbd-4ce2-b44f-e983ad0d3ea1",
+    "name": "{\"EN\":\"Kim Seung-min\",\"KO\":\"김승민\",\"ES\":\"Kim Seung-min\"}",
+    "birthday": "2000-09-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:40.056784+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "99820408-4fad-43c0-b4e0-cb9edf15cac8",
+    "artist_id": "cb404657-2a8e-456a-8dae-dbc7260b7ae3",
+    "name": "{\"EN\":\"SEUNGRI\",\"KO\":\"승리\",\"ES\":\"SEUNGRI\"}",
+    "birthday": "1990-12-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:59.818892+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0be883e7-f1f9-49d1-9333-a2f20aa16528",
+    "artist_id": "cb404657-2a8e-456a-8dae-dbc7260b7ae3",
+    "name": "{\"EN\":\"T.O.P\",\"KO\":\"최승현\",\"ES\":\"T.O.P\"}",
+    "birthday": "1987-11-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:59.818892+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "543f8247-6022-4f8f-ba7a-331befc0008a",
+    "artist_id": "cb404657-2a8e-456a-8dae-dbc7260b7ae3",
+    "name": "{\"EN\":\"G‐Dragon\",\"KO\":\"G-드래곤\",\"ES\":\"G‐Dragon\"}",
+    "birthday": "1988-08-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:59.818892+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7b608a5b-2548-43aa-9386-ab9049895f4b",
+    "artist_id": "cb404657-2a8e-456a-8dae-dbc7260b7ae3",
+    "name": "{\"EN\":\"DAESUNG\",\"KO\":\"강대성\",\"ES\":\"DAESUNG\"}",
+    "birthday": "1989-04-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:59.818892+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "15bc1f9b-6aee-4121-962c-841932bbefe6",
+    "artist_id": "cb404657-2a8e-456a-8dae-dbc7260b7ae3",
+    "name": "{\"EN\":\"TAEYANG\",\"KO\":\"동영배\",\"ES\":\"TAEYANG\"}",
+    "birthday": "1988-05-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:33:59.818892+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6d8b640e-bacf-48ac-a75b-94ebc979638f",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"MARK\",\"KO\":\"MARK\",\"ES\":\"MARK\"}",
+    "birthday": "1949-08-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "de2abfac-1fdb-445e-b026-d56a2e837c4f",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"HAECHAN\",\"KO\":\"이동혁\",\"ES\":\"HAECHAN\"}",
+    "birthday": "2000-06-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "79c22e0c-b1e5-4ef3-9b0b-534f6cba33f9",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"黄仁俊\",\"KO\":\"Renjun\",\"ES\":\"黄仁俊\"}",
+    "birthday": "2000-03-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "00145ffa-a465-4fcd-a211-89bb17353af6",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"JENO\",\"KO\":\"JENO\",\"ES\":\"JENO\"}",
+    "birthday": "2000-04-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6c4b589c-f0a6-4541-a1a5-6631d303d5b2",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"CHENLE\",\"KO\":\"천러\",\"ES\":\"CHENLE\"}",
+    "birthday": "2001-11-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "63dcb648-7aa4-4c3c-b54c-a942f07971af",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"MARK\",\"KO\":\"MARK\",\"ES\":\"MARK\"}",
+    "birthday": "1949-08-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0e7bb2af-5483-440e-83af-bc0e88d30b80",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"j‐hope\",\"KO\":\"정호석\",\"ES\":\"j‐hope\"}",
+    "birthday": "1994-02-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1d9d0ef9-b332-4a2b-babe-bb4773467d4d",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"JIMIN\",\"KO\":\"박지민\",\"ES\":\"JIMIN\"}",
+    "birthday": "1995-10-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "730c3625-07ab-42d2-ab3b-4d76e3c4664d",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"JIN\",\"KO\":\"김석진\",\"ES\":\"JIN\"}",
+    "birthday": "1992-12-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6e3f6d0c-6263-4600-9065-7074e140677e",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"Jeon Jung-kook\",\"KO\":\"전정국\",\"ES\":\"Jeon Jung-kook\"}",
+    "birthday": "1997-09-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "aaf7edc9-f414-49d2-86f4-c3312acd73d9",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"Kim Nam Jun\",\"KO\":\"김남준\",\"ES\":\"Kim Nam Jun\"}",
+    "birthday": "1994-09-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6aedb1b6-00d7-450b-a526-d6a88d9c47b3",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"SUGA\",\"KO\":\"SUGA\",\"ES\":\"SUGA\"}",
+    "birthday": "1993-03-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "bdb26a5e-fc65-4720-a28e-141767f655dd",
+    "artist_id": "39f433dc-647b-4c28-be56-4f9acfcb070f",
+    "name": "{\"EN\":\"Kim Tae-hyung\",\"KO\":\"김태형\",\"ES\":\"Kim Tae-hyung\"}",
+    "birthday": "1995-12-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:29.282724+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "379121e0-92a2-420e-bebd-87cabe0148a9",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Choi Jong Ho\",\"KO\":\"최종호\",\"ES\":\"Choi Jong Ho\"}",
+    "birthday": "2000-10-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "847f59ff-2248-4c75-8966-901089296766",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Choi San\",\"KO\":\"최산\",\"ES\":\"Choi San\"}",
+    "birthday": "1999-07-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "336e456d-491b-4fc5-93fe-4aa45ae966be",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Jeong Yun Ho\",\"KO\":\"정윤호\",\"ES\":\"Jeong Yun Ho\"}",
+    "birthday": "1999-03-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9bfba3a1-56fc-40cb-b103-290914a52297",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Jung Woo Young\",\"KO\":\"정우영\",\"ES\":\"Jung Woo Young\"}",
+    "birthday": "1999-11-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b889f266-e797-4785-b893-673e52ee4426",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Kang Yeo Sang\",\"KO\":\"강여상\",\"ES\":\"Kang Yeo Sang\"}",
+    "birthday": "1999-06-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9f151e3f-a618-4aa9-bb73-5a7e09228948",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"HONGJOONG\",\"KO\":\"홍중\",\"ES\":\"HONGJOONG\"}",
+    "birthday": "1998-11-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "384d0f6f-c00a-48da-b466-9ef044360a66",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Park Seong Hwa\",\"KO\":\"박성화\",\"ES\":\"Park Seong Hwa\"}",
+    "birthday": "1998-04-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "42337cd9-be87-4a53-ac02-c0fa51e838e3",
+    "artist_id": "09b9982b-d36b-437b-bdb3-9b4023a71d52",
+    "name": "{\"EN\":\"Mingi\",\"KO\":\"송민기\",\"ES\":\"Mingi\"}",
+    "birthday": "1999-08-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:46.217642+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ac373530-5987-4c03-ba0e-520704a670d7",
+    "artist_id": "b107f7ea-9be3-4224-9066-046e709fbe5c",
+    "name": "{\"EN\":\"Chaeryeong\",\"KO\":\"이채령\",\"ES\":\"Chaeryeong\"}",
+    "birthday": "2001-06-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:56.710191+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "85144fcb-4cd0-4d1b-9a30-a5bd2f29ad39",
+    "artist_id": "b107f7ea-9be3-4224-9066-046e709fbe5c",
+    "name": "{\"EN\":\"Riaa\",\"KO\":\"리아\",\"ES\":\"Riaa\"}",
+    "birthday": "1977-08-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:56.710191+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9d31aaae-d238-4bd0-9438-22a006bd034e",
+    "artist_id": "b107f7ea-9be3-4224-9066-046e709fbe5c",
+    "name": "{\"EN\":\"Hwang Ye-ji\",\"KO\":\"황예지\",\"ES\":\"Hwang Ye-ji\"}",
+    "birthday": "2000-05-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:56.710191+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "44c35193-5383-44c8-9c66-8e2de84f7c65",
+    "artist_id": "b107f7ea-9be3-4224-9066-046e709fbe5c",
+    "name": "{\"EN\":\"YUNA\",\"KO\":\"YUNA\",\"ES\":\"YUNA\"}",
+    "birthday": "1986-11-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:56.710191+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b0c78a98-343f-467d-976e-a030c5344e54",
+    "artist_id": "c7dbfb68-878a-4137-bf6b-fd4985421a86",
+    "name": "{\"EN\":\"Soojin\",\"KO\":\"서수진\",\"ES\":\"Soojin\"}",
+    "birthday": "1998-03-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:09.299263+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "225ba6d9-93c7-4dcb-bada-b998ee0523c3",
+    "artist_id": "c7dbfb68-878a-4137-bf6b-fd4985421a86",
+    "name": "{\"EN\":\"Minnie\",\"KO\":\"민니\",\"ES\":\"Minnie\"}",
+    "birthday": "1997-10-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:09.299263+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "fdf5bca3-9bc9-4999-a961-527523209e78",
+    "artist_id": "c7dbfb68-878a-4137-bf6b-fd4985421a86",
+    "name": "{\"EN\":\"MIYEON\",\"KO\":\"미연\",\"ES\":\"MIYEON\"}",
+    "birthday": "1997-01-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:09.299263+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8c12d4e8-5a72-4248-abf7-f58e2cca87a6",
+    "artist_id": "c7dbfb68-878a-4137-bf6b-fd4985421a86",
+    "name": "{\"EN\":\"JEON SOYEON\",\"KO\":\"소연\",\"ES\":\"JEON SOYEON\"}",
+    "birthday": "1998-08-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:09.299263+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "69bfbd43-eb07-418b-b5b6-4ced35e83619",
+    "artist_id": "c7dbfb68-878a-4137-bf6b-fd4985421a86",
+    "name": "{\"EN\":\"Shuhua\",\"KO\":\"슈화\",\"ES\":\"Shuhua\"}",
+    "birthday": "2000-01-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:09.299263+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d028c04c-1933-4709-9389-88a5aaabd845",
+    "artist_id": "c7dbfb68-878a-4137-bf6b-fd4985421a86",
+    "name": "{\"EN\":\"YUQI\",\"KO\":\"우기\",\"ES\":\"YUQI\"}",
+    "birthday": "1999-09-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:09.299263+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8dc33a9b-28fd-49bf-81e9-675382f846a8",
+    "artist_id": "4ccac7ec-1680-4e26-81f7-b7bdf6d6a02b",
+    "name": "{\"EN\":\"HWASA\",\"KO\":\"안혜진\",\"ES\":\"HWASA\"}",
+    "birthday": "1995-07-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:18.209655+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4bcdaaf5-e25e-4ee2-a46b-55b05b5481e5",
+    "artist_id": "4ccac7ec-1680-4e26-81f7-b7bdf6d6a02b",
+    "name": "{\"EN\":\"Moon Byul\",\"KO\":\"Moonbyul\",\"ES\":\"Moon Byul\"}",
+    "birthday": "1992-12-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:18.209655+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b14d7c50-a152-439a-a6e6-09db2b63e14e",
+    "artist_id": "4ccac7ec-1680-4e26-81f7-b7bdf6d6a02b",
+    "name": "{\"EN\":\"Solar\",\"KO\":\"솔라\",\"ES\":\"Solar\"}",
+    "birthday": "1991-02-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:18.209655+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d0e92b6c-242b-45b8-b82a-6da4ac0474bb",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"Jaemin\",\"KO\":\"재민\",\"ES\":\"Jaemin\"}",
+    "birthday": "2000-08-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "efc35b50-c6b3-486e-a818-0f3e610992df",
+    "artist_id": "09335434-8830-4797-b09c-58a722e41d3c",
+    "name": "{\"EN\":\"Jisung\",\"KO\":\"지성\",\"ES\":\"Jisung\"}",
+    "birthday": "2002-02-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:34:15.274798+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "41fd73b6-6b16-482d-8990-d26921a6c1f8",
+    "artist_id": "75a017cd-748c-48fc-8ebb-d1fb2fb11c1e",
+    "name": "{\"EN\":\"Dohoon\",\"KO\":\"김도훈\",\"ES\":\"Dohoon\"}",
+    "birthday": "2005-01-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:35.166329+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b7bdc012-0ef3-47e3-86b9-e0a65cd58031",
+    "artist_id": "75a017cd-748c-48fc-8ebb-d1fb2fb11c1e",
+    "name": "{\"EN\":\"Hanjin\",\"KO\":\"한진\",\"ES\":\"Hanjin\"}",
+    "birthday": "2006-01-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:35.166329+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "58c80c29-dc3c-438c-b797-74a87a157eb0",
+    "artist_id": "75a017cd-748c-48fc-8ebb-d1fb2fb11c1e",
+    "name": "{\"EN\":\"Jihoon\",\"KO\":\"지훈\",\"ES\":\"Jihoon\"}",
+    "birthday": "2006-03-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:35.166329+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "21c1af57-81f5-4e46-a9d3-54f7cadfe6ed",
+    "artist_id": "75a017cd-748c-48fc-8ebb-d1fb2fb11c1e",
+    "name": "{\"EN\":\"Kyungmin\",\"KO\":\"경민\",\"ES\":\"Kyungmin\"}",
+    "birthday": "2004-10-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:35.166329+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "cd971fbb-adf6-4825-9cc8-e70325e1c68c",
+    "artist_id": "75a017cd-748c-48fc-8ebb-d1fb2fb11c1e",
+    "name": "{\"EN\":\"Shinyu\",\"KO\":\"신유\",\"ES\":\"Shinyu\"}",
+    "birthday": "2003-11-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:35.166329+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "cde98028-28a9-4738-833b-22b51e8e6011",
+    "artist_id": "75a017cd-748c-48fc-8ebb-d1fb2fb11c1e",
+    "name": "{\"EN\":\"Youngjae\",\"KO\":\"영재\",\"ES\":\"Youngjae\"}",
+    "birthday": "1996-09-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:35.166329+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f1f44bca-2689-40b4-83ff-e0166f30a453",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"Lu Han\",\"KO\":\"루한\",\"ES\":\"Lu Han\"}",
+    "birthday": "1990-04-20",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a811f869-b147-448f-8a43-ea199b384d7c",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"Kris\",\"KO\":\"크리스\",\"ES\":\"Kris\"}",
+    "birthday": "1990-11-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "095cf34e-bbc2-42ff-8228-e8f96cca2990",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"Edison Huang\",\"KO\":\"Hwang Ji Tao\",\"ES\":\"Edison Huang\"}",
+    "birthday": "1993-05-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9705eb25-906f-4269-9a4a-0d2089ab78ba",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"BAEKHYUN\",\"KO\":\"백현\",\"ES\":\"BAEKHYUN\"}",
+    "birthday": "1992-05-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5328047b-e0fc-41a7-97a9-fda165ec0638",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"Chanyeol\",\"KO\":\"박찬열\",\"ES\":\"Chanyeol\"}",
+    "birthday": "1992-11-27",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "de7a6649-d514-447d-a0d1-042f3b16bbdd",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"Kim Jong-dae\",\"KO\":\"김종대\",\"ES\":\"Kim Jong-dae\"}",
+    "birthday": "1992-09-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ed2c2f42-f3a6-46f9-8430-37fe66000e03",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"D.O.\",\"KO\":\"도경수\",\"ES\":\"D.O.\"}",
+    "birthday": "1993-01-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8135fcf6-c693-41a2-abfc-5de11f957fe8",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"KAI\",\"KO\":\"김종인\",\"ES\":\"KAI\"}",
+    "birthday": "1994-01-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "15383bfd-604f-4400-bd7f-35f3da1c3da3",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"LAY ZHANG\",\"KO\":\"레이\",\"ES\":\"LAY ZHANG\"}",
+    "birthday": "1991-10-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "71ee0fee-f306-4748-9fde-5dc8c071ba00",
+    "artist_id": "f4991d9e-8c21-4898-a791-45b6f913eec0",
+    "name": "{\"EN\":\"Oh Sehun\",\"KO\":\"세훈\",\"ES\":\"Oh Sehun\"}",
+    "birthday": "1994-04-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:35:54.549789+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f0b7e460-10f5-491d-955c-68e71bd311b0",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Han Geng\",\"KO\":\"한경\",\"ES\":\"Han Geng\"}",
+    "birthday": "1984-02-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b416c942-ff9b-4e2c-bb22-69efbafdfce7",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Kibum\",\"KO\":\"김기범\",\"ES\":\"Kibum\"}",
+    "birthday": "1987-08-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ce51c30b-dffc-4ff5-bfc8-e2ca5db5bbf6",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Kangin\",\"KO\":\"강인\",\"ES\":\"Kangin\"}",
+    "birthday": "1985-01-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3ff78e6b-6142-4e86-8edf-daafa6972422",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Siwon\",\"KO\":\"최시원\",\"ES\":\"Siwon\"}",
+    "birthday": "1987-02-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "322573c8-4ced-43bc-aef0-70a4d32ec713",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Donghae\",\"KO\":\"동해\",\"ES\":\"Donghae\"}",
+    "birthday": "1986-10-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f23323a4-9ecd-41d6-814e-2f6688134502",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Eunhyuk\",\"KO\":\"은혁\",\"ES\":\"Eunhyuk\"}",
+    "birthday": "1986-04-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d91f7b65-d7fb-44eb-8602-0a2b07b1b94c",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Heechul\",\"KO\":\"희철\",\"ES\":\"Heechul\"}",
+    "birthday": "1983-07-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "282adf76-bb51-4c7e-bfe6-1fbe1bb353de",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Leeteuk\",\"KO\":\"이특\",\"ES\":\"Leeteuk\"}",
+    "birthday": "1983-07-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a32decb5-029d-483d-b3b3-e781cae0b642",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"RYEOWOOK\",\"KO\":\"려욱\",\"ES\":\"RYEOWOOK\"}",
+    "birthday": "1987-06-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6d06ea65-a5b8-4005-bbf7-cd053d5c9f75",
+    "artist_id": "66082624-ee5b-43ae-8884-987df06f408c",
+    "name": "{\"EN\":\"Shindong\",\"KO\":\"신동희\",\"ES\":\"Shindong\"}",
+    "birthday": "1985-09-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:14.245845+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ea0be817-e13e-4552-a9cc-03e8d96274aa",
+    "artist_id": "d504186f-3da1-4b6f-af73-5eba071c5fdd",
+    "name": "{\"EN\":\"Soo-min Oh\",\"KO\":\"오수민\",\"ES\":\"Soo-min Oh\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:33.228359+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "716a2e82-c04b-459e-a563-648b95f96dfb",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Yeseo\",\"KO\":\"강예서\",\"ES\":\"Yeseo\"}",
+    "birthday": "2005-08-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1350a0fa-7e97-4b90-a8d2-80762fd16b2f",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Mashiro\",\"KO\":\"마시로\",\"ES\":\"Mashiro\"}",
+    "birthday": "1999-12-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d9c59819-a8ba-4ad4-96ec-3d86b4013673",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Choi Yujin\",\"KO\":\"최유진\",\"ES\":\"Choi Yujin\"}",
+    "birthday": "1996-08-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "66359f48-baf3-4b91-9b7e-8f105280b709",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Hikaru\",\"KO\":\"히카루\",\"ES\":\"Hikaru\"}",
+    "birthday": "2004-04-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "011b3563-801a-4c0a-8931-75f749531db8",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Bahiyyih\",\"KO\":\"바히에\",\"ES\":\"Bahiyyih\"}",
+    "birthday": "2004-07-27",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "72653a80-250c-408a-97e7-71ffcac75464",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Chaehyun\",\"KO\":\"채현\",\"ES\":\"Chaehyun\"}",
+    "birthday": "2002-04-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0cfe53cb-bf87-48ed-93dc-7905d311db5b",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Dayeon\",\"KO\":\"김다연\",\"ES\":\"Dayeon\"}",
+    "birthday": "2003-03-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "844f2710-0ed3-4e55-a096-6b89297bd8e9",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Xiaoting\",\"KO\":\"샤오팅\",\"ES\":\"Xiaoting\"}",
+    "birthday": "1999-11-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1d146ae7-a8e3-4095-be62-ae751d668072",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"JinE\",\"KO\":\"신혜진\",\"ES\":\"JinE\"}",
+    "birthday": "1995-01-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "27326346-e080-45fa-92b4-73a5d59b8769",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"Jiho\",\"KO\":\"공지호\",\"ES\":\"Jiho\"}",
+    "birthday": "1997-04-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "14092cf5-48ce-4220-b6a0-0e579d94679d",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"Arin\",\"KO\":\"아린\",\"ES\":\"Arin\"}",
+    "birthday": "1999-06-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "c3a1682a-93b1-43b3-b269-bc4792af8338",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"Choi Hyo-jung\",\"KO\":\"최효정\",\"ES\":\"Choi Hyo-jung\"}",
+    "birthday": "1994-07-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "fdbe5c49-d5d6-4dd2-ad1b-5f87b27736c3",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"Mimi\",\"KO\":\"김미현\",\"ES\":\"Mimi\"}",
+    "birthday": "1995-05-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1af2d759-cf2f-41d4-bb96-ea4c9650850e",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"Seunghee\",\"KO\":\"승희\",\"ES\":\"Seunghee\"}",
+    "birthday": "1996-01-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a679123f-6438-49a4-bb58-52c70996fb2a",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"YooA\",\"KO\":\"유시아\",\"ES\":\"YooA\"}",
+    "birthday": "1995-09-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0ac47c8d-4c52-4aa4-847e-e2e3f52a6e52",
+    "artist_id": "7d0ef173-8953-45ba-b3f4-184bc0932637",
+    "name": "{\"EN\":\"Yubin\",\"KO\":\"유빈\",\"ES\":\"Yubin\"}",
+    "birthday": "1988-10-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:24.661875+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0b8c7007-a9b7-42fe-8762-09e9e201154e",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"KIHYUN\",\"KO\":\"기현\",\"ES\":\"KIHYUN\"}",
+    "birthday": "1993-11-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b262ae0c-7424-41fb-9a3c-711041a62233",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"WONHO\",\"KO\":\"신호석\",\"ES\":\"WONHO\"}",
+    "birthday": "1993-03-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "85959293-7957-46d4-8ef0-296e0ae1536c",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"Chae Hyung-won\",\"KO\":\"형원\",\"ES\":\"Chae Hyung-won\"}",
+    "birthday": "1994-01-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ed74bdfa-5907-47ed-a9f0-a6946137da6f",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"Changkyun Lim\",\"KO\":\"I.M\",\"ES\":\"Changkyun Lim\"}",
+    "birthday": "1996-01-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "596d91cf-b60c-4dd0-abc7-b4f9a6e70a7d",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"Jooheon Lee\",\"KO\":\"이주헌\",\"ES\":\"Jooheon Lee\"}",
+    "birthday": "1994-10-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b81312b7-02b7-4c4e-a8dc-5c6e5eede2c3",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"Minhyuk\",\"KO\":\"민혁\",\"ES\":\"Minhyuk\"}",
+    "birthday": "1993-11-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "938a0396-2af0-41fe-8bcc-0e5f89ee0dc0",
+    "artist_id": "b01c986e-559d-4f36-bb68-3132b7e99ec9",
+    "name": "{\"EN\":\"Hyunwoo Sohn\",\"KO\":\"셔누\",\"ES\":\"Hyunwoo Sohn\"}",
+    "birthday": "1992-06-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:38.941749+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3c1c778d-b25a-4b74-a2e7-9ff4766570f1",
+    "artist_id": "f2c5fffa-4028-45e5-87e7-9610b5a73408",
+    "name": "{\"EN\":\"KUN\",\"KO\":\"군\",\"ES\":\"KUN\"}",
+    "birthday": "1996-01-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:43.478912+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "772e3ff6-944f-40ac-9020-490353f9db20",
+    "artist_id": "f2c5fffa-4028-45e5-87e7-9610b5a73408",
+    "name": "{\"EN\":\"XIAOJUN\",\"KO\":\"샤오쥔\",\"ES\":\"XIAOJUN\"}",
+    "birthday": "1999-08-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:43.478912+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ccaacfd7-e820-4cf2-acb3-bd3516968075",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Haruna\",\"KO\":\"하루나\",\"ES\":\"Haruna\"}",
+    "birthday": "2006-01-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7d3bf81b-a72a-454c-bb30-271961183688",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Moon Sua\",\"KO\":\"수아\",\"ES\":\"Moon Sua\"}",
+    "birthday": "1999-09-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "77f5c96e-c1cf-4aee-8012-779a5c164947",
+    "artist_id": "d504186f-3da1-4b6f-af73-5eba071c5fdd",
+    "name": "{\"EN\":\"J\",\"KO\":\"장예은\",\"ES\":\"J\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:33.228359+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9d728f95-9593-4eed-b019-7b2fa873c7a5",
+    "artist_id": "d504186f-3da1-4b6f-af73-5eba071c5fdd",
+    "name": "{\"EN\":\"SEEUN\",\"KO\":\"윤세은\",\"ES\":\"SEEUN\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:33.228359+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d165ae93-7556-4279-871b-06aa6904e915",
+    "artist_id": "8176e324-a470-400b-8cb9-c720186629f7",
+    "name": "{\"EN\":\"Suh, Young Eun\",\"KO\":\"서영은\",\"ES\":\"Suh, Young Eun\"}",
+    "birthday": "1973-07-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:51.538637+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "84235158-7798-4ca6-b5b8-d06dcd5c1371",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Haram\",\"KO\":\"하람\",\"ES\":\"Haram\"}",
+    "birthday": "2001-01-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b9268aad-3a52-46ca-91dd-c775aac0f9ce",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Siyoon\",\"KO\":\"시윤\",\"ES\":\"Siyoon\"}",
+    "birthday": "2005-02-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "478ec5d3-5e02-40b5-a28f-5da189d2678b",
+    "artist_id": "d504186f-3da1-4b6f-af73-5eba071c5fdd",
+    "name": "{\"EN\":\"Sieun\",\"KO\":\"박시은\",\"ES\":\"Sieun\"}",
+    "birthday": "2001-08-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:33.228359+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a583c6e3-10ee-47bd-8ccd-f354a28e16bd",
+    "artist_id": "d504186f-3da1-4b6f-af73-5eba071c5fdd",
+    "name": "{\"EN\":\"Yoon\",\"KO\":\"심자윤\",\"ES\":\"Yoon\"}",
+    "birthday": "2004-04-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:33.228359+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f71cc35f-bfd3-4849-86cb-892b09debcd4",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Tsuki\",\"KO\":\"츠키\",\"ES\":\"Tsuki\"}",
+    "birthday": "2002-09-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4d2ef4d9-9084-4e30-a663-8db0bd78ec34",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"JINI\",\"KO\":\"지니\",\"ES\":\"JINI\"}",
+    "birthday": "2004-04-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ff7ca419-2993-4e4b-954e-726b8f58b2cb",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"Haewon\",\"KO\":\"오해원\",\"ES\":\"Haewon\"}",
+    "birthday": "2003-02-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "362a91cb-0c01-4c13-9842-1efa42f4cf8a",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"Jiwoo\",\"KO\":\"김지우\",\"ES\":\"Jiwoo\"}",
+    "birthday": "2005-04-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0ea12c4a-9184-4308-a43d-6bffe6a6c76d",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"Kyujin\",\"KO\":\"규진\",\"ES\":\"Kyujin\"}",
+    "birthday": "2006-05-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7954c55c-5eeb-4c7f-908d-6be034495750",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"LILY\",\"KO\":\"LILY\",\"ES\":\"LILY\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "754f17b9-61aa-4f98-8c87-81125a0d1389",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"Sullyoon\",\"KO\":\"설윤\",\"ES\":\"Sullyoon\"}",
+    "birthday": "2004-01-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d54b1ba4-2442-4960-a215-b439aec56886",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"Haram\",\"KO\":\"라미\",\"ES\":\"Haram\"}",
+    "birthday": "2007-10-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ae93e328-6415-4e86-8016-cd5ac07f8957",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"AHYEON\",\"KO\":\"아현\",\"ES\":\"AHYEON\"}",
+    "birthday": "2007-04-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5a4a453e-23f4-4b0f-8e58-7fea39adcebe",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"CHIQUITA\",\"KO\":\"치키타\",\"ES\":\"CHIQUITA\"}",
+    "birthday": "2009-02-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "c4411225-1600-4f22-b5d9-83c017bd3738",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"ASA\",\"KO\":\"아사\",\"ES\":\"ASA\"}",
+    "birthday": "2006-04-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3305734f-960b-4eca-ac9e-d390a7e49a74",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"Lola\",\"KO\":\"로라\",\"ES\":\"Lola\"}",
+    "birthday": "2001-02-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "57cdf073-bbc5-4742-920b-b70f46fa2470",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"PHARITA\",\"KO\":\"파리타\",\"ES\":\"PHARITA\"}",
+    "birthday": "2005-08-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d5835844-c7f9-4a96-8deb-434df1b0dbd6",
+    "artist_id": "1f955bb4-330e-44db-a972-61557a33d2e5",
+    "name": "{\"EN\":\"RUKA\",\"KO\":\"루카\",\"ES\":\"RUKA\"}",
+    "birthday": "2002-03-20",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:25.385188+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6f267668-8fd5-4d44-bb5d-921f367faf16",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Lee Seoyeon\",\"KO\":\"이서연\",\"ES\":\"Lee Seoyeon\"}",
+    "birthday": "2000-01-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "da3a4386-664c-471c-9c07-ceadd004bb44",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Noh Ji Sun\",\"KO\":\"노지선\",\"ES\":\"Noh Ji Sun\"}",
+    "birthday": "1998-11-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d891c4ff-b0e9-46b8-8c9c-e0f8ed52baaa",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Park Ji Won\",\"KO\":\"박지원\",\"ES\":\"Park Ji Won\"}",
+    "birthday": "1998-03-20",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "52a89bb5-dc52-4de2-ba25-05a5593bd231",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Hong Yookyung\",\"KO\":\"홍유경\",\"ES\":\"Hong Yookyung\"}",
+    "birthday": "1994-09-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d28f2c53-084d-4052-81c1-92e84784b373",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Naeun\",\"KO\":\"손나은\",\"ES\":\"Naeun\"}",
+    "birthday": "1994-02-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0800a9e7-fe82-413b-91a7-8cbb1ff2a6c9",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Eunji\",\"KO\":\"정혜림\",\"ES\":\"Eunji\"}",
+    "birthday": "1993-08-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "89a8526c-42a9-43b0-bec3-52cc4f7e9db3",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Hayoung\",\"KO\":\"오하영\",\"ES\":\"Hayoung\"}",
+    "birthday": "1996-07-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "cf800c24-edaf-49ea-abb3-ddd4105e1171",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Chorong\",\"KO\":\"박초롱\",\"ES\":\"Chorong\"}",
+    "birthday": "1991-03-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "51f5c6f1-8224-4955-98e7-c1b19ca0188c",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Bomi\",\"KO\":\"윤보미\",\"ES\":\"Bomi\"}",
+    "birthday": "1993-08-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "71e6c9f7-4a1c-46ab-9e80-8c7b536b1e55",
+    "artist_id": "d15cd15c-225f-4684-81de-50af11735107",
+    "name": "{\"EN\":\"Michael Carrodus\",\"KO\":\"Michael Carrodus\",\"ES\":\"Michael Carrodus\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:21.653607+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ec465f75-9bf7-4416-bc5c-f33ae2ebbe7f",
+    "artist_id": "d15cd15c-225f-4684-81de-50af11735107",
+    "name": "{\"EN\":\"Chris McCarter\",\"KO\":\"Chris McCarter\",\"ES\":\"Chris McCarter\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:21.653607+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "781d0b5b-c5c2-4879-9eaf-db079ca78cf8",
+    "artist_id": "d15cd15c-225f-4684-81de-50af11735107",
+    "name": "{\"EN\":\"Dino Molinaro\",\"KO\":\"Dino Molinaro\",\"ES\":\"Dino Molinaro\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:21.653607+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "786775e5-bd81-43ef-ad40-6667c8410eee",
+    "artist_id": "046b6c95-ba17-4d4d-902b-37672870aa0c",
+    "name": "{\"EN\":\"Eunha\",\"KO\":\"정은비\",\"ES\":\"Eunha\"}",
+    "birthday": "1997-05-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:47.310379+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7e7f3dee-223f-4be5-a41c-ed423dbe57ce",
+    "artist_id": "046b6c95-ba17-4d4d-902b-37672870aa0c",
+    "name": "{\"EN\":\"SinB\",\"KO\":\"신비\",\"ES\":\"SinB\"}",
+    "birthday": "1998-06-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:47.310379+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7d2dfef3-349f-4041-9eca-3646fbf722d7",
+    "artist_id": "046b6c95-ba17-4d4d-902b-37672870aa0c",
+    "name": "{\"EN\":\"Kim Ye-won\",\"KO\":\"김예원\",\"ES\":\"Kim Ye-won\"}",
+    "birthday": "1998-08-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:47.310379+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "c74e531f-0e31-42ee-80ea-0f8e69a4f363",
+    "artist_id": "5f803aae-9ea2-422a-8d29-f392ca8de6b2",
+    "name": "{\"EN\":\"Mia\",\"KO\":\"미아\",\"ES\":\"Mia\"}",
+    "birthday": "2000-01-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:59.021082+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f9b06d9b-07b7-4608-9c2d-505232448cad",
+    "artist_id": "5f803aae-9ea2-422a-8d29-f392ca8de6b2",
+    "name": "{\"EN\":\"王怡人\",\"KO\":\"이런\",\"ES\":\"王怡人\"}",
+    "birthday": "2000-12-29",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:59.021082+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9099994d-be90-4bf6-b3c1-15bab7965b5e",
+    "artist_id": "5f803aae-9ea2-422a-8d29-f392ca8de6b2",
+    "name": "{\"EN\":\"E:U\",\"KO\":\"박지원\",\"ES\":\"E:U\"}",
+    "birthday": "1998-05-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:59.021082+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5d640d05-96b7-4c7a-902a-3bf510c0fdba",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"Dami\",\"KO\":\"다미\",\"ES\":\"Dami\"}",
+    "birthday": "1997-03-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5ceddb12-0223-41e6-a7bd-335ea58348ea",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"Ga-hyeon\",\"KO\":\"가현\",\"ES\":\"Ga-hyeon\"}",
+    "birthday": "1999-02-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "36e4dd5c-e9bf-472a-85e3-412eba0445f2",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"Han Dong\",\"KO\":\"한동\",\"ES\":\"Han Dong\"}",
+    "birthday": "1996-03-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "68f2184a-516a-4bff-b6fa-c34fa3bcb856",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"JI U\",\"KO\":\"김민지\",\"ES\":\"JI U\"}",
+    "birthday": "1994-05-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "41a09d7e-ffbd-43d7-a5c2-43bbbec1e585",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"Lee Si-yeon\",\"KO\":\"시연\",\"ES\":\"Lee Si-yeon\"}",
+    "birthday": "1995-10-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9a2a9a5c-d970-4651-994c-8e99d8aa13cf",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"Kim Bo-ra\",\"KO\":\"김보라\",\"ES\":\"Kim Bo-ra\"}",
+    "birthday": "1994-08-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "784465d2-3b11-47a8-9c00-dbad6708b70e",
+    "artist_id": "97fbba88-1543-472f-b344-b7b30e2213f6",
+    "name": "{\"EN\":\"Kim Yoohyeon\",\"KO\":\"김유현\",\"ES\":\"Kim Yoohyeon\"}",
+    "birthday": "1997-01-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:12.732988+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a40753c1-f8ad-4b7f-9ccd-445f93388601",
+    "artist_id": "355b155a-9073-4845-a3b3-f85737e66887",
+    "name": "{\"EN\":\"BM\",\"KO\":\"BM\",\"ES\":\"BM\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:21.776046+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1b33d61a-a618-4186-af3c-2f3efc9f71cd",
+    "artist_id": "355b155a-9073-4845-a3b3-f85737e66887",
+    "name": "{\"EN\":\"J.Seph\",\"KO\":\"김태형\",\"ES\":\"J.Seph\"}",
+    "birthday": "1992-06-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:21.776046+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "80581e47-a394-454d-9685-50fa28101302",
+    "artist_id": "355b155a-9073-4845-a3b3-f85737e66887",
+    "name": "{\"EN\":\"JIWOO\",\"KO\":\"JIWOO\",\"ES\":\"JIWOO\"}",
+    "birthday": "1997-11-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:21.776046+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "492e9ce9-11a8-4a7b-b54e-cf2920e5a7b7",
+    "artist_id": "355b155a-9073-4845-a3b3-f85737e66887",
+    "name": "{\"EN\":\"Jeon So-min\",\"KO\":\"전소민\",\"ES\":\"Jeon So-min\"}",
+    "birthday": "1996-08-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:40:21.776046+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "76a64603-7c4a-4ffb-8164-1ec058b63107",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Ro Woon\",\"KO\":\"로운\",\"ES\":\"Ro Woon\"}",
+    "birthday": "1996-08-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7159adee-16fb-4fb9-8069-01d4a890ff02",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Hwiyoung\",\"KO\":\"휘영\",\"ES\":\"Hwiyoung\"}",
+    "birthday": "1999-05-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "fb5db176-832f-437d-9663-8d1e0fb87256",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Inseong\",\"KO\":\"인성\",\"ES\":\"Inseong\"}",
+    "birthday": "1993-07-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "05fc1dac-0f09-45b4-9ced-7d60ce4697d9",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Alex Moon\",\"KO\":\"문재윤\",\"ES\":\"Alex Moon\"}",
+    "birthday": "2002-07-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4cd46853-0092-4a22-b8b1-7fd4a619122d",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Kim, Su Yeon\",\"KO\":\"김수연\",\"ES\":\"Kim, Su Yeon\"}",
+    "birthday": "2003-01-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "748be2d8-0e48-4d7b-bef9-23a98299a4e4",
+    "artist_id": "687a0624-bef1-42a4-bca0-72f6a5897969",
+    "name": "{\"EN\":\"Bae\",\"KO\":\"배이\",\"ES\":\"Bae\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:11.49474+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d5674639-801c-439c-bb89-535ef855c8de",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Jang, Gyuri\",\"KO\":\"장규리\",\"ES\":\"Jang, Gyuri\"}",
+    "birthday": "1997-12-27",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0325564b-4203-4588-9e66-e97722ed9551",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Lee, Sae-rom\",\"KO\":\"이새롬\",\"ES\":\"Lee, Sae-rom\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3e2cb9ed-6ef1-4ae9-a03f-3a60b512681c",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Baek, Ji-heon\",\"KO\":\"백지헌\",\"ES\":\"Baek, Ji-heon\"}",
+    "birthday": "2003-04-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "51f590f0-1284-46f3-b9d8-a1bf806b70bb",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Lee, Chae-young\",\"KO\":\"이채영\",\"ES\":\"Lee, Chae-young\"}",
+    "birthday": "2000-05-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "11f10ffa-dbe2-41dd-9da7-aba82bc08df0",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Lee, Na-gyung\",\"KO\":\"이나경\",\"ES\":\"Lee, Na-gyung\"}",
+    "birthday": "2000-06-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f8c387ac-d54e-408d-b1e7-0671106a07ba",
+    "artist_id": "ebab91ae-ff2f-4d9c-8daf-2eaa91e7cd02",
+    "name": "{\"EN\":\"Song, Ha-young\",\"KO\":\"송하영\",\"ES\":\"Song, Ha-young\"}",
+    "birthday": "1997-09-29",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:43.399409+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2647e9b6-9032-4ded-af88-0d2318e1aced",
+    "artist_id": "e0a8e2bd-a5ef-462d-ba0d-e5ab3880e2a2",
+    "name": "{\"EN\":\"Kim, Nam Joo\",\"KO\":\"김남주\",\"ES\":\"Kim, Nam Joo\"}",
+    "birthday": "1995-04-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:38:56.767039+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0e3b8fbb-13b7-46bc-a066-5f6fb4036481",
+    "artist_id": "5f803aae-9ea2-422a-8d29-f392ca8de6b2",
+    "name": "{\"EN\":\"Aisha\",\"KO\":\"허유림\",\"ES\":\"Aisha\"}",
+    "birthday": "2015-07-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:59.021082+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "da67edd0-104a-4667-9340-30d703a51601",
+    "artist_id": "5f803aae-9ea2-422a-8d29-f392ca8de6b2",
+    "name": "{\"EN\":\"Kim, Si-hyun\",\"KO\":\"김시현\",\"ES\":\"Kim, Si-hyun\"}",
+    "birthday": "1999-08-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:59.021082+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a330873b-07b5-444c-a289-b3b332bc8478",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Dawon\",\"KO\":\"다원\",\"ES\":\"Dawon\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7ab8579b-ab0d-422f-a29f-c5a05030066f",
+    "artist_id": "5f803aae-9ea2-422a-8d29-f392ca8de6b2",
+    "name": "{\"EN\":\"Onda\",\"KO\":\"조세림\",\"ES\":\"Onda\"}",
+    "birthday": "2000-05-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:39:59.021082+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5bfa29e8-de36-4f93-8bf1-a42944eb1739",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Chani\",\"KO\":\"찬희\",\"ES\":\"Chani\"}",
+    "birthday": "2000-01-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e9a60fe0-812a-41fb-9dd5-06da1ac5ecf6",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Yoo Tae Yang\",\"KO\":\"태양\",\"ES\":\"Yoo Tae Yang\"}",
+    "birthday": "1997-02-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "92a2ff70-6131-4424-b7a6-29ee268dd5d8",
+    "artist_id": "10ec6696-6b5c-4f6b-8ceb-ef0521c0dc1d",
+    "name": "{\"EN\":\"Jae-hyung Park\",\"KO\":\"박제형\",\"ES\":\"Jae-hyung Park\"}",
+    "birthday": "1992-09-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:29.533915+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3f986a92-a2a3-4576-9c49-21b702787ba0",
+    "artist_id": "10ec6696-6b5c-4f6b-8ceb-ef0521c0dc1d",
+    "name": "{\"EN\":\"Young K\",\"KO\":\"강영현\",\"ES\":\"Young K\"}",
+    "birthday": "1993-12-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:29.533915+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a318906b-12b3-43fe-a95b-0bb412b38da6",
+    "artist_id": "10ec6696-6b5c-4f6b-8ceb-ef0521c0dc1d",
+    "name": "{\"EN\":\"WONPIL\",\"KO\":\"김원필\",\"ES\":\"WONPIL\"}",
+    "birthday": "1994-04-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:29.533915+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4c78c80e-bf30-48ab-9d0c-ae0593e3ae28",
+    "artist_id": "10ec6696-6b5c-4f6b-8ceb-ef0521c0dc1d",
+    "name": "{\"EN\":\"Dowoon\",\"KO\":\"도운\",\"ES\":\"Dowoon\"}",
+    "birthday": "1995-08-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:29.533915+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7342be5d-3130-484d-abfc-310e356bfb57",
+    "artist_id": "c3ccc339-68f3-410e-bfb9-eca733fbe836",
+    "name": "{\"EN\":\"Joker\",\"KO\":\"용준형\",\"ES\":\"Joker\"}",
+    "birthday": "1989-12-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:40.278556+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7db44228-7103-43f0-b7a8-ec681ce1d4af",
+    "artist_id": "c3ccc339-68f3-410e-bfb9-eca733fbe836",
+    "name": "{\"EN\":\"Lee Gi Kwang\",\"KO\":\"이기광\",\"ES\":\"Lee Gi Kwang\"}",
+    "birthday": "1990-03-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:40.278556+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "bc0f5771-0266-43fa-b62d-211a6f5d39fc",
+    "artist_id": "c3ccc339-68f3-410e-bfb9-eca733fbe836",
+    "name": "{\"EN\":\"Son Dong Woon\",\"KO\":\"손동운\",\"ES\":\"Son Dong Woon\"}",
+    "birthday": "1991-06-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:40.278556+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "51e49efc-1aa2-462e-b6e9-b4c39dc4d3f7",
+    "artist_id": "c3ccc339-68f3-410e-bfb9-eca733fbe836",
+    "name": "{\"EN\":\"YANG YO SEOP\",\"KO\":\"양요섭\",\"ES\":\"YANG YO SEOP\"}",
+    "birthday": "1990-01-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:40.278556+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "78dc8e3b-11a8-4ff3-b861-ea6fa382a4d7",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"J.DON\",\"KO\":\"이승협\",\"ES\":\"J.DON\"}",
+    "birthday": "1992-10-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "30a351ff-208b-474d-a56b-4049224551b9",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"J.DON\",\"KO\":\"이승협\",\"ES\":\"J.DON\"}",
+    "birthday": "1992-10-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8feee196-f296-419d-985a-c28c52306728",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"J.DON\",\"KO\":\"이승협\",\"ES\":\"J.DON\"}",
+    "birthday": "1992-10-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ad1e9a5e-8047-4cda-8802-df5eac8b3727",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"J.DON\",\"KO\":\"이승협\",\"ES\":\"J.DON\"}",
+    "birthday": "1992-10-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "46e5aa06-e848-4584-b724-8cd379b47809",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"J.DON\",\"KO\":\"이승협\",\"ES\":\"J.DON\"}",
+    "birthday": "1992-10-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "bc38775e-2ad0-46ce-a8d5-8df8de24cd46",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"Yoo Hwe Seung\",\"KO\":\"유회승\",\"ES\":\"Yoo Hwe Seung\"}",
+    "birthday": "1995-02-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "887e0020-22b1-4498-a51c-abfaa18dedc1",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"Jung Ilhoon\",\"KO\":\"정일훈\",\"ES\":\"Jung Ilhoon\"}",
+    "birthday": "1994-10-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "76d0b11d-5810-4e4c-8571-0e00c5298296",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"Changsub\",\"KO\":\"이창섭\",\"ES\":\"Changsub\"}",
+    "birthday": "1991-02-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "841805e0-429f-4b65-a0a3-c77c10e3e3f6",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"Lim Hyunsik\",\"KO\":\"임현식\",\"ES\":\"Lim Hyunsik\"}",
+    "birthday": "1992-03-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "22d33a6c-c8ea-4624-ac73-edcdf6616f13",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"Peniel D. Shin\",\"KO\":\"신동근\",\"ES\":\"Peniel D. Shin\"}",
+    "birthday": "1993-03-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "320831f2-cef1-442a-a828-71459750be24",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"Seo Eunkwang\",\"KO\":\"서은광\",\"ES\":\"Seo Eunkwang\"}",
+    "birthday": "1990-11-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "93c1425c-fd99-4173-9cea-9b8fa0557275",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"YOOK SUNGJAE\",\"KO\":\"육성재\",\"ES\":\"YOOK SUNGJAE\"}",
+    "birthday": "1995-05-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e744276f-6d02-4b6c-a043-634e4e3b36f4",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"HOYA\",\"KO\":\"이호원\",\"ES\":\"HOYA\"}",
+    "birthday": "1991-03-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "eaf232dc-dd0c-4749-9ae9-b262a2fed2f0",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"Dongwoo\",\"KO\":\"장동우\",\"ES\":\"Dongwoo\"}",
+    "birthday": "1990-11-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "029c5a0e-b287-495c-bace-07d51f5d39a5",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"Kim Sung Kyu\",\"KO\":\"김성규\",\"ES\":\"Kim Sung Kyu\"}",
+    "birthday": "1989-04-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e104fd09-87c7-47d8-ab54-0254c1d3db38",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"L\",\"KO\":\"L\",\"ES\":\"L\"}",
+    "birthday": "1981-02-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1f477aae-fb61-4892-bfa4-0f40650a9cdc",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"NAM WOO HYUN\",\"KO\":\"남우현\",\"ES\":\"NAM WOO HYUN\"}",
+    "birthday": "1991-02-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "01955599-7b09-4f78-8e1b-0bd92c635cbc",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"Lee Seong Jong\",\"KO\":\"이성종\",\"ES\":\"Lee Seong Jong\"}",
+    "birthday": "1993-09-03",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5a0015f9-f71a-46df-861c-5ec19bac9f63",
+    "artist_id": "4b411555-246e-4ab7-9518-9052b6907436",
+    "name": "{\"EN\":\"Lee Sung Yeol\",\"KO\":\"이성열\",\"ES\":\"Lee Sung Yeol\"}",
+    "birthday": "1991-08-27",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:25.666658+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5a04f419-71e9-4387-b601-d7d127116058",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Nicole\",\"KO\":\"니콜\",\"ES\":\"Nicole\"}",
+    "birthday": "1991-10-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5d3dcbc3-43c8-4e9f-9722-77ce61aadf8e",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Han Seung Yeon\",\"KO\":\"한승연\",\"ES\":\"Han Seung Yeon\"}",
+    "birthday": "1988-07-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0801eaa0-2938-4be1-a38d-14de9a7279c7",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Gyuri\",\"KO\":\"박규리\",\"ES\":\"Gyuri\"}",
+    "birthday": "1988-05-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "dad64ec9-d7fc-4330-b0a3-e0533b3357b4",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Kang Ji Young\",\"KO\":\"강지영\",\"ES\":\"Kang Ji Young\"}",
+    "birthday": "1994-01-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "60146468-415a-4d2f-b87c-b6458d54f930",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Goo Hara\",\"KO\":\"구하라\",\"ES\":\"Goo Hara\"}",
+    "birthday": "1991-01-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b56c8f9f-ce59-4a00-a784-75be3f29247e",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"HUR YOUNG JI\",\"KO\":\"영지\",\"ES\":\"HUR YOUNG JI\"}",
+    "birthday": "1994-08-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3a20b018-2acb-4718-9c40-36ced5dead39",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Han Seung Yeon\",\"KO\":\"한승연\",\"ES\":\"Han Seung Yeon\"}",
+    "birthday": "1988-07-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d0904d32-748f-4e9c-a52f-9b64c07da52e",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"HUR YOUNG JI\",\"KO\":\"영지\",\"ES\":\"HUR YOUNG JI\"}",
+    "birthday": "1994-08-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8b48c893-bc1a-4460-b7f4-f6e8e824a327",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Kang Ji Young\",\"KO\":\"강지영\",\"ES\":\"Kang Ji Young\"}",
+    "birthday": "1994-01-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "220e0731-363f-472a-9638-56b38fd9f258",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"Jay Park\",\"KO\":\"박재범\",\"ES\":\"Jay Park\"}",
+    "birthday": "1987-04-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "78ad53b4-67d1-465a-a191-9c038f0cb587",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"Jang Wooyoung\",\"KO\":\"우영\",\"ES\":\"Jang Wooyoung\"}",
+    "birthday": "1989-04-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4ddaa2cc-517e-4c3c-8fb5-f7eaefd1ba28",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"JUN. K\",\"KO\":\"김민준\",\"ES\":\"JUN. K\"}",
+    "birthday": "1988-01-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7455cba9-69f1-4c8f-97dc-8e9b20bb7d5a",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"JUNHO\",\"KO\":\"이준호\",\"ES\":\"JUNHO\"}",
+    "birthday": "1990-01-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "584af0b3-6565-49f0-a3d7-918da884b319",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"Nichkhun\",\"KO\":\"닉쿤\",\"ES\":\"Nichkhun\"}",
+    "birthday": "1988-06-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b1f68c83-bdbc-414a-b161-ecd1d5f06193",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"TAECYEON\",\"KO\":\"옥택연\",\"ES\":\"TAECYEON\"}",
+    "birthday": "1988-12-27",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "bde8fac8-4f57-4b1c-87bf-293ecda7f820",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"ZICO\",\"KO\":\"우지호\",\"ES\":\"ZICO\"}",
+    "birthday": "1992-09-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6d93ad91-110b-4005-8e5d-e3db826a6bf1",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"B-Bomb\",\"KO\":\"이민혁\",\"ES\":\"B-Bomb\"}",
+    "birthday": "1990-12-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6f8e4ffe-a19e-4267-8811-8915e902cbbf",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"P.O\",\"KO\":\"표지훈\",\"ES\":\"P.O\"}",
+    "birthday": "1993-02-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f9a2566d-0fc9-46dc-bb28-a7a7cd9dabc1",
+    "artist_id": "10ec6696-6b5c-4f6b-8ceb-ef0521c0dc1d",
+    "name": "{\"EN\":\"Lim, Jun-hyeok\",\"KO\":\"임준혁\",\"ES\":\"Lim, Jun-hyeok\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:29.533915+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6ea0b319-5678-4686-91ab-cc8f90c69fd6",
+    "artist_id": "c3ccc339-68f3-410e-bfb9-eca733fbe836",
+    "name": "{\"EN\":\"Yoon, Doo-joon\",\"KO\":\"윤두준\",\"ES\":\"Yoon, Doo-joon\"}",
+    "birthday": "1989-07-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:40.278556+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d40c7dc7-5a62-4fdc-8fad-0f97bbd6fd3f",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"Kwon, Kwang Jin\",\"KO\":\"권광진\",\"ES\":\"Kwon, Kwang Jin\"}",
+    "birthday": "1992-08-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "cdbf5e9c-488a-4ef3-8c3d-ec46c54e55e2",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"Cha, Hun\",\"KO\":\"차훈\",\"ES\":\"Cha, Hun\"}",
+    "birthday": "1994-07-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f5b35560-7f97-4452-9490-c36ba6f19663",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"Kim, Jae Hyun\",\"KO\":\"김재현\",\"ES\":\"Kim, Jae Hyun\"}",
+    "birthday": "1994-07-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ff58455f-78c6-4273-a9d4-0809e2405bfc",
+    "artist_id": "9887c746-745e-4474-8504-3e9f104752cf",
+    "name": "{\"EN\":\"Dongsung\",\"KO\":\"서동성\",\"ES\":\"Dongsung\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:58.685838+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7e294ff8-5e6b-4c6a-86ce-ca3b980f8a06",
+    "artist_id": "0108c766-6985-4193-a362-e147d54b9fcc",
+    "name": "{\"EN\":\"Lee, Min-hyuk\",\"KO\":\"이민혁\",\"ES\":\"Lee, Min-hyuk\"}",
+    "birthday": "1990-11-29",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:12.270406+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "437dde3c-b842-4de8-9cd5-9e55eeee3222",
+    "artist_id": "7d2c90af-c37d-48b8-957f-87833ce8a72a",
+    "name": "{\"EN\":\"Kim, Sung Hee\",\"KO\":\"김성희\",\"ES\":\"Kim, Sung Hee\"}",
+    "birthday": "1989-05-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:44.807399+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "82e340a1-6429-4ae0-9c07-43b701b8c0f2",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Youngbin\",\"KO\":\"김영빈\",\"ES\":\"Youngbin\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d4bbe9ea-445a-4545-a299-bf42e8cb9c55",
+    "artist_id": "c8e075d1-8581-4039-a83a-d0ddbc99389e",
+    "name": "{\"EN\":\"Chansung\",\"KO\":\"찬성\",\"ES\":\"Chansung\"}",
+    "birthday": "1990-02-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:42:58.217047+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "66eb31e2-040d-4a73-8bee-c9e34e433a76",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"Jaehyo\",\"KO\":\"안재효\",\"ES\":\"Jaehyo\"}",
+    "birthday": "1990-12-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "c7db4b7b-1092-45dc-bbe3-0ed61a029114",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"Park Kyung\",\"KO\":\"박경\",\"ES\":\"Park Kyung\"}",
+    "birthday": "1992-07-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e0c1015a-4cbf-4d3f-8687-9fee2a687f25",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"TAEIL\",\"KO\":\"태일\",\"ES\":\"TAEIL\"}",
+    "birthday": "1994-06-11",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7abb87d1-2c37-4b49-9a4f-8ce5df18e0ba",
+    "artist_id": "f81ac5aa-e4d0-48df-bcdf-963e367df42e",
+    "name": "{\"EN\":\"U‐KWON\",\"KO\":\"김유권\",\"ES\":\"U‐KWON\"}",
+    "birthday": "1992-04-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:11.674369+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "35ba60ab-2aa2-4dbe-9ea9-a1d62375dd1d",
+    "artist_id": "9306ae61-5997-452c-a0e8-56d36547d1af",
+    "name": "{\"EN\":\"Baro\",\"KO\":\"차선우\",\"ES\":\"Baro\"}",
+    "birthday": "1992-09-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:34.397855+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0df987ea-3837-40be-bae0-2eee029c5571",
+    "artist_id": "9306ae61-5997-452c-a0e8-56d36547d1af",
+    "name": "{\"EN\":\"Jinyoung\",\"KO\":\"박진영\",\"ES\":\"Jinyoung\"}",
+    "birthday": "1994-09-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:34.397855+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1ab61989-91e5-4e50-b1c6-863a4ce90f43",
+    "artist_id": "9306ae61-5997-452c-a0e8-56d36547d1af",
+    "name": "{\"EN\":\"Shin Dong-Woo\",\"KO\":\"신동우\",\"ES\":\"Shin Dong-Woo\"}",
+    "birthday": "1991-06-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:34.397855+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e9b3041e-4b33-46dc-9e65-a9a67aa90ed8",
+    "artist_id": "9306ae61-5997-452c-a0e8-56d36547d1af",
+    "name": "{\"EN\":\"Sandeul\",\"KO\":\"이정환\",\"ES\":\"Sandeul\"}",
+    "birthday": "1992-03-20",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:34.397855+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "49d725a1-2e06-4f85-a463-454f993eb168",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"Seunghan\",\"KO\":\"승한\",\"ES\":\"Seunghan\"}",
+    "birthday": "2003-10-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a86c5416-0243-4233-a017-d802088134f5",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"ANTON\",\"KO\":\"ANTON\",\"ES\":\"ANTON\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "bb0efa49-ea0c-4702-9db6-83245fc989ad",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"SHOTARO\",\"KO\":\"쇼타로\",\"ES\":\"SHOTARO\"}",
+    "birthday": "2000-11-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d3761a4d-940d-48b9-8d7a-0475818b7164",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"Sohee\",\"KO\":\"김소희\",\"ES\":\"Sohee\"}",
+    "birthday": "1999-12-31",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0b8efa7f-5d3f-491b-94ab-743507efd739",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"Sungchan\",\"KO\":\"성찬\",\"ES\":\"Sungchan\"}",
+    "birthday": "2001-09-13",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "11c71953-e121-4aee-b7f8-d880ed0f1b51",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"Wonbin\",\"KO\":\"박원빈\",\"ES\":\"Wonbin\"}",
+    "birthday": "2002-03-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "20bc1759-46da-4e65-89ad-d49f71994984",
+    "artist_id": "5e326ce0-619b-4258-8d7d-8556626deeb1",
+    "name": "{\"EN\":\"Nam Tae Hyun\",\"KO\":\"남태현\",\"ES\":\"Nam Tae Hyun\"}",
+    "birthday": "1994-05-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:17.754836+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ef811415-7e32-4285-a626-93a7e75810b3",
+    "artist_id": "5e326ce0-619b-4258-8d7d-8556626deeb1",
+    "name": "{\"EN\":\"JINU\",\"KO\":\"김진우\",\"ES\":\"JINU\"}",
+    "birthday": "1991-09-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:17.754836+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e864b6f2-27aa-41e6-9ede-e2898bf54eba",
+    "artist_id": "5e326ce0-619b-4258-8d7d-8556626deeb1",
+    "name": "{\"EN\":\"Kang Seung Yoon\",\"KO\":\"강승윤\",\"ES\":\"Kang Seung Yoon\"}",
+    "birthday": "1994-01-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:17.754836+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a270adec-2849-4672-bf64-215c9397ca34",
+    "artist_id": "5e326ce0-619b-4258-8d7d-8556626deeb1",
+    "name": "{\"EN\":\"MINO\",\"KO\":\"MINO\",\"ES\":\"MINO\"}",
+    "birthday": "1980-08-08",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:17.754836+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "79a8def2-086c-464e-9892-33f32800410f",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"BANG YEDAM\",\"KO\":\"방예담\",\"ES\":\"BANG YEDAM\"}",
+    "birthday": "2002-05-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "674b023a-d2b8-4710-81e5-46d4a2987101",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"MASHIHO\",\"KO\":\"たかた ましほ\",\"ES\":\"MASHIHO\"}",
+    "birthday": "2001-03-25",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1893257e-54e7-428d-b1f2-d1828cc0801a",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"はまだ あさひ\",\"KO\":\"はまだ あさひ\",\"ES\":\"はまだ あさひ\"}",
+    "birthday": "2001-08-20",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "412b5beb-e800-4d4c-a7c6-fd07297c249e",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"JUNGWOO\",\"KO\":\"박정우\",\"ES\":\"JUNGWOO\"}",
+    "birthday": "1997-10-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0e3591e2-82b8-476a-ab4c-e18a17a15c2f",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"かねもと よしのり\",\"KO\":\"かねもと よしのり\",\"ES\":\"かねもと よしのり\"}",
+    "birthday": "2000-05-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9c581080-8dbc-4a92-9603-9fa5765c0daf",
+    "artist_id": "aa9bdb41-d42e-4486-9f57-d4527e971f12",
+    "name": "{\"EN\":\"Jaehyun\",\"KO\":\"재현\",\"ES\":\"Jaehyun\"}",
+    "birthday": "2003-12-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:51.236023+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "811ab4b5-1267-4106-9233-7d2c7b720add",
+    "artist_id": "aa9bdb41-d42e-4486-9f57-d4527e971f12",
+    "name": "{\"EN\":\"Riwoo\",\"KO\":\"리우\",\"ES\":\"Riwoo\"}",
+    "birthday": "2003-10-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:51.236023+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "fc7bce29-5d25-4a17-ab6b-ea13d4b9cf7c",
+    "artist_id": "aa9bdb41-d42e-4486-9f57-d4527e971f12",
+    "name": "{\"EN\":\"Sungho\",\"KO\":\"박성호\",\"ES\":\"Sungho\"}",
+    "birthday": "2003-09-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:51.236023+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "457b8549-848d-49bd-9805-c235f5759c4e",
+    "artist_id": "aa9bdb41-d42e-4486-9f57-d4527e971f12",
+    "name": "{\"EN\":\"Taesan\",\"KO\":\"태산\",\"ES\":\"Taesan\"}",
+    "birthday": "2004-08-10",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:51.236023+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e13c6bd3-36f8-4ada-8f5d-627b6f5c40cd",
+    "artist_id": "aa9bdb41-d42e-4486-9f57-d4527e971f12",
+    "name": "{\"EN\":\"Woonhak\",\"KO\":\"김운학\",\"ES\":\"Woonhak\"}",
+    "birthday": "2006-11-29",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:51.236023+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8e59cf97-d539-4a27-ba4f-7bedebad41ec",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"BAMBAM\",\"KO\":\"뱀뱀\",\"ES\":\"BAMBAM\"}",
+    "birthday": "1997-05-02",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "5065dedc-33ff-4d22-be8e-ac5a0dcbb299",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"Defsoul\",\"KO\":\"林宰範\",\"ES\":\"Defsoul\"}",
+    "birthday": "1994-01-06",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b529d3a7-8414-471f-bdc7-c3e41e7c3e58",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"Jinyoung\",\"KO\":\"박진영\",\"ES\":\"Jinyoung\"}",
+    "birthday": "1994-09-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e33b5eab-b44a-442d-b352-bb538d7619a6",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"MARK\",\"KO\":\"마크\",\"ES\":\"MARK\"}",
+    "birthday": "1993-09-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "178d1903-1649-49f6-b73f-cafe8848c86e",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"JACKSON\",\"KO\":\"잭슨\",\"ES\":\"JACKSON\"}",
+    "birthday": "1994-03-28",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7f92fd34-5bc1-44a1-a0c7-06f23debb82c",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"Youngjae\",\"KO\":\"영재\",\"ES\":\"Youngjae\"}",
+    "birthday": "1996-09-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "bcf031f5-b263-4d20-acc6-19b6af8462c3",
+    "artist_id": "9d32d83b-b86c-4d9d-a9ef-3998b7a2f5be",
+    "name": "{\"EN\":\"Yugyeom\",\"KO\":\"유겸\",\"ES\":\"Yugyeom\"}",
+    "birthday": "1997-11-17",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:04.761025+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "7b603646-da00-4835-a6db-7e274f010e63",
+    "artist_id": "0660c4af-1a13-4bdb-b333-42b540a238bd",
+    "name": "{\"EN\":\"C.A.P\",\"KO\":\"C.A.P\",\"ES\":\"C.A.P\"}",
+    "birthday": "1992-11-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:17.334552+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4cb6cd4d-4c29-4508-bdd4-93df94fac250",
+    "artist_id": "0660c4af-1a13-4bdb-b333-42b540a238bd",
+    "name": "{\"EN\":\"L.JOE\",\"KO\":\"L.JOE\",\"ES\":\"L.JOE\"}",
+    "birthday": "1993-11-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:17.334552+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "48931f70-76d3-47ae-a972-8bbce764bd6d",
+    "artist_id": "0660c4af-1a13-4bdb-b333-42b540a238bd",
+    "name": "{\"EN\":\"Chunji\",\"KO\":\"천지\",\"ES\":\"Chunji\"}",
+    "birthday": "1993-10-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:17.334552+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2202165d-afaa-4434-9711-3de6e759ccac",
+    "artist_id": "0660c4af-1a13-4bdb-b333-42b540a238bd",
+    "name": "{\"EN\":\"Niel\",\"KO\":\"니엘\",\"ES\":\"Niel\"}",
+    "birthday": "1994-08-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:17.334552+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b3cbb0ef-3bb3-41b2-a6b3-902916da35b6",
+    "artist_id": "0660c4af-1a13-4bdb-b333-42b540a238bd",
+    "name": "{\"EN\":\"Ricky\",\"KO\":\"리키\",\"ES\":\"Ricky\"}",
+    "birthday": "1995-02-27",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:17.334552+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "04797f70-597a-4cbf-84e6-efc0500ad060",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"SO YEON\",\"KO\":\"소연\",\"ES\":\"SO YEON\"}",
+    "birthday": "1987-10-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "4e95c153-fefe-479b-b195-a515fad2046e",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"ELSIE\",\"KO\":\"엘시\",\"ES\":\"ELSIE\"}",
+    "birthday": "1988-12-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e604e11f-d79d-430a-816b-d17d9e989f5c",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Hyomin\",\"KO\":\"효민\",\"ES\":\"Hyomin\"}",
+    "birthday": "1989-05-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3b06b985-3336-4f20-ab76-a024f6478bec",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Jiyeon\",\"KO\":\"지연\",\"ES\":\"Jiyeon\"}",
+    "birthday": "1993-06-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2714ee35-ff11-4a90-a3c0-eaf39fa65003",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"ELSIE\",\"KO\":\"엘시\",\"ES\":\"ELSIE\"}",
+    "birthday": "1988-12-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3afab992-f9c9-4a10-bccb-31c50660fa00",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Hyomin\",\"KO\":\"효민\",\"ES\":\"Hyomin\"}",
+    "birthday": "1989-05-30",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8f44d0c7-e796-41b0-a66c-57cd3c801b78",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Jiyeon\",\"KO\":\"지연\",\"ES\":\"Jiyeon\"}",
+    "birthday": "1993-06-07",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "03c7b8fc-c746-4d4e-8e7e-ab6560ab8de8",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"MINZY\",\"KO\":\"Gong, Minji\",\"ES\":\"MINZY\"}",
+    "birthday": "1994-01-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "2c36ad7a-66a0-420a-b2b3-6349e7d0643a",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"CL\",\"KO\":\"씨엘\",\"ES\":\"CL\"}",
+    "birthday": "1991-02-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "13509761-dd2e-4ddf-bf76-3a5c03d77528",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"Park Bom\",\"KO\":\"박봄\",\"ES\":\"Park Bom\"}",
+    "birthday": "1984-03-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a23824db-a518-4a24-a559-219b401dbe84",
+    "artist_id": "5e326ce0-619b-4258-8d7d-8556626deeb1",
+    "name": "{\"EN\":\"Lee, Seunghoon\",\"KO\":\"이승훈\",\"ES\":\"Lee, Seunghoon\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:17.754836+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "972af363-890d-4807-b2e5-09614da2d65c",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"Hyunsuk\",\"KO\":\"현석\",\"ES\":\"Hyunsuk\"}",
+    "birthday": "1999-04-21",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "788550a2-fe4e-47a6-ae95-f48ec4254c42",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"Jaehyuk\",\"KO\":\"재혁\",\"ES\":\"Jaehyuk\"}",
+    "birthday": "2001-07-23",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "03326fc2-38ff-4acc-a707-56e46baf288e",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"Junghwan\",\"KO\":\"정환\",\"ES\":\"Junghwan\"}",
+    "birthday": "2005-02-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "829e6ddf-74a2-49ee-a418-57d07803e2ae",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"Junkyu\",\"KO\":\"준규\",\"ES\":\"Junkyu\"}",
+    "birthday": "2000-09-09",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "278c38be-6690-41e7-bf1b-9881fca82e73",
+    "artist_id": "aa9bdb41-d42e-4486-9f57-d4527e971f12",
+    "name": "{\"EN\":\"Lee Han\",\"KO\":\"이한\",\"ES\":\"Lee Han\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:51.236023+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "3e421255-b4ea-4b99-b7e8-509e3762801a",
+    "artist_id": "0660c4af-1a13-4bdb-b333-42b540a238bd",
+    "name": "{\"EN\":\"Changjo\",\"KO\":\"창조\",\"ES\":\"Changjo\"}",
+    "birthday": "1995-11-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:17.334552+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "c94c1d36-429d-42fb-a185-c40e6f27f5cf",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Boram\",\"KO\":\"보람\",\"ES\":\"Boram\"}",
+    "birthday": "1986-03-22",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "866b9459-3435-4237-aeb2-e2711970d22e",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Qri\",\"KO\":\"큐리\",\"ES\":\"Qri\"}",
+    "birthday": "1986-12-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "259e4efa-f024-441f-810d-8437584443f5",
+    "artist_id": "155585b7-1498-4b9f-b396-b0990fd5931a",
+    "name": "{\"EN\":\"Yang Ji-won\",\"KO\":\"양지원\",\"ES\":\"Yang Ji-won\"}",
+    "birthday": "1988-04-05",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:36.677068+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "18b0f336-3eaa-428c-b55c-360e94dec40e",
+    "artist_id": "9306ae61-5997-452c-a0e8-56d36547d1af",
+    "name": "{\"EN\":\"Gongchan\",\"KO\":\"공찬식\",\"ES\":\"Gongchan\"}",
+    "birthday": "1993-08-14",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:34.397855+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ee91b976-04f4-4ed1-954e-9b1aa7faf4bd",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"Sandara Park\",\"KO\":\"다라\",\"ES\":\"Sandara Park\"}",
+    "birthday": "1984-11-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "be3c2af1-abe4-4e13-acd6-5d5e23140aa8",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"CL\",\"KO\":\"씨엘\",\"ES\":\"CL\"}",
+    "birthday": "1991-02-26",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1f0d2e99-1524-4ee1-8752-6a5ae48cbe05",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"MINZY\",\"KO\":\"Gong, Minji\",\"ES\":\"MINZY\"}",
+    "birthday": "1994-01-18",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "c03070c9-3b33-46d6-a390-c5df9bdaa343",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"Park Bom\",\"KO\":\"박봄\",\"ES\":\"Park Bom\"}",
+    "birthday": "1984-03-24",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "e4fe3733-fd8c-4e8c-8beb-2d25de9e69c9",
+    "artist_id": "4f19db7d-2c05-49a1-bdfe-1b622b92b2df",
+    "name": "{\"EN\":\"Sandara Park\",\"KO\":\"다라\",\"ES\":\"Sandara Park\"}",
+    "birthday": "1984-11-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:45:52.201628+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9fce1bb7-bdc1-4e1e-b4bd-f6bf91690824",
+    "artist_id": "bc898486-1325-42c9-ba68-774ff8e05be2",
+    "name": "{\"EN\":\"Kay Borgström\",\"KO\":\"Kay Borgström\",\"ES\":\"Kay Borgström\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:46:02.030793+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "1fd847d9-5578-41ce-bdfe-a9dcdf2897b9",
+    "artist_id": "405483e9-f203-48b7-8deb-da4d04f9dff1",
+    "name": "{\"EN\":\"LEE CHANHYUK\",\"KO\":\"이찬혁\",\"ES\":\"LEE CHANHYUK\"}",
+    "birthday": "1996-09-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:46:10.284183+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "d0bb13f0-7e1e-44a1-b948-150e4aef1450",
+    "artist_id": "405483e9-f203-48b7-8deb-da4d04f9dff1",
+    "name": "{\"EN\":\"LEE CHANHYUK\",\"KO\":\"이찬혁\",\"ES\":\"LEE CHANHYUK\"}",
+    "birthday": "1996-09-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:46:10.284183+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "93d9b8e9-daf5-45d5-aff6-d6f2f2df02d9",
+    "artist_id": "405483e9-f203-48b7-8deb-da4d04f9dff1",
+    "name": "{\"EN\":\"LEE CHANHYUK\",\"KO\":\"이찬혁\",\"ES\":\"LEE CHANHYUK\"}",
+    "birthday": "1996-09-12",
+    "image_url": null,
+    "created_at": "2026-04-17T06:46:10.284183+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "f265dc58-e08d-4e2d-98bc-b62a4d60b406",
+    "artist_id": "405483e9-f203-48b7-8deb-da4d04f9dff1",
+    "name": "{\"EN\":\"LEE SUHYUN\",\"KO\":\"이수현\",\"ES\":\"LEE SUHYUN\"}",
+    "birthday": "1999-05-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:46:10.284183+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "0c8932ec-1031-4262-8130-491814f4c4cd",
+    "artist_id": "b107f7ea-9be3-4224-9066-046e709fbe5c",
+    "name": "{\"EN\":\"Ryujin\",\"KO\":\"신류진\",\"ES\":\"Ryujin\"}",
+    "birthday": "2001-04-17",
+    "image_url": "https://cdn-images.dzcdn.net/images/artist/018dd54fefaf8f235943fb485a9e694e/500x500-000000-80-0-0.jpg",
+    "created_at": "2026-04-17T06:34:56.710191+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "ce6bb01a-c2de-4e6f-86e9-c41db77d5697",
+    "artist_id": "4ccac7ec-1680-4e26-81f7-b7bdf6d6a02b",
+    "name": "{\"EN\":\"Whee In\",\"KO\":\"정휘인\",\"ES\":\"Whee In\"}",
+    "birthday": "1995-04-17",
+    "image_url": "https://cdn-images.dzcdn.net/images/artist/cfdde52c00fe0da373d09ed88fc42db9/500x500-000000-80-0-0.jpg",
+    "created_at": "2026-04-17T06:35:18.209655+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "9ffbc31b-903e-490b-ae74-90c0b5a8885e",
+    "artist_id": "d504186f-3da1-4b6f-af73-5eba071c5fdd",
+    "name": "{\"EN\":\"ISA\",\"KO\":\"아이사\",\"ES\":\"ISA\"}",
+    "birthday": null,
+    "image_url": null,
+    "created_at": "2026-04-17T06:36:33.228359+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "8b5a6977-63da-4bd9-8b21-b9969ecae1be",
+    "artist_id": "6006c57e-ef9e-4abc-9827-be6f3641950f",
+    "name": "{\"EN\":\"Kim Soo Hyun\",\"KO\":\"김수현\",\"ES\":\"Kim Soo Hyun\"}",
+    "birthday": "2000-01-15",
+    "image_url": null,
+    "created_at": "2026-04-17T06:37:56.783645+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "04d83c75-24c0-43d3-962e-2fcf82ec8151",
+    "artist_id": "0c51e933-2fef-4399-9925-7d04777b3e84",
+    "name": "{\"EN\":\"Juho\",\"KO\":\"주호\",\"ES\":\"Juho\"}",
+    "birthday": "1988-10-16",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:17.419807+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "b5b016ff-c1a3-4b5e-b622-4afe02b3a2cc",
+    "artist_id": "10ec6696-6b5c-4f6b-8ceb-ef0521c0dc1d",
+    "name": "{\"EN\":\"Park, Sungjin\",\"KO\":\"박성진\",\"ES\":\"Park, Sungjin\"}",
+    "birthday": "1979-10-01",
+    "image_url": null,
+    "created_at": "2026-04-17T06:41:29.533915+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "a0d7d87f-43ee-47e1-b109-0894bc1a0afe",
+    "artist_id": "7a949074-b744-4647-b9d0-6601815bbcf2",
+    "name": "{\"EN\":\"Eunseok\",\"KO\":\"은석\",\"ES\":\"Eunseok\"}",
+    "birthday": "2001-03-19",
+    "image_url": null,
+    "created_at": "2026-04-17T06:43:48.500632+00:00",
+    "likes_count": 0
+  },
+  {
+    "id": "6397a043-0651-47ac-a290-abb2cddc8e3b",
+    "artist_id": "253fe4b4-bc1b-4975-9c61-2c64a05e06f8",
+    "name": "{\"EN\":\"Kim, Do-young\",\"KO\":\"김도영\",\"ES\":\"Kim, Do-young\"}",
+    "birthday": "2003-12-04",
+    "image_url": null,
+    "created_at": "2026-04-17T06:44:38.85137+00:00",
+    "likes_count": 0
+  }
+]

@@ -7,6 +7,7 @@ import { Cake, ChevronRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 import MonthlyCalendarModal from './MonthlyCalendarModal';
 import { getLangName } from '@/utils/localization';
+import { Language, getT } from '@/constants/i18n';
 
 interface BirthdayStar {
   id: string;
@@ -22,6 +23,7 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
   const [stars, setStars] = useState<BirthdayStar[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const t = getT(lang as Language);
 
   useEffect(() => {
     async function load() {
@@ -45,10 +47,10 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           </div>
           <div>
             <h3 className="text-xl font-black italic tracking-tighter uppercase leading-none">
-              {lang === 'KO' ? '오늘의 생일 스타' : 'Today\'s B-Day Stars'}
+              {t('birthdayTitle')}
             </h3>
             <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">
-              Celebrating the stars of today & tomorrow
+              {t('birthdaySub')}
             </p>
           </div>
         </div>
@@ -58,12 +60,12 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
             onClick={() => setIsCalendarOpen(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
           >
-            <span className="text-[10px] font-black text-white uppercase tracking-widest hidden sm:inline">Monthly Calendar</span>
+            <span className="text-[10px] font-black text-white uppercase tracking-widest hidden sm:inline">{t('monthlyCalendar')}</span>
             <ChevronRight size={14} className="text-white sm:hidden" />
           </button>
           <div className="hidden sm:flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
             <div className="w-1 h-1 rounded-full bg-neon-magenta animate-ping" />
-            <span className="text-[10px] font-black text-neon-magenta uppercase tracking-widest">Live Celebration</span>
+            <span className="text-[10px] font-black text-neon-magenta uppercase tracking-widest">{t('liveCelebration')}</span>
           </div>
         </div>
       </div>
@@ -81,15 +83,15 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           </div>
           <div>
             <h4 className="text-sm font-black text-white uppercase tracking-wider mb-0.5">
-              {lang === 'KO' ? '생일 축하 볼티지 피크!' : 'B-Day Voltage Peak!'}
+              {t('voltagePeakTitle')}
             </h4>
             <p className="text-[11px] font-bold text-neon-magenta/80 uppercase tracking-widest leading-none">
-              {lang === 'KO' ? '오늘의 주인공에게 투표하면 볼티지가 2배로 쌓입니다' : 'Vote for today\'s stars to get 2x Voltage bonus'}
+              {t('voltagePeakSub')}
             </p>
           </div>
         </div>
         <div className="px-5 py-2 rounded-xl bg-neon-magenta text-black text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-neon-magenta/20 hidden md:block">
-          Double Voltage active
+          {t('doubleVoltageActive')}
         </div>
       </motion.div>
 
@@ -101,16 +103,16 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           </div>
           <div className="text-center relative z-10 font-chakra">
             <p className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] mb-1">
-              {lang === 'KO' ? '오늘과 내일은 생일자가 없습니다' : 'No birthdays for today or tomorrow'}
+              {t('noBirthdaysToday')}
             </p>
             <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mb-3">
-              {lang === 'KO' ? '달력을 확인하여 이번 달 라인업을 미리 준비하세요' : 'Plan ahead by checking the monthly lineup'}
+              {t('checkMonthlyLineup')}
             </p>
             <button 
               onClick={() => setIsCalendarOpen(true)} 
               className="px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] text-neon-magenta hover:bg-neon-magenta hover:text-white transition-all tracking-[0.2em] font-black uppercase flex items-center gap-2 mx-auto"
             >
-              <span>{lang === 'KO' ? '월간 캘린더 전체보기' : 'Check Monthly Calendar'}</span>
+              <span>{t('viewMonthlyCalendar')}</span>
               <ChevronRight size={12} />
             </button>
           </div>
@@ -121,7 +123,7 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
             const displayName = getLangName(star.name, lang);
 
             const isUpcoming = star.isUpcoming;
-            const badgeText = isUpcoming ? 'D-1 UPCOMING' : 'HAPPY B-DAY';
+            const badgeText = isUpcoming ? t('upcomingBadge') : t('happyBdayBadge');
             const accentColor = isUpcoming ? 'bg-cyan-500' : 'bg-neon-magenta';
             const borderColor = isUpcoming ? 'group-hover:border-cyan-500/50' : 'group-hover:border-neon-magenta/50';
             const shadowColor = isUpcoming ? 'shadow-cyan-500/40' : 'shadow-neon-magenta/40';
@@ -159,7 +161,7 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
                       <p className={`text-[8px] font-bold ${textColor} uppercase tracking-widest opacity-80 mt-0.5 truncate`}>
                         {star.type === 'member' && star.artist_name 
                           ? getLangName(star.artist_name, lang) 
-                          : (lang === 'KO' ? '아티스트' : 'ARTIST')}
+                          : t('artists')}
                       </p>
                     </div>
                   </div>

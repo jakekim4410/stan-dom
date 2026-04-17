@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, CalendarDays, Loader2, Sparkles, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { getMonthlyBirthdays } from '@/actions/getMonthlyBirthdays';
+import { Language, getT } from '@/constants/i18n';
 
 interface MonthlyCalendarModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
   const [birthdays, setBirthdays] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState<number>(1);
+  const t = getT(lang as Language);
 
   useEffect(() => {
     if (isOpen) {
@@ -68,7 +70,7 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
               <div className="relative z-10">
                 <h3 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
                   <CalendarDays className="text-neon-magenta" size={22} />
-                  {currentMonth}월 <span className="text-zinc-500 font-chakra font-normal tracking-widest whitespace-nowrap">LINE-UP</span>
+                  {t(`month${currentMonth}`)} <span className="text-zinc-500 font-chakra font-normal tracking-widest whitespace-nowrap">{t('calendarLineup')}</span>
                 </h3>
                 <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">
                   STAN.DOM Monthly Birthdays
@@ -87,11 +89,11 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
               {loading ? (
                 <div className="h-40 flex flex-col items-center justify-center gap-4">
                   <Loader2 className="animate-spin text-neon-magenta" size={32} />
-                  <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest animate-pulse">Loading Database...</p>
+                  <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest animate-pulse">{t('loadingDatabase')}</p>
                 </div>
               ) : birthdays.length === 0 ? (
                 <div className="text-center py-10 opacity-50">
-                  <span className="text-[10px] uppercase font-black tracking-widest">No birthdays this month</span>
+                  <span className="text-[10px] uppercase font-black tracking-widest">{t('calendarNoBirthdays')}</span>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -108,13 +110,13 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
                         <motion.div 
                           className={`flex items-center gap-4 p-4 rounded-2xl border transition-all group ${
                             isTodayLocal 
-                              ? 'bg-neon-magenta/10 border-neon-magenta/50 shadow-[0_0_20px_rgba(255,0,255,0.1)]' 
+                              ? 'bg-neon-magenta/10 border-neon-magenta/50 shadow-[0_0_20px_rgba(255,0,255,0.15)]' 
                               : 'bg-white/5 border-white/5 hover:border-white/20'
                           }`}
                         >
                           {/* Day Column */}
                           <div className={`flex flex-col items-center justify-center w-12 shrink-0 ${isTodayLocal ? 'text-neon-magenta' : 'text-zinc-500'}`}>
-                            <span className="text-[10px] font-bold uppercase tracking-widest">DAY</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest">{t('calendarDay')}</span>
                             <span className="text-2xl font-black">{day}</span>
                           </div>
 
@@ -138,7 +140,7 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
                             <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">
                               {b.type === 'member' 
                                 ? (b.artist_name ? parseName(b.artist_name) : 'MEMBER') 
-                                : 'SOLO / GROUP'}
+                                : t('calendarSoloGroup')}
                             </span>
                           </div>
 
@@ -153,7 +155,7 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
             </div>
             
             <div className="p-4 bg-black/60 border-t border-white/5 text-center">
-              <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">Calendar time is based on KST (Asia/Seoul)</span>
+              <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">{t('calendarKSTNotice')}</span>
             </div>
           </motion.div>
         </div>
