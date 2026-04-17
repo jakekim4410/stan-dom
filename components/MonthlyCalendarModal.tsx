@@ -136,7 +136,9 @@ export default function MonthlyCalendarModal({ isOpen, onClose, lang }: MonthlyC
                               {isTodayLocal && <Sparkles size={14} className="text-neon-magenta animate-pulse" />}
                             </div>
                             <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">
-                              {b.type === 'member' ? 'MEMBER' : 'SOLO / GROUP'}
+                              {b.type === 'member' 
+                                ? (b.artist_name ? parseName(b.artist_name) : 'MEMBER') 
+                                : 'SOLO / GROUP'}
                             </span>
                           </div>
 

@@ -23,21 +23,25 @@ export async function getMonthlyBirthdays() {
 
     if (artError) throw artError;
 
-    // 2. Fetch members whose birthday matches MM
+    // 2. Fetch members whose birthday matches MM (Join with artists to get group name)
     const { data: members, error: memError } = await supabase
       .from('members')
-      .select('id, artist_id, name, birthday, image_url')
+      .select('id, artist_id, name, birthday, image_url, artists(name)')
       .not('birthday', 'is', null);
 
     if (memError) throw memError;
 
     const monthArtists = (artists || [])
       .filter(a => a.birthday?.slice(5, 7) === targetMonth)
-      .map(a => ({ ...a, type: 'artist' as const }));
+      .map(a => ({ ...a, type: 'artist' as const, artist_name: a.name }));
       
     const monthMembers = (members || [])
       .filter(m => m.birthday?.slice(5, 7) === targetMonth)
-      .map(m => ({ ...m, type: 'member' as const }));
+      .map(m => ({ 
+        ...m, 
+        type: 'member' as const, 
+        artist_name: (m.artists as any)?.name || null 
+      }));
 
     // Combine and sort chronologically by day
     const combined = [...monthArtists, ...monthMembers].sort((a, b) => {
