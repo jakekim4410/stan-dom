@@ -5,9 +5,17 @@ import { createClient } from '@/utils/supabase/server';
 export async function getTodayBirthdays() {
   try {
     const supabase = await createClient();
-    const today = new Date();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
+    const now = new Date();
+    // 🇰🇷 KST(한국 시간) 강제 고정: Vercel 서버(UTC)나 클라이언트 위치와 무관하게 K-Pop 기준 적용
+    const kstDateString = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(now);
+    
+    // en-US 포맷은 "MM/DD/YYYY" 형태로 반환됨
+    const [month, day, year] = kstDateString.split('/');
     const targetMd = `${month}-${day}`;
 
     // 1. Fetch artists whose birthday matches MM-DD
