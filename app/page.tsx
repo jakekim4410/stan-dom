@@ -161,9 +161,17 @@ export default function Dashboard() {
         backgroundColor: null,
         logging: false,
         onclone: (clonedDoc) => {
-          // You can modify the cloned DOM here if needed
           const element = clonedDoc.getElementById('hologram-card-capture');
-          if (element) element.style.transform = 'scale(1)';
+          if (element) {
+            element.style.transform = 'scale(1)';
+            // Fallback for modern colors that html2canvas doesn't support
+            const descendants = element.getElementsByTagName('*');
+            for (let i = 0; i < descendants.length; i++) {
+              const d = descendants[i] as HTMLElement;
+              if (d.style.color?.includes('oklch') || d.style.color?.includes('lab')) d.style.color = '#ffffff';
+              if (d.style.backgroundColor?.includes('oklch') || d.style.backgroundColor?.includes('lab')) d.style.backgroundColor = '#000000';
+            }
+          }
         }
       });
       
@@ -1508,6 +1516,7 @@ export default function Dashboard() {
           >
             {/* Hologram Card */}
             <motion.div
+              ref={hologramCardRef}
               initial={{ scale: 0.8, y: 50, rotateY: -20 }}
               animate={{ scale: 1, y: 0, rotateY: 0 }}
               exit={{ scale: 0.8, y: 50, opacity: 0 }}
@@ -1517,9 +1526,10 @@ export default function Dashboard() {
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0.8) 100%)',
               }}
+              id="hologram-card-capture"
             >
               {/* Card Inner */}
-              <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-zinc-950 flex flex-col items-center">
+              <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-[#09090b] flex flex-col items-center">
                 {/* Artist Background (Converted from CSS bg for capture reliability) */}
                 <div className="absolute inset-0 opacity-40 mix-blend-screen scale-110">
                   <img 
@@ -1543,12 +1553,12 @@ export default function Dashboard() {
                     {showHologramCard.artist.name}
                   </h3>
                   <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-                    <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase">{t('hologramRank')} #{showHologramCard.rank}</span>
+                    <span className="text-[10px] font-black tracking-widest text-[var(--neon-lime)] uppercase">{t('hologramRank')} #{showHologramCard.rank}</span>
                   </div>
                 </div>
 
                 <div className="relative z-10 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center justify-end p-6 text-center">
-                  <p className="text-xs font-medium text-zinc-300 leading-relaxed mb-4">
+                  <p className="text-xs font-medium text-[#d4d4d8] leading-relaxed mb-4">
                     {t('fueledMsg')}
                   </p>
                   <img src="/stan_dom_logo_transparent2.png" className="h-4 opacity-50" alt="LOGO" />
