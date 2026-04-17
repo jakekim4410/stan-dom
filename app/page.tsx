@@ -153,16 +153,18 @@ export default function Dashboard() {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
       const dataUrl = await toPng(hologramCardRef.current, { 
         cacheBust: true,
+        pixelRatio: 2,
+        skipAutoScale: true,
         style: { transform: 'scale(1)', transformOrigin: 'top left' }
       });
       const link = document.createElement('a');
       link.download = `standom-${showHologramCard?.artist.name}-card.png`.toLowerCase();
       link.href = dataUrl;
       link.click();
-      setToast({ isVisible: true, message: t('syncSuccess'), subMessage: 'Card saved to your device!' });
+      setToast({ isVisible: true, message: t('syncSuccess'), subMessage: 'Card saved! You can now share it.' });
     } catch (err) {
       console.error('Download failed:', err);
-      setToast({ isVisible: true, message: 'Download Failed', subMessage: 'Please try again later' });
+      setToast({ isVisible: true, message: 'Download Failed', subMessage: 'Please check your connection' });
     }
   };
 
@@ -1510,20 +1512,24 @@ export default function Dashboard() {
             >
               {/* Card Inner */}
               <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-zinc-950 flex flex-col items-center">
-                {/* Artist Background */}
-                <div 
-                  className="absolute inset-0 opacity-40 mix-blend-screen scale-110"
-                  style={{
-                    backgroundImage: `url(${showHologramCard.artist.image_url})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'blur(10px) saturate(1.5)',
-                  }}
-                />
+                {/* Artist Background (Converted from CSS bg for capture reliability) */}
+                <div className="absolute inset-0 opacity-40 mix-blend-screen scale-110">
+                  <img 
+                    src={showHologramCard.artist.image_url} 
+                    alt="" 
+                    className="w-full h-full object-cover filter blur-[10px] saturate-[1.5]"
+                    crossOrigin="anonymous"
+                  />
+                </div>
                 
                 <div className="relative z-10 w-full h-1/2 p-4 pt-8 flex flex-col items-center">
                   <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/50 shadow-2xl mb-4 bg-black">
-                    <img src={showHologramCard.artist.image_url} alt={showHologramCard.artist.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={showHologramCard.artist.image_url} 
+                      alt={showHologramCard.artist.name} 
+                      className="w-full h-full object-cover" 
+                      crossOrigin="anonymous"
+                    />
                   </div>
                   <h3 className="text-2xl font-black tracking-tighter text-white drop-shadow-md text-center leading-tight">
                     {showHologramCard.artist.name}
@@ -1563,10 +1569,12 @@ export default function Dashboard() {
                   X
                 </a>
                 <button
-                  onClick={() => {
-                    const url = `https://www.instagram.com/reels/create/`; // Or stories deep link
-                    window.open(url, '_blank');
+                  onClick={async () => {
+                    await handleDownloadCard();
                     handleCopyProfileLink();
+                    setTimeout(() => {
+                      window.open('https://www.instagram.com/', '_blank');
+                    }, 1000);
                   }}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-tr from-[#FFDC80] via-[#FD1D1D] to-[#833AB4] text-white font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-red-500/20"
                 >
@@ -1577,7 +1585,7 @@ export default function Dashboard() {
 
               <button
                 onClick={handleDownloadCard}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#37C561] text-black font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-green-500/20"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[var(--neon-lime)] text-black font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-[var(--neon-lime)]/20"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 {t('downloadCard')}
