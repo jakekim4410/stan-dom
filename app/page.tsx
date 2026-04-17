@@ -61,6 +61,7 @@ export default function Dashboard() {
   const [isAddArtistOpen, setIsAddArtistOpen] = useState(false);
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [showPastIssues, setShowPastIssues] = useState(false);
   const [showPastBattles, setShowPastBattles] = useState(false);
@@ -154,18 +155,23 @@ export default function Dashboard() {
     if (hologramCardRef.current === null) return;
     try {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
+      setIsCapturing(true); // Disable shimmer for clean capture
       
-      // Switch to domToJpeg for better social media compatibility (removes alpha channel issues)
+      // Delay to ensure shimmer is hidden
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       const dataUrl = await domToJpeg(hologramCardRef.current, {
-        scale: 2,
-        quality: 0.95,
-        backgroundColor: '#020205', // Solid background to prevent transparency bugs
+        scale: 1.5, // Reduced for much better social media compatibility
+        quality: 0.8, // Optimized quality/size balance
+        backgroundColor: '#020205',
       });
       
       setGeneratedImage(dataUrl);
-      setToast({ isVisible: false, message: '', subMessage: '' }); // Hide toast as modal provides feedback
+      setIsCapturing(false);
+      setToast({ isVisible: false, message: '', subMessage: '' }); 
     } catch (err) {
       console.error('Download failed:', err);
+      setIsCapturing(false);
       setToast({ isVisible: true, message: 'Generation Failed', subMessage: 'Please check your connection' });
     }
   };
@@ -1558,10 +1564,12 @@ export default function Dashboard() {
                   <img src="/stan_dom_logo_transparent2.png" className="h-4 opacity-50" alt="LOGO" />
                 </div>
 
-                {/* Shimmer Effect */}
-                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[20px]">
-                  <div className="absolute top-0 left-[-150%] w-[50%] h-[200%] rotate-[30deg] bg-gradient-to-r from-transparent via-white/40 to-transparent animate-hologram" />
-                </div>
+                {/* Shimmer Effect (Disabled during capture for stability) */}
+                {!isCapturing && (
+                  <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[20px]">
+                    <div className="absolute top-0 left-[-150%] w-[50%] h-[200%] rotate-[30deg] bg-gradient-to-r from-transparent via-white/40 to-transparent animate-hologram" />
+                  </div>
+                )}
               </div>
             </motion.div>
 
