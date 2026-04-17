@@ -153,7 +153,7 @@ export default function Dashboard() {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
       const dataUrl = await toPng(hologramCardRef.current, { 
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 1.5,
         skipAutoScale: true,
         style: { transform: 'scale(1)', transformOrigin: 'top left' }
       });
@@ -1570,9 +1570,9 @@ export default function Dashboard() {
                 </a>
                 <button
                   onClick={async () => {
-                    await handleDownloadCard();
+                    handleDownloadCard(); // Start download in background
                     handleCopyProfileLink();
-                    setShowInstaGuide(true);
+                    setShowInstaGuide(true); // Show guide immediately
                   }}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-tr from-[#FFDC80] via-[#FD1D1D] to-[#833AB4] text-white font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-red-500/20"
                 >
@@ -1601,7 +1601,7 @@ export default function Dashboard() {
         {showInstaGuide && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl"
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl"
             onClick={() => setShowInstaGuide(false)}
           >
             <motion.div
