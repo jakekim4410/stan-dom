@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { domToPng } from 'modern-screenshot';
+import { domToJpeg } from 'modern-screenshot';
 import { toPng, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
@@ -154,10 +154,11 @@ export default function Dashboard() {
     try {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
       
-      // modern-screenshot supports modern CSS like oklch/oklab used by Tailwind 4
-      const dataUrl = await domToPng(hologramCardRef.current, {
+      // Switch to domToJpeg for better social media compatibility (removes alpha channel issues)
+      const dataUrl = await domToJpeg(hologramCardRef.current, {
         scale: 2,
-        backgroundColor: 'transparent',
+        quality: 0.95,
+        backgroundColor: '#020205', // Solid background to prevent transparency bugs
       });
       
       setGeneratedImage(dataUrl);
@@ -1537,7 +1538,7 @@ export default function Dashboard() {
                     {showHologramCard.artist.name}
                   </h3>
                   <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
-                    <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase" style={{ color: '#37C561' }}>{t('hologramRank')} #{showHologramCard.rank}</span>
+                    <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase whitespace-nowrap" style={{ color: '#37C561' }}>{t('hologramRank')} #{showHologramCard.rank}</span>
                   </div>
                 </div>
 
