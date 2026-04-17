@@ -164,12 +164,18 @@ export default function Dashboard() {
           const element = clonedDoc.getElementById('hologram-card-capture');
           if (element) {
             element.style.transform = 'scale(1)';
-            // Fallback for modern colors that html2canvas doesn't support
+            // Exhaustive sanitization of modern color functions for html2canvas compatibility
             const descendants = element.getElementsByTagName('*');
             for (let i = 0; i < descendants.length; i++) {
               const d = descendants[i] as HTMLElement;
-              if (d.style.color?.includes('oklch') || d.style.color?.includes('lab')) d.style.color = '#ffffff';
-              if (d.style.backgroundColor?.includes('oklch') || d.style.backgroundColor?.includes('lab')) d.style.backgroundColor = '#000000';
+              // Replace common modern color suspects with safe fallbacks
+              if (d.className.includes('zinc') || d.className.includes('white/')) {
+                 d.style.color = '#ffffff';
+                 d.style.borderColor = 'rgba(255,255,255,0.2)';
+              }
+              // Even more aggressive: strip all oklch/lab from inline and computed styles where possible
+              d.style.backgroundColor = d.style.backgroundColor.replace(/(oklch|oklab|lab|lch)\([^)]+\)/g, '#000000');
+              d.style.color = d.style.color.replace(/(oklch|oklab|lab|lch)\([^)]+\)/g, '#ffffff');
             }
           }
         }
@@ -1552,8 +1558,8 @@ export default function Dashboard() {
                   <h3 className="text-2xl font-black tracking-tighter text-white drop-shadow-md text-center leading-tight">
                     {showHologramCard.artist.name}
                   </h3>
-                  <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-                    <span className="text-[10px] font-black tracking-widest text-[var(--neon-lime)] uppercase">{t('hologramRank')} #{showHologramCard.rank}</span>
+                  <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
+                    <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase" style={{ color: '#37C561' }}>{t('hologramRank')} #{showHologramCard.rank}</span>
                   </div>
                 </div>
 
