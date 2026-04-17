@@ -13,6 +13,13 @@ export interface MBArtist {
 export interface MBMember {
   name: string;
   birthday: string | null;
+  aliases?: MBAlias[];
+}
+
+export interface MBAlias {
+  name: string;
+  locale: string | null;
+  primary: boolean | null;
 }
 
 const MB_BASE_URL = 'https://musicbrainz.org/ws/2';
@@ -47,7 +54,7 @@ export async function searchMusicBrainzArtist(name: string): Promise<string | nu
  */
 export async function getArtistAndMembers(mbid: string): Promise<MBArtist | null> {
   try {
-    const url = `${MB_BASE_URL}/artist/${mbid}?inc=artist-rels&fmt=json`;
+    const url = `${MB_BASE_URL}/artist/${mbid}?inc=artist-rels+aliases&fmt=json`;
     const res = await fetch(url, {
       headers: { 'User-Agent': 'STAN-DOM/1.0.0 ( contact@standom.online )' }
     });
@@ -74,7 +81,8 @@ export async function getArtistAndMembers(mbid: string): Promise<MBArtist | null
       // For now, we collect names and IDs.
       artist.members = memberRels.map((rel: any) => ({
         name: rel.artist.name,
-        birthday: null // Will be updated individually or via secondary sync
+        birthday: null,
+        aliases: rel.artist.aliases || []
       }));
     }
 
@@ -90,13 +98,33 @@ export async function getArtistAndMembers(mbid: string): Promise<MBArtist | null
  * Useful for syncing members
  */
 export async function getPersonBirthday(name: string): Promise<string | null> {
-  const mbid = await searchMusicBrainzArtist(name);
-  if (!mbid) return null;
-  
-  const url = `${MB_BASE_URL}/artist/${mbid}?fmt=json`;
+  const url = `${MB_BASE_URL}/artist/${mbid}?inc=aliases&fmt=json`;
   const res = await fetch(url, {
     headers: { 'User-Agent': 'STAN-DOM/1.0.0 ( contact@standom.online )' }
   });
   const data = await res.json();
-  return data['life-span']?.begin || null;
+  return {
+    birthday: data['life-span']?.begin || null,
+    aliases: data.aliases || []
+  };
+}
+
+/**
+ * Extracts a name map from aliases, favoring primary or locale-specific names
+ */
+export function getNameMap(defaultName: string, aliases: MBAlias[]): Record<string, string> {
+  const map: Record<string, string> = { EN: defaultName, KO: defaultName, ES: defaultName };
+  
+  // Try to find Korean name
+  const ko = aliases.find(a => a.locale === 'ko' || (a.name.match(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/)));
+  if (ko) map.KO = ko.name;
+
+  // Try to find English name
+  const en = aliases.find(a => a.locale === 'en');
+  if (en) {
+    map.EN = en.name;
+    map.ES = en.name; // Use English as fallback for Spanish for now
+  }
+
+  return map;
 }

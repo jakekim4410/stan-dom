@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { searchMusicBrainzArtist, getArtistAndMembers, getPersonBirthday } from '@/lib/musicbrainz';
+import { searchMusicBrainzArtist, getArtistAndMembers, getPersonBirthday, getNameMap } from '@/lib/musicbrainz';
 import { revalidatePath } from 'next/cache';
 
 export async function syncArtistMetadata(artistId: string, artistName: string) {
@@ -31,14 +31,18 @@ export async function syncArtistMetadata(artistId: string, artistName: string) {
       // Insert new members
       const membersToInsert = [];
       
-      // Attempt to fetch individual birthdays for the first 10 members (rate limit consideration)
+      // Attempt to fetch individual birthdays for the first 15 members
       for (const m of mbData.members.slice(0, 15)) {
-        // Individual birthday fetch
-        const bday = await getPersonBirthday(m.name);
+        const mbPerson = await getPersonBirthday(m.name);
+        
+        // Use aliases from the member rel if available, else from direct lookup
+        const aliases = (mbPerson as any).aliases || m.aliases || [];
+        const nameMap = getNameMap(m.name, aliases);
+
         membersToInsert.push({
           artist_id: artistId,
-          name: m.name,
-          birthday: bday || null
+          name: JSON.stringify(nameMap), // Store as JSON string
+          birthday: (mbPerson as any).birthday || null
         });
       }
 

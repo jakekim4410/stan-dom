@@ -45,6 +45,7 @@ import ReportModal from '@/components/ReportModal';
 import InquiryModal from '@/components/InquiryModal';
 import OnboardingModal from '@/components/OnboardingModal';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import MemberPhotoModal from '@/components/MemberPhotoModal';
 import { Language, getT } from '@/constants/i18n';
 import { use } from 'react';
 
@@ -121,6 +122,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [syncing, setSyncing] = useState(false);
+  const [editingMember, setEditingMember] = useState<Member | null>(null);
 
   const t = getT(lang);
 
@@ -792,30 +794,49 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
 
         {members.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {members.map((member) => (
-              <motion.div
-                key={member.id}
-                whileHover={{ y: -5 }}
-                className="glass-panel p-4 flex flex-col items-center text-center gap-3 group border border-white/5"
-              >
-                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-neon-cyan/50 transition-colors bg-zinc-900">
-                  {member.image_url ? (
-                    <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xl font-black text-zinc-800">{member.name[0]}</div>
-                  )}
-                </div>
-                <div className="min-w-0 w-full">
-                  <p className="text-[11px] font-black text-white truncate w-full">{member.name}</p>
-                  {member.birthday && (
-                    <div className="flex items-center justify-center gap-1 mt-1">
-                      <Cake size={10} className="text-neon-magenta" />
-                      <p className="text-[9px] font-bold text-zinc-500">{member.birthday}</p>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+            {members.map((member) => {
+              // Parse localized name
+              let displayName = member.name;
+              try {
+                const nameMap = JSON.parse(member.name);
+                displayName = nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0];
+              } catch (e) {
+                // Not JSON, use as is
+              }
+
+              return (
+                <motion.div
+                  key={member.id}
+                  whileHover={{ y: -5 }}
+                  className="glass-panel p-4 flex flex-col items-center text-center gap-3 group border border-white/5 relative"
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-neon-cyan/50 transition-colors bg-zinc-900 relative">
+                    {member.image_url ? (
+                      <img src={member.image_url} alt={displayName} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xl font-black text-zinc-800">{displayName[0]}</div>
+                    )}
+                    
+                    {/* Hover Edit Overlay */}
+                    <button 
+                      onClick={() => setEditingMember(member)}
+                      className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                    >
+                      <Edit2 size={20} className="text-white" />
+                    </button>
+                  </div>
+                  <div className="min-w-0 w-full">
+                    <p className="text-[11px] font-black text-white truncate w-full">{displayName}</p>
+                    {member.birthday && (
+                      <div className="flex items-center justify-center gap-1 mt-1">
+                        <Cake size={10} className="text-neon-magenta" />
+                        <p className="text-[9px] font-bold text-zinc-500">{member.birthday}</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         ) : (
           <div className="p-8 bg-white/[0.02] rounded-3xl border border-dashed border-white/10 text-center">
@@ -1168,6 +1189,50 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
       </footer>
 
       <div className="fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-neon-cyan to-transparent opacity-20" />
+
+      <PhotoEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        artistId={artistId}
+        artistName={artist?.name || ''}
+        currentImageUrl={artist?.image_url || null}
+        lang={lang}
+        onSuccess={(url) => {
+          setToast({
+            isVisible: true,
+            message: t('photoUpdateSuccess'),
+            subMessage: t('networkLogUpdated')
+          });
+        }}
+      />
+
+      {editingMember && (
+        <MemberPhotoModal
+          isOpen={!!editingMember}
+          onClose={() => setEditingMember(null)}
+          memberId={editingMember.id}
+          artistId={artistId}
+          artistName={artist?.name || ''}
+          memberName={(() => {
+            try {
+              const nameMap = JSON.parse(editingMember.name);
+              return nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0] as string;
+            } catch (e) {
+              return editingMember.name;
+            }
+          })()}
+          currentImageUrl={editingMember.image_url}
+          lang={lang}
+          onSuccess={(url) => {
+            setMembers(prev => prev.map(m => m.id === editingMember.id ? { ...m, image_url: url } : m));
+            setToast({
+              isVisible: true,
+              message: t('photoUpdateSuccess'),
+              subMessage: t('memberSyncSuccess')
+            });
+          }}
+        />
+      )}
 
       <Toast
         isVisible={toast.isVisible}

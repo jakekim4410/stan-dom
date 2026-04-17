@@ -98,6 +98,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     manualLabel: 'Photo Link (URL)',
     manualPlaceholder: 'Enter the image address...',
     previewLabel: 'Preview',
+    memberPhotoModalTitle: 'Edit Member Photo',
+    memberPhotoModalSub: 'Search for or change the member\'s profile picture',
+    memberSyncSuccess: 'Member data refreshed',
+    photoUpdateSuccess: 'Photo updated successfully',
 
     // Onboarding
     welcomeToStandom: 'WELCOME TO STAN.DOM',
@@ -327,6 +331,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     manualLabel: '사진 링크 (URL)',
     manualPlaceholder: '이미지 주소를 입력하세요...',
     previewLabel: '미리보기',
+    memberPhotoModalTitle: '멤버 사진 수정',
+    memberPhotoModalSub: '그룹 멤버의 개인 프로필 사진을 검색하거나 변경하세요',
+    memberSyncSuccess: '멤버 정보가 업데이트되었습니다',
+    photoUpdateSuccess: '사진이 성공적으로 변경되었습니다',
 
     // Onboarding
     welcomeToStandom: 'STAN.DOM에 오신 것을 환영합니다',
@@ -557,6 +565,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     manualLabel: 'Enlace de Foto (URL)',
     manualPlaceholder: 'Ingresa la dirección de la imagen...',
     previewLabel: 'Vista previa',
+    memberPhotoModalTitle: 'Editar Foto del Miembro',
+    memberPhotoModalSub: 'Busca o cambia la foto de perfil del miembro del grupo',
+    memberSyncSuccess: 'Datos del miembro actualizados',
+    photoUpdateSuccess: 'Foto actualizada con éxito',
 
     // Onboarding
     welcomeToStandom: 'BIENVENIDO A STAN.DOM',
