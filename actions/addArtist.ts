@@ -89,7 +89,7 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
     
     return { 
       success: true, 
-      artist: data, 
+      artist: artistData, 
       spotifyImageFound: !!imageUrl 
     };
   } catch (error: any) {
