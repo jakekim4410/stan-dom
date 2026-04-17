@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { toPng } from 'html-to-image';
+import { toPng, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
 import { getRemainingVotes } from '@/actions/getRemainingVotes';
@@ -151,16 +151,24 @@ export default function Dashboard() {
     if (hologramCardRef.current === null) return;
     try {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
-      const dataUrl = await toPng(hologramCardRef.current, { 
+      const blob = await toBlob(hologramCardRef.current, { 
         cacheBust: true,
         pixelRatio: 1.5,
         skipAutoScale: true,
         style: { transform: 'scale(1)', transformOrigin: 'top left' }
       });
+      
+      if (!blob) throw new Error('Failed to generate image');
+      
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.download = `standom-${showHologramCard?.artist.name}-card.png`.toLowerCase();
-      link.href = dataUrl;
+      link.href = url;
       link.click();
+      
+      // Cleanup
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      
       setToast({ isVisible: true, message: t('syncSuccess'), subMessage: 'Card saved! You can now share it.' });
     } catch (err) {
       console.error('Download failed:', err);
@@ -1615,20 +1623,30 @@ export default function Dashboard() {
               
               <h3 className="text-xl font-black mb-4 tracking-tighter">SUCCESS!</h3>
               
-              <div className="space-y-4 text-left mb-8">
-                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-black">1</div>
-                  <span className="text-[11px] font-bold text-zinc-200">{t('instaStep1')}</span>
+              <div className="space-y-3 text-left mb-8">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-col gap-2 p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="w-5 h-5 rounded-full bg-[var(--neon-lime)] flex items-center justify-center text-[10px] text-black font-black">1</div>
+                    <span className="text-[10px] font-bold text-zinc-200">{t('instaStep1')}</span>
+                  </div>
+                  <div className="flex flex-col gap-2 p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="w-5 h-5 rounded-full bg-[var(--neon-lime)] flex items-center justify-center text-[10px] text-black font-black">2</div>
+                    <span className="text-[10px] font-bold text-zinc-200">{t('instaStep2')}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/10 border border-[var(--neon-lime)]/30 border-dashed">
+                  <div className="w-6 h-6 rounded-full bg-[var(--neon-lime)] flex items-center justify-center text-[10px] text-black font-black animate-pulse">3</div>
+                  <span className="text-[11px] font-black text-[var(--neon-lime)] uppercase tracking-tighter">{t('instaStep3')}</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-black">2</div>
-                  <span className="text-[11px] font-bold text-zinc-200">{t('instaStep2')}</span>
+                  <div className="w-6 h-6 rounded-full bg-zinc-700 flex items-center justify-center text-[10px] font-black italic">🔗</div>
+                  <span className="text-[10px] font-medium text-zinc-300">
+                    {t('instaStep4')}
+                  </span>
                 </div>
-                <div className="p-3">
-                  <p className="text-[10px] font-medium text-zinc-400 leading-relaxed text-center">
-                    {t('instaStep3')}
-                  </p>
-                </div>
+                <p className="text-[9px] text-zinc-500 font-medium text-center opacity-60">
+                   ⚠️ {t('feedWarning')}
+                </p>
               </div>
 
               <button

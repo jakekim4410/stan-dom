@@ -215,8 +215,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     close: 'Close',
     instaStep1: '1. Card image saved to your gallery!',
     instaStep2: '2. Artist profile link copied!',
-    instaStep3: 'Now, open Instagram and paste the link in your Story!',
+    instaStep3: 'Open Instagram -> Share to "STORY"',
+    instaStep4: 'Use the "LINK" sticker to paste the link!',
     openInstaApp: 'Open Instagram App',
+    feedWarning: 'Note: Feed posts don\'t support links',
 
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
@@ -440,8 +442,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     close: '닫기',
     instaStep1: '1. 카드 이미지가 갤러리에 저장되었습니다!',
     instaStep2: '2. 프로필 링크가 복사되었습니다!',
-    instaStep3: '이제 인스타그램 앱을 열고 스토리에서 링크를 붙여넣으세요!',
+    instaStep3: '인스타그램 실행 -> "스토리" 선택',
+    instaStep4: '"링크" 스티커를 눌러 링크를 붙여넣으세요!',
     openInstaApp: '인스타그램 앱 열기',
+    feedWarning: '주의: 일반 게시물은 링크를 지원하지 않습니다',
 
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
@@ -665,8 +669,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     close: 'Cerrar',
     instaStep1: '1. ¡Imagen guardada en tu galería!',
     instaStep2: '2. ¡Enlace del perfil copiado!',
-    instaStep3: '¡Ahora, abre Instagram y pega el enlace en tu Story!',
+    instaStep3: 'Abre Instagram -> Comparte en "STORY"',
+    instaStep4: '¡Usa el sticker de "ENLACE" para pegar el link!',
     openInstaApp: 'Abrir Instagram App',
+    feedWarning: 'Nota: Los posts normales no admiten links',
 
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',
