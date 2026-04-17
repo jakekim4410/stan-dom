@@ -1595,6 +1595,8 @@ export default function Dashboard() {
             </motion.div>
           </motion.div>
         )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showInstaGuide && (
           <motion.div
