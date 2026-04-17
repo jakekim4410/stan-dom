@@ -1515,7 +1515,7 @@ export default function Dashboard() {
                 {/* Artist Background (Converted from CSS bg for capture reliability) */}
                 <div className="absolute inset-0 opacity-40 mix-blend-screen scale-110">
                   <img 
-                    src={showHologramCard.artist.image_url} 
+                    src={showHologramCard.artist.image_url || ''} 
                     alt="" 
                     className="w-full h-full object-cover filter blur-[10px] saturate-[1.5]"
                     crossOrigin="anonymous"
@@ -1525,7 +1525,7 @@ export default function Dashboard() {
                 <div className="relative z-10 w-full h-1/2 p-4 pt-8 flex flex-col items-center">
                   <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/50 shadow-2xl mb-4 bg-black">
                     <img 
-                      src={showHologramCard.artist.image_url} 
+                      src={showHologramCard.artist.image_url || ''} 
                       alt={showHologramCard.artist.name} 
                       className="w-full h-full object-cover" 
                       crossOrigin="anonymous"
