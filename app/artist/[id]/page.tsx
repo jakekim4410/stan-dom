@@ -744,6 +744,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         }}
       />
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shadow-[0_0_15px_rgba(0,243,255,0.2)]">
