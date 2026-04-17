@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import html2canvas from 'html2canvas';
+import { domToPng } from 'modern-screenshot';
 import { toPng, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
@@ -154,34 +154,12 @@ export default function Dashboard() {
     try {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
       
-      // html2canvas is more reliable for mobile browsers when capturing complex CSS
-      const canvas = await html2canvas(hologramCardRef.current, {
-        useCORS: true,
+      // modern-screenshot supports modern CSS like oklch/oklab used by Tailwind 4
+      const dataUrl = await domToPng(hologramCardRef.current, {
         scale: 2,
-        backgroundColor: null,
-        logging: false,
-        onclone: (clonedDoc) => {
-          const element = clonedDoc.getElementById('hologram-card-capture');
-          if (element) {
-            element.style.transform = 'scale(1)';
-            // Exhaustive sanitization of modern color functions for html2canvas compatibility
-            const descendants = element.getElementsByTagName('*');
-            for (let i = 0; i < descendants.length; i++) {
-              const d = descendants[i] as HTMLElement;
-              // Replace common modern color suspects with safe fallbacks
-              if (d.className.includes('zinc') || d.className.includes('white/')) {
-                 d.style.color = '#ffffff';
-                 d.style.borderColor = 'rgba(255,255,255,0.2)';
-              }
-              // Even more aggressive: strip all oklch/lab from inline and computed styles where possible
-              d.style.backgroundColor = d.style.backgroundColor.replace(/(oklch|oklab|lab|lch)\([^)]+\)/g, '#000000');
-              d.style.color = d.style.color.replace(/(oklch|oklab|lab|lch)\([^)]+\)/g, '#ffffff');
-            }
-          }
-        }
+        backgroundColor: 'transparent',
       });
       
-      const dataUrl = canvas.toDataURL('image/png');
       setGeneratedImage(dataUrl);
       setToast({ isVisible: true, message: t('generateSuccess'), subMessage: 'Instructions ready!' });
     } catch (err) {
