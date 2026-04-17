@@ -428,3 +428,13 @@ h6,
 .uppercase {
   letter-spacing: 0.05em;
 }
+
+/* ── Hologram Card Animation ── */
+@keyframes hologram {
+  0% { transform: translateX(0) scale(1); opacity: 0.8; }
+  100% { transform: translateX(400%) scale(1); opacity: 0.1; }
+}
+
+.animate-hologram {
+  animation: hologram 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}

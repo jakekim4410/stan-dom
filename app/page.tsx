@@ -56,6 +56,7 @@ export default function Dashboard() {
   const [showPastIssues, setShowPastIssues] = useState(false);
   const [showPastBattles, setShowPastBattles] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
+  const [showHologramCard, setShowHologramCard] = useState<{artist: any, rank: number} | null>(null);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -199,6 +200,9 @@ export default function Dashboard() {
       setActiveVotes(prev => ({ ...prev, [id]: 'success' }));
       handleIncomingVote(userCountry.code, id);
 
+      const votedArtist = artists.find(a => a.id === id);
+      const rank = artists.findIndex(a => a.id === id) + 1;
+
       // Show Success Toast
       setToast({
         isVisible: true,
@@ -206,6 +210,10 @@ export default function Dashboard() {
         subMessage: t('voltageIncreased')
       });
       refreshQuota();
+
+      if (votedArtist) {
+        setTimeout(() => setShowHologramCard({ artist: votedArtist, rank }), 800);
+      }
 
       // Reset button state after 2 seconds
       setTimeout(() => {
@@ -254,21 +262,49 @@ export default function Dashboard() {
     );
   }
 
+  const topArtist = artists.length > 0 ? artists[0] : null;
+
   return (
     <main className="flex-1 bg-[#020205] text-white relative flex flex-col selection:bg-[#37C561]/20">
-      {/* Background glows */}
+      {/* Background glows + Takeover */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-purple-600/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-5%] left-[-5%] w-[60%] h-[60%] bg-[#37C561]/5 blur-[120px] rounded-full" />
+        {topArtist && topArtist.image_url && (
+          <div 
+            className="absolute inset-0 opacity-[0.25] mix-blend-screen transition-all duration-1000"
+            style={{
+              backgroundImage: `url(${topArtist.image_url})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(80px) saturate(1.5)',
+            }}
+          />
+        )}
       </div>
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 glassmorphism border-b border-white/5 px-6 py-4">
+      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <a href="/" className="flex items-center">
-            <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />
-          </a>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <a href="/" className="flex items-center">
+              <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />
+            </a>
+            {topArtist && (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-yellow-500/30 bg-yellow-500/10 backdrop-blur-md">
+                <span className="text-[10px] uppercase font-black tracking-widest text-yellow-500 flex items-center gap-1.5 shadow-sm">
+                  🏆 <span className="text-zinc-300">CURRENT #1:</span> {topArtist.name}
+                </span>
+                <div className="relative group flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center cursor-help pb-[1px] text-[10px] text-white">?</div>
+                  <div className="absolute top-full mt-2 right-0 w-48 text-[10px] font-medium leading-relaxed bg-black/90 p-3 rounded-xl border border-white/10 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    The top ranked global artist takes over the entire website theme!
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-1 items-center justify-end gap-3">
             <LanguageSwitcher
               lang={lang}
               onSelect={(l) => {
@@ -304,8 +340,8 @@ export default function Dashboard() {
             <div className="w-full sm:w-72 relative group">
               <CountrySelector selected={userCountry} onSelect={setUserCountry} lang={lang} />
               {!userCountry && (
-                <div className="absolute -top-2 -right-2 bg-red-500 text-[8px] font-black px-2 py-0.5 rounded-full animate-bounce shadow-lg shadow-red-500/20 z-20">
-                  MISSING_NODE
+                <div className="absolute -top-2 -right-2 bg-red-500 text-[9px] font-black px-2 py-0.5 rounded-full animate-bounce shadow-lg shadow-red-500/20 z-20">
+                  REQUIRED
                 </div>
               )}
             </div>
@@ -1354,6 +1390,89 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Hologram Card Modal ── */}
+      <AnimatePresence>
+        {showHologramCard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+            onClick={() => setShowHologramCard(null)}
+          >
+            {/* Hologram Card */}
+            <motion.div
+              initial={{ scale: 0.8, y: 50, rotateY: -20 }}
+              animate={{ scale: 1, y: 0, rotateY: 0 }}
+              exit={{ scale: 0.8, y: 50, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-[320px] aspect-[2/3] rounded-[24px] p-1 overflow-hidden group shadow-[0_0_50px_rgba(255,255,255,0.15)]"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0.8) 100%)',
+              }}
+            >
+              {/* Card Inner */}
+              <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-zinc-950 flex flex-col items-center">
+                {/* Artist Background */}
+                <div 
+                  className="absolute inset-0 opacity-40 mix-blend-screen scale-110"
+                  style={{
+                    backgroundImage: `url(${showHologramCard.artist.image_url})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    filter: 'blur(10px) saturate(1.5)',
+                  }}
+                />
+                
+                <div className="relative z-10 w-full h-1/2 p-4 pt-8 flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/50 shadow-2xl mb-4 bg-black">
+                    <img src={showHologramCard.artist.image_url} alt={showHologramCard.artist.name} className="w-full h-full object-cover" />
+                  </div>
+                  <h3 className="text-2xl font-black tracking-tighter text-white drop-shadow-md text-center leading-tight">
+                    {showHologramCard.artist.name}
+                  </h3>
+                  <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+                    <span className="text-[10px] font-black tracking-widest text-[#37C561]">GLOBAL RANK #{showHologramCard.rank}</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center justify-end p-6 text-center">
+                  <p className="text-xs font-medium text-zinc-300 leading-relaxed mb-4">
+                    Your voltage successfully fueled global rankings on STAN.DOM!
+                  </p>
+                  <img src="/stan_dom_logo_transparent2.png" className="h-4 opacity-50" alt="LOGO" />
+                </div>
+
+                {/* Shimmer Effect */}
+                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[20px]">
+                  <div className="absolute top-0 left-[-150%] w-[50%] h-[200%] rotate-[30deg] bg-gradient-to-r from-transparent via-white/40 to-transparent animate-hologram" />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Share Controls */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+              className="mt-8 flex flex-col items-center gap-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I just fueled global rank #${showHologramCard.rank} for ${showHologramCard.artist.name} on STAN.DOM! Vote for your favorite K-POP artist now!`)}&url=${encodeURIComponent('https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-black text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
+              >
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.13H5.028z" /></svg>
+                Share Card to X
+              </a>
+              <button onClick={() => setShowHologramCard(null)} className="text-xs text-zinc-500 font-bold hover:text-white transition-colors">
+                Close
+              </button>
             </motion.div>
           </motion.div>
         )}
