@@ -264,35 +264,84 @@ export default function Dashboard() {
 
   const topArtist = artists.length > 0 ? artists[0] : null;
 
+  // Dynamic Fandom Color Mapping for Winner Takeover
+  const FANDOM_COLORS: Record<string, string> = {
+    'BTS': '#9333EA', // 퍼플
+    'BLACKPINK': '#EC4899', // 핑크
+    'Stray Kids': '#DC2626', // 레드
+    'SEVENTEEN': '#F472B6', // 로즈쿼츠
+    'TWICE': '#F97316', // 살구/오렌지
+    'TXT': '#14B8A6', // 민트/틸
+    'ENHYPEN': '#B91C1C', // 다크레드
+    'NewJeans': '#3B82F6', // 블루
+    'aespa': '#8B5CF6', // 오로라 퍼플
+    'IVE': '#E11D48', // 아이브 체리
+    'LE SSERAFIM': '#4F46E5', // 피어리스 블루
+    'NCT': '#22C55E', // 네오 펄 샴페인
+    'ATEEZ': '#D97706', // 앰버
+    'ITZY': '#db2777', // 마젠타
+    'EXO': '#d4d4d8', // 코스믹 라떼
+    'Red Velvet': '#fca5a5', // 코랄 핑크
+    'BIGBANG': '#fcd34d', // 뱅봉 옐로우
+    'RIIZE': '#f97316', // 라이징 오렌지
+    'BOYNEXTDOOR': '#0ea5e9', // 스카이 블루
+    'TWS': '#3b82f6', // 청량 블루
+  };
+  const DEFAULT_THEME_COLOR = '#37C561';
+  const themeColor = topArtist && FANDOM_COLORS[topArtist.name] 
+    ? FANDOM_COLORS[topArtist.name] 
+    : DEFAULT_THEME_COLOR;
+
+  // Inject Theme Color to entire site
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--neon-lime', themeColor);
+      document.documentElement.style.setProperty('--neon-cyan', themeColor);
+    }
+  }, [themeColor]);
+
   return (
-    <main className="flex-1 bg-[#020205] text-white relative flex flex-col selection:bg-[#37C561]/20">
+    <main className="flex-1 bg-[#020205] text-white relative flex flex-col">
       {/* Background glows + Takeover */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-purple-600/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-5%] left-[-5%] w-[60%] h-[60%] bg-[#37C561]/5 blur-[120px] rounded-full" />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-[#020205] transition-colors duration-1000">
+        <div 
+          className="absolute top-[-10%] right-[-10%] w-[70%] h-[80%] blur-[130px] rounded-full transition-colors duration-1000 delay-100"
+          style={{ backgroundColor: `${themeColor}15` }}
+        />
+        <div 
+          className="absolute bottom-[-10%] left-[-10%] w-[70%] h-[70%] blur-[130px] rounded-full transition-colors duration-1000"
+          style={{ backgroundColor: `${themeColor}15` }}
+        />
         {topArtist && topArtist.image_url && (
           <div 
-            className="absolute inset-0 opacity-[0.25] mix-blend-screen transition-all duration-1000"
+            className="absolute inset-0 opacity-[0.2] mix-blend-screen transition-all duration-1000"
             style={{
               backgroundImage: `url(${topArtist.image_url})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              filter: 'blur(80px) saturate(1.5)',
+              filter: `blur(80px) saturate(1.5) drop-shadow(0 0 50px ${themeColor}40)`,
             }}
           />
         )}
       </div>
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 py-4">
+      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-3xl border-b px-6 py-4 transition-colors duration-1000" style={{ borderColor: `${themeColor}20` }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <a href="/" className="flex items-center">
+            <a href="/" className="flex items-center hover:scale-105 transition-transform drop-shadow-md" style={{ filter: `drop-shadow(0 0 10px ${themeColor}60)` }}>
               <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />
             </a>
             {topArtist && (
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-yellow-500/30 bg-yellow-500/10 backdrop-blur-md">
-                <span className="text-[10px] uppercase font-black tracking-widest text-yellow-500 flex items-center gap-1.5 shadow-sm">
+              <div 
+                className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-1000 shadow-xl"
+                style={{
+                  borderColor: `${themeColor}50`,
+                  backgroundColor: `${themeColor}15`,
+                  boxShadow: `0 0 20px ${themeColor}20`
+                }}
+              >
+                <span className="text-[10px] uppercase font-black tracking-widest flex items-center gap-1.5" style={{ color: themeColor, textShadow: `0 0 10px ${themeColor}` }}>
                   🏆 <span className="text-zinc-300">CURRENT #1:</span> {topArtist.name}
                 </span>
                 <div className="relative group flex items-center justify-center">
