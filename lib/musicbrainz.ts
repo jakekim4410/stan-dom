@@ -97,7 +97,9 @@ export async function getArtistAndMembers(mbid: string): Promise<MBArtist | null
  * Batch-friendly way to get a specific person's birthday by name
  * Useful for syncing members
  */
-export async function getPersonBirthday(name: string): Promise<string | null> {
+export async function getPersonBirthday(name: string): Promise<any> {
+  const mbid = await searchMusicBrainzArtist(name);
+  if (!mbid) return { birthday: null, aliases: [] };
   const url = `${MB_BASE_URL}/artist/${mbid}?inc=aliases&fmt=json`;
   const res = await fetch(url, {
     headers: { 'User-Agent': 'STAN-DOM/1.0.0 ( contact@standom.online )' }
