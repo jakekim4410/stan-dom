@@ -22,6 +22,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [birthday, setBirthday] = useState('');
 
   const t = getT(lang);
 
@@ -62,7 +63,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
     setSubmitting(true);
     setNotification(null);
 
-    const res = await addArtist(artist.name, artist.imageUrl);
+    const res = await addArtist(artist.name, artist.imageUrl, birthday);
 
     setSubmitting(false);
 
@@ -156,6 +157,26 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                 >
                   {t('login')}
                 </Link>
+              </div>
+            )}
+
+            {/* Birthday Input (New) */}
+            {user && (
+              <div className="px-5 pb-2">
+                <div className="flex flex-col gap-2 p-4 bg-white/5 border border-white/10 rounded-2xl">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                    {lang === 'KO' ? '생일 지정 (선택)' : 'SET BIRTHDAY (OPTIONAL)'}
+                  </span>
+                  <input
+                    type="date"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    className="bg-transparent border-none outline-none text-white font-bold text-sm [color-scheme:dark]"
+                  />
+                  <p className="text-[9px] text-zinc-600 font-bold uppercase leading-relaxed">
+                    {lang === 'KO' ? '지정하지 않으면 자동으로 검색을 시도합니다.' : 'Will attempt auto-sync if left empty.'}
+                  </p>
+                </div>
               </div>
             )}
 

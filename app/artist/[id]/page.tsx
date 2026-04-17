@@ -28,8 +28,10 @@ import {
   Database,
   Terminal,
   Check,
-  Zap
+  Zap,
+  Cake
 } from 'lucide-react';
+import { getArtistMembers, Member } from '@/actions/getArtistMembers';
 import Link from 'next/link';
 import { COUNTRY_DATA, Country } from '@/constants/countryData';
 import { getArtistTopTrack } from '@/actions/getArtistTopTrack';
@@ -114,6 +116,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
+  const [members, setMembers] = useState<Member[]>([]);
 
   const t = getT(lang);
 
@@ -171,6 +174,14 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         setIsPlaying(false);
       }
     };
+  }, [artistId]);
+
+  useEffect(() => {
+    async function loadMembers() {
+      const res = await getArtistMembers(artistId);
+      if (res.success) setMembers(res.members || []);
+    }
+    loadMembers();
   }, [artistId]);
 
   const fetchAll = async () => {
@@ -728,6 +739,51 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
           setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
         }}
       />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shadow-[0_0_15px_rgba(0,243,255,0.2)]">
+            <Database size={20} />
+          </div>
+          <h2 className="text-xl font-black italic tracking-tighter uppercase whitespace-nowrap">{t('fandomDensity')} / {lang === 'KO' ? '멤버 정보' : 'UNIT MEMBERS'}</h2>
+        </div>
+
+        {members.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {members.map((member) => (
+              <motion.div
+                key={member.id}
+                whileHover={{ y: -5 }}
+                className="glass-panel p-4 flex flex-col items-center text-center gap-3 group border border-white/5"
+              >
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-neon-cyan/50 transition-colors bg-zinc-900">
+                  {member.image_url ? (
+                    <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xl font-black text-zinc-800">{member.name[0]}</div>
+                  )}
+                </div>
+                <div className="min-w-0 w-full">
+                  <p className="text-[11px] font-black text-white truncate w-full">{member.name}</p>
+                  {member.birthday && (
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      <Cake size={10} className="text-neon-magenta" />
+                      <p className="text-[9px] font-bold text-zinc-500">{member.birthday}</p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 bg-white/[0.02] rounded-3xl border border-dashed border-white/10 text-center">
+            <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest leading-loose">
+              {lang === 'KO' ? '등록된 멤버 정보가 없습니다.' : 'NO UNIT COMPOSITION DATA DETECTED.'} <br/>
+              {lang === 'KO' ? '아티스트를 다시 노미네이트하거나 점검 중입니다.' : 'NODE MAY BE UNDER MAINTENANCE.'}
+            </p>
+          </div>
+        )}
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-6 md:gap-12 pb-20">
         {/* Analytics (Left 5) */}

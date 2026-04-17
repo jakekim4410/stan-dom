@@ -23,6 +23,7 @@ import Toast from '@/components/Toast';
 const GlobeMap = dynamic(() => import('@/components/GlobeMap'), { ssr: false });
 const FlatMap = dynamic(() => import('@/components/FlatMap'), { ssr: false });
 const AddArtistModal = dynamic(() => import('@/components/AddArtistModal'), { ssr: false });
+const BirthdayPromotion = dynamic(() => import('@/components/BirthdayPromotion'), { ssr: false });
 
 type MapView = 'globe' | 'flat';
 
@@ -31,6 +32,7 @@ interface Artist {
   name: string;
   image_url: string | null;
   total_votes: number;
+  birthday: string | null;
 }
 
 // Helper to convert hex to RGB for CSS variables
@@ -250,12 +252,13 @@ export default function Dashboard() {
       setActiveVotes(prev => ({ ...prev, [id]: 'success' }));
       handleIncomingVote(userCountry.code, id);
 
-      // Confetti celebration with theme color
+      // Confetti celebration with theme color and birthday flair
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 150,
+        spread: 80,
         origin: { y: 0.7 },
-        colors: [themeColor, '#ffffff', '#FFD700'],
+        colors: [themeColor, '#ffffff', '#FFD700', '#FF00FF'],
+        disableForReducedMotion: true
       });
 
       const votedArtist = artists.find(a => a.id === id);
@@ -968,6 +971,11 @@ export default function Dashboard() {
             </button>
           </div>
         </section>
+
+        {/* Birthday Promotion Bar (New) */}
+        <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4">
+          <BirthdayPromotion lang={lang} />
+        </div>
 
         {/* ── Top 3 ── */}
         <section>
