@@ -927,7 +927,7 @@ export default function Dashboard() {
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             {/* Relocated Search */}
-            <div className="flex-1 md:w-64 flex items-center bg-white/5 rounded-2xl px-5 py-3 gap-3 border border-white/10 focus-within:border-[#37C561]/50 transition-all">
+            <div className="flex-1 md:w-64 flex items-center bg-white/5 rounded-2xl px-5 py-3 gap-3 border border-white/10 focus-within:border-[var(--neon-lime)]/50 transition-all">
               <Search size={16} className="text-zinc-500" />
               <input
                 type="text"
@@ -941,7 +941,7 @@ export default function Dashboard() {
             {/* Restore Add Artist Feature */}
             <button
               onClick={() => setIsAddArtistOpen(true)}
-              className="shrink-0 flex items-center gap-2 px-5 py-3 bg-[#37C561]/10 border border-[#37C561]/30 rounded-2xl text-[#37C561] hover:bg-[#37C561] hover:text-black transition-all group"
+              className="shrink-0 flex items-center gap-2 px-5 py-3 bg-[var(--neon-lime)]/10 border border-[var(--neon-lime)]/30 rounded-2xl text-[var(--neon-lime)] hover:bg-[var(--neon-lime)] hover:text-black transition-all group"
             >
               <PlusCircle size={18} className="group-hover:scale-110 transition-transform" />
               <span className="text-xs font-black uppercase tracking-widest hidden sm:inline">
@@ -1077,7 +1077,7 @@ export default function Dashboard() {
         <section className="space-y-6">
           <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
             <h3 className="text-xl font-black flex items-center gap-2 italic">
-              <Sparkles size={20} className="text-[#37C561]" />
+              <Sparkles size={20} className="text-[var(--neon-lime)]" />
               {t('upcomingArtists')}
             </h3>
             <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
@@ -1097,21 +1097,21 @@ export default function Dashboard() {
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="glassmorphism p-5 rounded-[1.5rem] flex items-center justify-between group border border-white/5 hover:border-[#37C561]/30 transition-all"
+                    className="glassmorphism p-5 rounded-[1.5rem] flex items-center justify-between group border border-white/5 hover:border-[var(--neon-lime)]/30 transition-all"
                   >
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <span className="w-6 font-mono text-zinc-600 font-black italic text-sm shrink-0">
                         #{index + 4}
                       </span>
                       <Link href={`/artist/${a.id}`} className="flex items-center gap-3 group/link min-w-0">
-                        <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/5 overflow-hidden flex items-center justify-center group-hover/link:border-[#37C561]/40 transition-colors shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/5 overflow-hidden flex items-center justify-center group-hover/link:border-[var(--neon-lime)]/40 transition-colors shrink-0">
                           {a.image_url
                             ? <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />
                             : <span className="font-black text-xl text-zinc-600">{a.name[0]}</span>
                           }
                         </div>
                         <div className="min-w-0">
-                          <h4 className="font-black text-base tracking-tight leading-none group-hover/link:text-[#37C561] transition-colors truncate">
+                          <h4 className="font-black text-base tracking-tight leading-none group-hover/link:text-[var(--neon-lime)] transition-colors truncate">
                             {a.name}
                           </h4>
                           <div className="mt-2 space-y-1">
@@ -1135,7 +1135,7 @@ export default function Dashboard() {
                         ? 'bg-emerald-500 border-emerald-400 text-white'
                         : activeVotes[a.id] === 'loading'
                           ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
-                          : 'border-zinc-700 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
+                          : 'border-zinc-700 hover:bg-[var(--neon-lime)] hover:text-black hover:border-[var(--neon-lime)]'
                         }`}
                     >
                       {activeVotes[a.id] === 'success' ? (
@@ -1156,12 +1156,12 @@ export default function Dashboard() {
             <div className="flex justify-center mt-8">
               <button
                 onClick={() => setShowAllUpcoming(!showAllUpcoming)}
-                className="px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[#37C561]/50 hover:bg-[#37C561]/5 transition-all group flex items-center gap-2"
+                className="px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--neon-lime)]/50 hover:bg-[var(--neon-lime)]/5 transition-all group flex items-center gap-2"
               >
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] group-hover:text-[#37C561] transition-colors">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] group-hover:text-[var(--neon-lime)] transition-colors">
                   {showAllUpcoming ? t('showLess') : t('showMore')}
                 </span>
-                <div className={`w-1.5 h-1.5 rounded-full bg-[#37C561] shadow-[0_0_8px_#37C561] transition-transform duration-300 ${showAllUpcoming ? 'rotate-180' : ''}`} />
+                <div className={`w-1.5 h-1.5 rounded-full bg-[var(--neon-lime)] shadow-[0_0_8px_var(--neon-lime)] transition-transform duration-300 ${showAllUpcoming ? 'rotate-180' : ''}`} />
               </button>
             </div>
           )}
@@ -1187,7 +1187,7 @@ export default function Dashboard() {
                     </p>
                     <div className="flex flex-wrap items-center gap-3 px-4 py-3 rounded-[1.25rem] bg-white/5 border border-white/10 max-w-fit">
                       <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-[#37C561] rounded-full animate-pulse shadow-[0_0_10px_#37C561]" />
+                        <span className="w-2 h-2 bg-[var(--neon-lime)] rounded-full animate-pulse shadow-[0_0_10px_var(--neon-lime)]" />
                         <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest break-keep">
                           {t('votingRuleNotice')}
                         </span>
@@ -1195,7 +1195,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="px-6 py-2 bg-black/40 border border-[#37C561]/30 rounded-full text-[#37C561] text-[10px] font-black uppercase tracking-widest animate-pulse">
+                  <div className="px-6 py-2 bg-black/40 border border-[var(--neon-lime)]/30 rounded-full text-[var(--neon-lime)] text-[10px] font-black uppercase tracking-widest animate-pulse">
                     LIVE_SYNC_ACTIVE
                   </div>
                 </div>
@@ -1207,11 +1207,11 @@ export default function Dashboard() {
                     const isTop = i === 0;
 
                     return (
-                      <div key={name} className="glassmorphism p-6 rounded-3xl border-white/5 hover:border-[#37C561]/40 transition-all flex flex-col gap-4">
+                      <div key={name} className="glassmorphism p-6 rounded-3xl border-white/5 hover:border-[var(--neon-lime)]/40 transition-all flex flex-col gap-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 uppercase font-black text-[8px] text-zinc-500 tracking-widest">
                             <span className="opacity-50">{t('rank')}</span>
-                            <span className="text-[#37C561]">{i + 1}</span>
+                            <span className="text-[var(--neon-lime)]">{i + 1}</span>
                           </div>
                           {isTop && <Trophy size={14} className="text-yellow-400 vibrant-glow" />}
                         </div>
@@ -1219,7 +1219,7 @@ export default function Dashboard() {
                         {/* Artist Link Wrapper */}
                         {artist ? (
                           <Link href={`/artist/${artist.id}`} className="flex items-center gap-4 group/artist">
-                            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 overflow-hidden shrink-0 group-hover/artist:border-[#37C561]/50 transition-all">
+                            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 overflow-hidden shrink-0 group-hover/artist:border-[var(--neon-lime)]/50 transition-all">
                               {artist.image_url ? (
                                 <img src={artist.image_url} alt={name} className="w-full h-full object-cover group-hover/artist:scale-110 transition-transform" />
                               ) : (
@@ -1227,7 +1227,7 @@ export default function Dashboard() {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <h4 className="font-black text-xl tracking-tighter truncate group-hover/artist:text-[#37C561] transition-colors">{name}</h4>
+                              <h4 className="font-black text-xl tracking-tighter truncate group-hover/artist:text-[var(--neon-lime)] transition-colors">{name}</h4>
                               <span className="text-[10px] font-black text-zinc-600 uppercase">VOLTAGE: {votes.toLocaleString()}</span>
                             </div>
                           </Link>
@@ -1245,10 +1245,10 @@ export default function Dashboard() {
                           onClick={() => artist && handleVote(artist.id, votes)}
                           disabled={!artist || !!activeVotes[artist.id]}
                           className={`w-full py-3 border rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${artist && activeVotes[artist.id] === 'success'
-                              ? 'bg-[#37C561] text-black border-[#37C561] shadow-[0_0_15px_rgba(55,197,97,0.4)]'
+                              ? 'bg-[var(--neon-lime)] text-black border-[var(--neon-lime)] shadow-[0_0_15px_rgba(var(--neon-lime-rgb),0.4)]'
                               : artist && activeVotes[artist.id] === 'loading'
                                 ? 'bg-zinc-800 text-zinc-500 border-white/5 cursor-not-allowed'
-                                : 'bg-white/5 border-white/10 hover:bg-[#37C561] hover:text-black hover:border-[#37C561]'
+                                : 'bg-white/5 border-white/10 hover:bg-[var(--neon-lime)] hover:text-black hover:border-[var(--neon-lime)]'
                             }`}
                         >
                           {artist ? (
@@ -1274,14 +1274,14 @@ export default function Dashboard() {
             <div className="mt-8 flex flex-col items-center gap-4">
               <button
                 onClick={() => setShowPastBattles(!showPastBattles)}
-                className="flex items-center gap-3 px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[#37C561]/50 hover:bg-[#37C561]/5 transition-all group"
+                className="flex items-center gap-3 px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--neon-lime)]/50 hover:bg-[var(--neon-lime)]/5 transition-all group"
               >
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 group-hover:text-[#37C561] transition-colors">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 group-hover:text-[var(--neon-lime)] transition-colors">
                   {showPastBattles ? t('hidePastBattles') : `${t('pastBattles')}`}
                 </span>
                 <svg
                   viewBox="0 0 24 24"
-                  className={`w-4 h-4 fill-zinc-500 group-hover:fill-[#37C561] transition-all duration-300 ${showPastBattles ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 fill-zinc-500 group-hover:fill-[var(--neon-lime)] transition-all duration-300 ${showPastBattles ? 'rotate-180' : ''}`}
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
@@ -1307,7 +1307,7 @@ export default function Dashboard() {
                         <div className="flex-1 flex flex-wrap gap-2 sm:gap-4 items-center justify-center sm:justify-start">
                           <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">ILLIT</span>
                           <span className="text-zinc-700 text-xs font-black">VS</span>
-                          <span className="text-[#37C561] font-black tracking-widest text-sm flex items-center gap-1">
+                          <span className="text-[var(--neon-lime)] font-black tracking-widest text-sm flex items-center gap-1">
                             <Trophy size={14} className="text-yellow-400" /> BABYMONSTER
                           </span>
                           <span className="text-zinc-700 text-xs font-black">VS</span>
@@ -1364,10 +1364,10 @@ export default function Dashboard() {
 
         {/* 2. 구글 검토용 법적 공지 링크 (Privacy & Terms) */}
         <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-zinc-500">
-          <Link href="/privacy" className="hover:text-[#37C561] transition-colors">
+          <Link href="/privacy" className="hover:text-[var(--neon-lime)] transition-colors">
             Privacy Policy
           </Link>
-          <Link href="/terms" className="hover:text-[#37C561] transition-colors">
+          <Link href="/terms" className="hover:text-[var(--neon-lime)] transition-colors">
             Terms of Service
           </Link>
         </div>
