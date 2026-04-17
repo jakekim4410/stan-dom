@@ -67,6 +67,7 @@ interface Comment {
   likes_count: number;
   is_liked?: boolean;
   user_id?: string | null;
+  member_id?: string | null;
 }
 
 interface CountryStat {
@@ -425,6 +426,36 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     if (!result.success) {
       // 실패 시 스냅샷으로 롤백
       setComments(snapshot);
+    }
+  };
+
+  const handleToggleMemberLike = async (mId: string) => {
+    if (likingMemberId) return;
+    if (!user) {
+      setToast({ isVisible: true, message: t('authRequired'), subMessage: t('loginToTransmit') });
+      setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
+      return;
+    }
+    setLikingMemberId(mId);
+    try {
+      const res = await toggleMemberLike(mId, artistId);
+      if (res.success) {
+        setMembers(prev => prev.map(m => {
+          if (m.id === mId) {
+            const isNowLiked = res.action === 'liked';
+            return {
+              ...m,
+              is_liked: isNowLiked,
+              likes_count: isNowLiked ? (m.likes_count + 1) : Math.max(0, m.likes_count - 1)
+            };
+          }
+          return m;
+        }));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLikingMemberId(null);
     }
   };
 
