@@ -202,6 +202,15 @@ export const i18n: Record<Language, Record<string, string>> = {
     updateSchedule: 'Updated daily · KST 09:00 & EST 09:00',
     newTag: 'NEW',
 
+    // Hologram Card & Takeover
+    takeoverTooltip: 'The top ranked global artist takes over the entire website theme!',
+    hologramRank: 'GLOBAL RANK',
+    fueledMsg: 'Your voltage successfully fueled global rankings on STAN.DOM!',
+    shareToX: 'Share Card to X',
+    tweetTemplate: 'I just fueled global rank #{rank} for {artist} on STAN.DOM! Vote for your favorite K-POP artist now!',
+    required: 'REQUIRED',
+    close: 'Close',
+
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
     localLeader: 'LOCAL LEADER',
@@ -411,6 +420,15 @@ export const i18n: Record<Language, Record<string, string>> = {
     updateSchedule: '매일 업데이트 · KST 09:00 & EST 09:00',
     newTag: 'NEW',
 
+    // Hologram Card & Takeover
+    takeoverTooltip: '현재 1위에 랭크된 글로벌 아티스트가 웹사이트 테마를 점령합니다!',
+    hologramRank: '글로벌 랭킹',
+    fueledMsg: '당신의 볼티지가 글로벌 순위 상승에 성공적으로 기여했습니다!',
+    shareToX: 'X에 카드 공유',
+    tweetTemplate: '제가 방금 STAN.DOM에서 {artist}의 글로벌 랭킹을 #{rank}위로 끌어올렸어요! 지금 바로 최애 아티스트에게 투표하세요!',
+    required: '필수 선택',
+    close: '닫기',
+
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
     localLeader: '로컬 유닛',
@@ -619,6 +637,15 @@ export const i18n: Record<Language, Record<string, string>> = {
     hidePastIssues: 'Ocultar',
     updateSchedule: 'Actualizado diariamente · KST 09:00 & EST 09:00',
     newTag: 'NUEVO',
+
+    // Hologram Card & Takeover
+    takeoverTooltip: '¡El artista global mejor clasificado se apodera del tema del sitio web!',
+    hologramRank: 'RANGO GLOBAL',
+    fueledMsg: '¡Tu voltaje impulsó con éxito las clasificaciones en STAN.DOM!',
+    shareToX: 'Compartir en X',
+    tweetTemplate: '¡Acabo de impulsar el rango global #{rank} de {artist} en STAN.DOM! ¡Vota por tu artista de K-POP favorito ahora!',
+    required: 'REQUERIDO',
+    close: 'Cerrar',
 
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',

@@ -298,7 +298,7 @@ export default function Dashboard() {
                 <div className="relative group flex items-center justify-center">
                   <div className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center cursor-help pb-[1px] text-[10px] text-white">?</div>
                   <div className="absolute top-full mt-2 right-0 w-48 text-[10px] font-medium leading-relaxed bg-black/90 p-3 rounded-xl border border-white/10 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    The top ranked global artist takes over the entire website theme!
+                    {t('takeoverTooltip')}
                   </div>
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function Dashboard() {
               <CountrySelector selected={userCountry} onSelect={setUserCountry} lang={lang} />
               {!userCountry && (
                 <div className="absolute -top-2 -right-2 bg-red-500 text-[9px] font-black px-2 py-0.5 rounded-full animate-bounce shadow-lg shadow-red-500/20 z-20">
-                  REQUIRED
+                  {t('required')}
                 </div>
               )}
             </div>
@@ -1438,13 +1438,13 @@ export default function Dashboard() {
                     {showHologramCard.artist.name}
                   </h3>
                   <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-                    <span className="text-[10px] font-black tracking-widest text-[#37C561]">GLOBAL RANK #{showHologramCard.rank}</span>
+                    <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase">{t('hologramRank')} #{showHologramCard.rank}</span>
                   </div>
                 </div>
 
                 <div className="relative z-10 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center justify-end p-6 text-center">
                   <p className="text-xs font-medium text-zinc-300 leading-relaxed mb-4">
-                    Your voltage successfully fueled global rankings on STAN.DOM!
+                    {t('fueledMsg')}
                   </p>
                   <img src="/stan_dom_logo_transparent2.png" className="h-4 opacity-50" alt="LOGO" />
                 </div>
@@ -1463,15 +1463,15 @@ export default function Dashboard() {
               onClick={(e) => e.stopPropagation()}
             >
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I just fueled global rank #${showHologramCard.rank} for ${showHologramCard.artist.name} on STAN.DOM! Vote for your favorite K-POP artist now!`)}&url=${encodeURIComponent('https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent('https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-black text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.13H5.028z" /></svg>
-                Share Card to X
+                {t('shareToX')}
               </a>
               <button onClick={() => setShowHologramCard(null)} className="text-xs text-zinc-500 font-bold hover:text-white transition-colors">
-                Close
+                {t('close')}
               </button>
             </motion.div>
           </motion.div>
