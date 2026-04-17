@@ -161,7 +161,7 @@ export default function Dashboard() {
       });
       
       setGeneratedImage(dataUrl);
-      setToast({ isVisible: true, message: t('generateSuccess'), subMessage: 'Instructions ready!' });
+      setToast({ isVisible: false, message: '', subMessage: '' }); // Hide toast as modal provides feedback
     } catch (err) {
       console.error('Download failed:', err);
       setToast({ isVisible: true, message: 'Generation Failed', subMessage: 'Please check your connection' });
