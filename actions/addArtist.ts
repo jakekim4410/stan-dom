@@ -40,6 +40,12 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
       };
     }
 
+    // 1. Resolve image URL (use provided one, or fetch dynamically)
+    let imageUrl = providedImageUrl;
+    if (!imageUrl) {
+      imageUrl = await getArtistImage(cleanName) || null;
+    }
+
     // 1.5 Sync with MusicBrainz for Birthday and Members
     let birthday = manualBirthday;
     let members: { name: string; birthday: string | null }[] = [];
