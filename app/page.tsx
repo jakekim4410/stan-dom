@@ -63,7 +63,8 @@ export default function Dashboard() {
   const [showPastIssues, setShowPastIssues] = useState(false);
   const [showPastBattles, setShowPastBattles] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
-  const [showHologramCard, setShowHologramCard] = useState<{artist: any, rank: number} | null>(null);
+  const [showHologramCard, setShowHologramCard] = useState<{ artist: Artist; rank: number } | null>(null);
+  const [showInstaGuide, setShowInstaGuide] = useState(false);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -1571,9 +1572,7 @@ export default function Dashboard() {
                   onClick={async () => {
                     await handleDownloadCard();
                     handleCopyProfileLink();
-                    setTimeout(() => {
-                      window.open('https://www.instagram.com/', '_blank');
-                    }, 1000);
+                    setShowInstaGuide(true);
                   }}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-tr from-[#FFDC80] via-[#FD1D1D] to-[#833AB4] text-white font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-red-500/20"
                 >
@@ -1591,6 +1590,62 @@ export default function Dashboard() {
               </button>
 
               <button onClick={() => setShowHologramCard(null)} className="mt-2 text-[10px] text-zinc-500 font-bold hover:text-white transition-colors tracking-widest uppercase">
+                {t('close')}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      <AnimatePresence>
+        {showInstaGuide && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl"
+            onClick={() => setShowInstaGuide(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
+              onClick={e => e.stopPropagation()}
+              className="w-full max-w-sm glassmorphism p-8 rounded-[2.5rem] border border-white/20 text-center"
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-tr from-[#FFDC80] via-[#FD1D1D] to-[#833AB4] flex items-center justify-center shadow-2xl shadow-red-500/40">
+                <svg viewBox="0 0 24 24" className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </div>
+              
+              <h3 className="text-xl font-black mb-4 tracking-tighter">SUCCESS!</h3>
+              
+              <div className="space-y-4 text-left mb-8">
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10">
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-black">1</div>
+                  <span className="text-[11px] font-bold text-zinc-200">{t('instaStep1')}</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10">
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-black">2</div>
+                  <span className="text-[11px] font-bold text-zinc-200">{t('instaStep2')}</span>
+                </div>
+                <div className="p-3">
+                  <p className="text-[10px] font-medium text-zinc-400 leading-relaxed text-center">
+                    {t('instaStep3')}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  window.location.href = 'instagram://app';
+                  setTimeout(() => {
+                    window.open('https://www.instagram.com/', '_blank');
+                  }, 500);
+                  setShowInstaGuide(false);
+                }}
+                className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl shadow-white/10"
+              >
+                {t('openInstaApp')}
+              </button>
+              
+              <button 
+                onClick={() => setShowInstaGuide(false)}
+                className="mt-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-white transition-colors"
+              >
                 {t('close')}
               </button>
             </motion.div>

@@ -213,6 +213,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     tweetTemplate: 'I just fueled global rank {rank} for {artist} on STAN.DOM! Vote for your favorite K-POP artist now!',
     required: 'REQUIRED',
     close: 'Close',
+    instaStep1: '1. Card image saved to your gallery!',
+    instaStep2: '2. Artist profile link copied!',
+    instaStep3: 'Now, open Instagram and paste the link in your Story!',
+    openInstaApp: 'Open Instagram App',
 
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
@@ -434,6 +438,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     tweetTemplate: 'STAN.DOM에서 {artist}의 글로벌 랭킹 {rank}위를 응원했습니다! 여러분의 최애 K-POP 아티스트에게 투표하세요!',
     required: '필수',
     close: '닫기',
+    instaStep1: '1. 카드 이미지가 갤러리에 저장되었습니다!',
+    instaStep2: '2. 프로필 링크가 복사되었습니다!',
+    instaStep3: '이제 인스타그램 앱을 열고 스토리에서 링크를 붙여넣으세요!',
+    openInstaApp: '인스타그램 앱 열기',
 
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
@@ -655,6 +663,10 @@ export const i18n: Record<Language, Record<string, string>> = {
     tweetTemplate: '¡Acabo de impulsar el rango global {rank} para {artist} en STAN.DOM! ¡Vota por tu artista favorito de K-POP ahora!',
     required: 'OBLIGATORIO',
     close: 'Cerrar',
+    instaStep1: '1. ¡Imagen guardada en tu galería!',
+    instaStep2: '2. ¡Enlace del perfil copiado!',
+    instaStep3: '¡Ahora, abre Instagram y pega el enlace en tu Story!',
+    openInstaApp: 'Abrir Instagram App',
 
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',
