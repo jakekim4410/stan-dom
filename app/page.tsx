@@ -1099,6 +1099,9 @@ export default function Dashboard() {
           </div>
         </section>
 
+        {/* ── Birthday Stars ── */}
+        <BirthdayPromotion lang={lang} />
+
         {/* ── Others ── */}
         <section className="space-y-6">
           <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
