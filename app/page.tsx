@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import confetti from 'canvas-confetti';
 import { domToJpeg } from 'modern-screenshot';
 import { toPng, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
@@ -242,6 +243,14 @@ export default function Dashboard() {
       // Mark as success
       setActiveVotes(prev => ({ ...prev, [id]: 'success' }));
       handleIncomingVote(userCountry.code, id);
+
+      // Confetti celebration with theme color
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.7 },
+        colors: [themeColor, '#ffffff', '#FFD700'],
+      });
 
       const votedArtist = artists.find(a => a.id === id);
       const rank = artists.findIndex(a => a.id === id) + 1;
