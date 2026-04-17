@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 
 const COMMENT_QUOTA_MEMBER = 50;
 
-export async function addComment(artistId: string, content: string, countryCode?: string) {
+export async function addComment(artistId: string, content: string, countryCode?: string, memberId?: string) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -42,6 +42,7 @@ export async function addComment(artistId: string, content: string, countryCode?
 
     const { error: insertError } = await supabase.from('comments').insert({
       artist_id: artistId,
+      member_id: memberId || null,
       content: content.trim(),
       display_name: displayName,
       country_code: resolvedCountryCode,

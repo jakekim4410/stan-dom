@@ -46,6 +46,7 @@ import InquiryModal from '@/components/InquiryModal';
 import OnboardingModal from '@/components/OnboardingModal';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import MemberPhotoModal from '@/components/MemberPhotoModal';
+import { toggleMemberLike } from '@/actions/toggleMemberLike';
 import { Language, getT } from '@/constants/i18n';
 import { use } from 'react';
 
@@ -123,6 +124,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [members, setMembers] = useState<Member[]>([]);
   const [syncing, setSyncing] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
+  const [targetMemberId, setTargetMemberId] = useState<string | null>(null);
+  const [likingMemberId, setLikingMemberId] = useState<string | null>(null);
 
   const t = getT(lang);
 
@@ -336,12 +339,19 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     }
 
     setSending(true);
-    const result = await addComment(artistId, commentText, userCountry?.code);
+    const result = await addComment(artistId, commentText, userCountry?.code || undefined, targetMemberId || undefined);
 
     if (result.success) {
       setCommentText('');
+      setTargetMemberId(null);
+      setToast({
+        isVisible: true,
+        message: t('voteTransmitted'),
+        subMessage: t('networkLogUpdated'),
+      });
+      setTimeout(() => setToast(p => ({ ...p, isVisible: false })), 3000);
     } else if (result.error === 'COOLDOWN_ACTIVE') {
-      const waitTime = new Date(result.nextAllowedAt!).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const waitTime = result.nextAllowedAt ? new Date(result.nextAllowedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '–';
       setToast({
         isVisible: true,
         message: 'COMMUNICATION LIMIT REACHED',
@@ -827,8 +837,36 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                   </div>
                   <div className="min-w-0 w-full">
                     <p className="text-[11px] font-black text-white truncate w-full">{displayName}</p>
+                    
+                    {/* Social Stats & Like Button */}
+                    <div className="flex items-center justify-center gap-4 mt-2">
+                       <button 
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           handleToggleMemberLike(member.id);
+                         }}
+                         disabled={!!likingMemberId}
+                         className={`flex items-center gap-1 transition-all ${member.is_liked ? 'text-neon-magenta' : 'text-zinc-600 hover:text-neon-magenta/60'}`}
+                       >
+                         <Heart size={12} fill={member.is_liked ? "currentColor" : "none"} className={likingMemberId === member.id ? "animate-pulse" : ""} />
+                         <span className="text-[9px] font-black">{member.likes_count || 0}</span>
+                       </button>
+
+                       <button 
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           setTargetMemberId(member.id);
+                           // Smooth scroll to comment section
+                           document.getElementById('live-hub')?.scrollIntoView({ behavior: 'smooth' });
+                         }}
+                         className="text-zinc-600 hover:text-neon-cyan transition-colors"
+                       >
+                         <MessageCircle size={12} />
+                       </button>
+                    </div>
+
                     {member.birthday && (
-                      <div className="flex items-center justify-center gap-1 mt-1">
+                      <div className="flex items-center justify-center gap-1 mt-1.5 opacity-60">
                         <Cake size={10} className="text-neon-magenta" />
                         <p className="text-[9px] font-bold text-zinc-500">{member.birthday}</p>
                       </div>
@@ -930,8 +968,6 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                     title={COUNTRY_NAMES[code] || code}
                   >
                     {COUNTRY_FLAGS[code] || '🌐'}
-                  </div>
-                ))}
                 {comments.length === 0 && (
                   <div className="w-7 h-7 rounded-full border-2 border-black bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-500">?</div>
                 )}
@@ -997,6 +1033,26 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
               )}
 
               <div className="relative group">
+                {targetMemberId && (
+                  <div className="absolute -top-10 left-0 flex items-center gap-2 bg-neon-cyan/20 border border-neon-cyan/30 px-3 py-1.5 rounded-xl animate-in fade-in slide-in-from-bottom-2">
+                    <Zap size={10} className="text-neon-cyan" />
+                    <span className="text-[9px] font-black text-neon-cyan uppercase tracking-widest">
+                      {t('transmit')} TO: {(() => {
+                        const m = members.find(m => m.id === targetMemberId);
+                        if (!m) return 'MEMBER';
+                        try {
+                          const nameMap = JSON.parse(m.name);
+                          return nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0];
+                        } catch (e) {
+                          return m.name;
+                        }
+                      })()}
+                    </span>
+                    <button onClick={() => setTargetMemberId(null)} className="ml-2 hover:text-white transition-colors">
+                      <X size={10} />
+                    </button>
+                  </div>
+                )}
                 <textarea
                   placeholder={user ? t('commentPlaceholder') : t('loginRequiredPlaceholder')}
                   value={commentText}
@@ -1062,7 +1118,22 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                                       {COUNTRY_FLAGS[c.country_code] ?? '🌐'}
                                     </span>
                                   )}
-                                  <span className="text-xs font-black uppercase text-zinc-300 group-hover:text-neon-magenta transition-colors">
+                                  <span className="text-xs font-black uppercase text-zinc-300 group-hover:text-neon-magenta transition-colors flex items-center gap-2">
+                                    {c.member_id && (
+                                      <span className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-neon-cyan/20 border border-neon-cyan/30 text-[8px] text-neon-cyan font-black">
+                                        <Zap size={8} />
+                                        {(() => {
+                                          const m = members.find(mem => mem.id === c.member_id);
+                                          if (!m) return 'MEMBER';
+                                          try {
+                                            const nameMap = JSON.parse(m.name);
+                                            return nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0];
+                                          } catch (e) {
+                                            return m.name;
+                                          }
+                                        })()}
+                                      </span>
+                                    )}
                                     {c.display_name || 'Anonymous Fan'}
                                   </span>
                                 </div>
