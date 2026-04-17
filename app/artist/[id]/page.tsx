@@ -31,7 +31,8 @@ import {
   Zap,
   Cake,
   RefreshCcw,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { getArtistMembers, Member } from '@/actions/getArtistMembers';
 import { syncArtistMetadata } from '@/actions/syncArtistMetadata';
