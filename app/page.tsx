@@ -1463,7 +1463,7 @@ export default function Dashboard() {
               onClick={(e) => e.stopPropagation()}
             >
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent('https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
+                href={`https://twitter.com/share?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent('https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-black text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
               >

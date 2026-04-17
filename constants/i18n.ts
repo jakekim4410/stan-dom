@@ -207,7 +207,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     hologramRank: 'GLOBAL RANK',
     fueledMsg: 'Your voltage successfully fueled global rankings on STAN.DOM!',
     shareToX: 'Share Card to X',
-    tweetTemplate: 'I just fueled global rank #{rank} for {artist} on STAN.DOM! Vote for your favorite K-POP artist now!',
+    tweetTemplate: 'I just fueled global rank {rank} for {artist} on STAN.DOM! Vote for your favorite K-POP artist now!',
     required: 'REQUIRED',
     close: 'Close',
 
@@ -425,7 +425,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     hologramRank: '글로벌 랭킹',
     fueledMsg: '당신의 볼티지가 글로벌 순위 상승에 성공적으로 기여했습니다!',
     shareToX: 'X에 카드 공유',
-    tweetTemplate: '제가 방금 STAN.DOM에서 {artist}의 글로벌 랭킹을 #{rank}위로 끌어올렸어요! 지금 바로 최애 아티스트에게 투표하세요!',
+    tweetTemplate: '제가 방금 STAN.DOM에서 {artist}의 글로벌 랭킹을 {rank}위로 끌어올렸어요! 지금 바로 최애 아티스트에게 투표하세요!',
     required: '필수 선택',
     close: '닫기',
 
@@ -643,7 +643,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     hologramRank: 'RANGO GLOBAL',
     fueledMsg: '¡Tu voltaje impulsó con éxito las clasificaciones en STAN.DOM!',
     shareToX: 'Compartir en X',
-    tweetTemplate: '¡Acabo de impulsar el rango global #{rank} de {artist} en STAN.DOM! ¡Vota por tu artista de K-POP favorito ahora!',
+    tweetTemplate: '¡Acabo de impulsar el rango global {rank} de {artist} en STAN.DOM! ¡Vota por tu artista de K-POP favorito ahora!',
     required: 'REQUERIDO',
     close: 'Cerrar',
 
