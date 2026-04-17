@@ -31,7 +31,11 @@ export async function updateSession(request: NextRequest) {
   )
 
   // refreshing the auth token
-  await supabase.auth.getUser()
+  try {
+    await supabase.auth.getUser()
+  } catch (e) {
+    console.error('Supabase Auth failure in Proxy:', e);
+  }
 
   return supabaseResponse
 }

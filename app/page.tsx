@@ -121,9 +121,14 @@ export default function Dashboard() {
   }, [userCountry]);
 
   const fetchInitialData = async () => {
-    setLoading(true);
-    await Promise.all([fetchArtists(), fetchCountryStats(), refreshQuota()]);
-    setLoading(false);
+    try {
+      setLoading(true);
+      await Promise.all([fetchArtists(), fetchCountryStats(), refreshQuota()]);
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const refreshQuota = async () => {
@@ -252,16 +257,6 @@ export default function Dashboard() {
   const top3 = filteredArtists.slice(0, 3);
   const others = filteredArtists.slice(3);
   const maxVotes = Math.max(top3[0]?.total_votes || 0, 1);
-
-  /* Loading spinner */
-  if (loading && artists.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#020205]">
-        <div className="w-16 h-16 border-4 border-[#37C561] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   const topArtist = artists.length > 0 ? artists[0] : null;
 
   // Dynamic Fandom Color Mapping for Winner Takeover
@@ -299,6 +294,15 @@ export default function Dashboard() {
       document.documentElement.style.setProperty('--neon-cyan', themeColor);
     }
   }, [themeColor]);
+
+  /* Loading spinner */
+  if (loading && artists.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#020205]">
+        <div className="w-16 h-16 border-4 border-[#37C561] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <main className="flex-1 bg-[#020205] text-white relative flex flex-col">
@@ -1512,7 +1516,7 @@ export default function Dashboard() {
               onClick={(e) => e.stopPropagation()}
             >
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent('https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-black text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
               >
