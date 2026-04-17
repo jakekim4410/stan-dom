@@ -1083,7 +1083,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Vote button */}
-                    <div className="relative mt-8">
+                    <div className="relative mt-8 w-full">
                       {birthdayArtistIds.has(a.id) && !activeVotes[a.id] && (
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-neon-magenta rounded-md text-[8px] font-black text-white uppercase tracking-widest z-20 shadow-lg shadow-neon-magenta/50 flex items-center gap-1">
                           <Cake size={10} />
