@@ -55,6 +55,7 @@ export default function Dashboard() {
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [showPastIssues, setShowPastIssues] = useState(false);
   const [showPastBattles, setShowPastBattles] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState<any>(null);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -464,6 +465,11 @@ export default function Dashboard() {
               KO: "JYP 소속 록 밴드 엑스디너리 히어로즈가 4월 17일 오후 1시 8번째 미니앨범 'DEAD AND'와 타이틀곡 'Voyager'를 전격 공개했다.",
               ES: "La banda de rock de JYP, Xdinary Heroes, lanza 'DEAD AND' con 'Voyager' como tema principal el 17 de abril a la 1PM KST.",
             },
+            body: {
+              EN: "JYP Entertainment's rock band Xdinary Heroes (XH) has officially returned with their highly anticipated 8th mini album, 'DEAD AND', released globally on April 17th. The title track, 'Voyager', features explosive guitar riffs and a sharp vocal delivery, showcasing the band's matured sound and continuous musical evolution. Global fans are already showing explosive reactions to their upgraded band performance.\n\nSource: JYP Entertainment Press Release & Official YouTube MV.",
+              KO: "JYP엔터테인먼트 실력파 록 밴드 엑스디너리 히어로즈(Xdinary Heroes, XH)가 4월 17일 오후 1시, 여덟 번째 미니 앨범 'DEAD AND'를 전 세계 동시 발매하고 컴백했다. 타이틀곡 'Voyager(보이저)'는 폭발적인 기타 리프와 날카로운 보컬이 더해진 곡으로, 데뷔 이후 멈추지 않는 이들의 음악적 진화를 증명한다. 한층 업그레이드된 밴드 퍼포먼스에 글로벌 팬들의 폭발적인 반응이 쏟아지고 있다.\n\n출처: JYP엔터테인먼트 공식 보도자료 및 신곡 뮤직비디오.",
+              ES: "La talentosa banda de rock de JYP Entertainment, Xdinary Heroes, ha regresado oficialmente con su octavo mini álbum 'DEAD AND'. La pista principal, 'Voyager', muestra riffs de guitarra explosivos y su evolución musical continua. Sus fans globales ya muestran una reacción inmensa ante esta nueva etapa.\n\nFuente: JYP Entertainment y MV oficial en YouTube."
+            },
             videoId: 'C6FXANyVACw', accent: '#F59E0B',
             tags: ['XdinaryHeroes', 'DEADAND', 'Voyager', 'JYP'],
           },
@@ -482,7 +488,12 @@ export default function Dashboard() {
               KO: 'HYBE·SM·JYP·YG 4사가 2027년 글로벌 K-POP 페스티벌 합작 신고를 마치고, HYBE는 2027년 2월 할리우드 K-POP 영화까지 발표했다.',
               ES: 'HYBE, SM, JYP y YG presentan JV para un festival K-pop global en 2027, mientras HYBE revela una película de Hollywood para febrero de 2027.',
             },
-            videoId: 'uI6EwBBFFrQ', accent: '#A855F7',
+            body: {
+              EN: "In an unprecedented move for the industry, South Korea's Big 4 (HYBE, SM, JYP, YG) have filed a joint venture declaration with the Fair Trade Commission, establishing a massive collaborative project known temporarily as 'Fanomenon'. The joint venture focuses on hosting an enormous unified global K-Pop festival by 2027. Additionally, HYBE has revealed a partnership with Paramount Pictures to produce an original K-Pop Hollywood movie scheduled for February 2027, highlighting massive IPs bridging tech and cinema.\n\nSource: Reuters, Korea Fair Trade Commission Public Files, and Variety.",
+              KO: "대한민국 엔터테인먼트 '빅4'로 불리는 HYBE, SM, JYP, YG가 이례적으로 공정거래위원회에 합작법인(JV) '파노메논(가칭)' 설립 신고를 완료했다. 이들은 2027년 개최를 목표로 역사상 유례없는 '글로벌 연합 K-POP 페스티벌'을 준비한다고 밝혔다. 이와 더불어 HYBE는 파라마운트 픽처스와 손잡고 K-POP을 소재로 한 할리우드 오리지널 영화를 2027년 2월 개봉 목표로 제작한다고 발표해 전 세계 미디어 시장의 패러다임 변화를 예고했다.\n\n출처: 공정위 신고 내역 요약 분석 및 미국 버라이어티(Variety) 독점 인터뷰 발췌.",
+              ES: "HYBE, SM, JYP y YG, las cuatro agencias más grandes de Corea, presentaron una empresa conjunta llamada 'Fanomenon' para organizar un festival global para 2027. Además, HYBE acaba de revelar una asociación con Paramount Pictures para producir una película original de Hollywood sobre el K-Pop, programada para febrero de 2027.\n\nFuente: Informes de agencias financieras coreanas y The Hollywood Reporter."
+            },
+            videoId: 'gdZLi9oWNZg', accent: '#A855F7',
             tags: ['Fanomenon', 'HYBE', 'BigFour', 'KPopMovie'],
           },
           {
@@ -499,6 +510,11 @@ export default function Dashboard() {
               EN: "LISA's solo debut set, JENNIE's Ruby Experience, ENHYPEN's 13-song run, and XG's choreography defined K-pop at Coachella 2025.",
               KO: '리사 솔로 데뷔, 제니의 루비 익스피리언스, 엔하이픈의 13곡 세트리스트, XG의 파워풀한 안무까지 코첼라 2025 K-POP을 총정리했다.',
               ES: 'El debut en solitario de LISA, The Ruby Experience de JENNIE, el set de ENHYPEN y la coreografía de XG definieron el K-pop en Coachella 2025.',
+            },
+            body: {
+              EN: "LISA set the stage on fire with her solo debut acts, proving her unparalleled stage presence. JENNIE delivered her distinct Ruby Experience with captivating visuals, while ENHYPEN powered through a massive 13-song set, keeping the energy at an all-time high. XG also brought their A-game with powerful choreography.\n\nSource: Official Coachella YouTube & Global K-Pop News Agencies.",
+              KO: "리사는 솔로 데뷔곡들로 코첼라 무대를 완벽하게 장악하며 압도적인 무대 장악력을 증명했다. 제니는 특유의 루비 익스피리언스를 통해 한층 성숙해진 퍼포먼스를 선보였으며, 엔하이픈은 무려 13곡에 달하는 세트리스트를 폭발적인 에너지로 소화하며 현장 분위기를 최고조로 끌어올렸다. XG 역시 파워풀한 군무로 글로벌 팬들의 시선을 사로잡았다.\n\n출처: 코첼라 공식 유튜브 라이브 스트리밍 및 글로벌 주요 엔터 매체 종합.",
+              ES: "LISA incendió el escenario con sus temas debut... JENNIE entregó su Ruby Experience característica, mientras que ENHYPEN interpretó 13 canciones con una energía inigualable. XG también deslumbró con su coreografía.\n\nFuente: YouTube oficial de Coachella y agencias globales de noticias."
             },
             videoId: 'WYEsVSmfoes', accent: '#EC4899',
             tags: ['Coachella2025', 'LISA', 'JENNIE', 'ENHYPEN', 'XG'],
@@ -518,6 +534,11 @@ export default function Dashboard() {
               KO: 'BTS를 비롯해 aespa·ENHYPEN·스트레이 키즈·르세라핌·KATSEYE 등이 제52회 AMA를 석권했다.',
               ES: 'BTS domina las nominaciones de los 52.os AMA junto a aespa, ENHYPEN, Stray Kids, LE SSERAFIM y KATSEYE.',
             },
+            body: {
+              EN: "BTS continues to prove their global dominance as 'SWIM' earns three major nominations at the 52nd AMAs, including the highly coveted 'Artist of the Year'. They are joined by a strong K-Pop lineup this year, with aespa, ENHYPEN, Stray Kids, LE SSERAFIM, and KATSEYE all scoring nominations across various categories, highlighting the unstoppable expansion of K-Pop in the mainstream US market.\n\nSource: AMA Official Press Release & Billboard.",
+              KO: "방탄소년단(BTS)이 제52회 아메리칸 뮤직 어워즈(AMA)에서 '올해의 아티스트'를 포함해 총 3개 주요 부문에 노미네이트되며 굳건한 글로벌 최정상 인기를 입증했다. 또한 올해 AMA에는 방탄소년단 외에도 에스파, 엔하이픈, 스트레이 키즈, 르세라핌, 캣츠아이 등 다수의 K-POP 아티스트들이 대거 후보에 오르며 미국 주류 음악 시장 내 K-POP의 폭발적인 영향력을 다시 한번 확인시켰다.\n\n출처: 미국 AMA 공식 보도자료 및 빌보드 뉴스 정리.",
+              ES: "BTS continúa demostrando su dominio global ya que 'SWIM' obtiene tres nominaciones importantes en los 52.os AMA. Se les unen aespa, ENHYPEN, Stray Kids, LE SSERAFIM y KATSEYE, destacando la expansión imparable del K-Pop.\n\nFuente: Comunicado de prensa oficial de los AMA y Billboard."
+            },
             videoId: 'b4iVv91Z6lY', accent: '#37C561',
             tags: ['BTS', 'SWIM', 'AMA2026', 'KPOP'],
           },
@@ -536,6 +557,11 @@ export default function Dashboard() {
               KO: '빅뱅 코첼라 2026 아웃도어 시어터 전체 공연이 유튜브에 공개됐다. 뱅뱅뱅·판타스틱 베이비·솔로 무대까지 전부 포함.',
               ES: 'La actuación completa de BIGBANG en el Outdoor Theatre de Coachella 2026 ya está en streaming, incluyendo Bang Bang Bang y Fantastic Baby.',
             },
+            body: {
+              EN: "Good news for fans! The entirety of BIGBANG's epic return at the Coachella Outdoor Theatre is now officially available to stream on YouTube in high definition. The 60-minute video flawlessly captures the explosive energy of their greatest hits like 'Bang Bang Bang' and 'Fantastic Baby', alongside high-octane solo performances by G-Dragon, Taeyang, and Daesung. Social media analytics show that #BANGCHELLA has remained a top global trend for three consecutive days following the performance.\n\nSource: Coachella Official Media Releases.",
+              KO: "빅뱅의 완전체 코첼라 아웃도어 시어터 무대의 60분 풀타임 공연 영상이 드디어 코첼라 오피셜 유튜브 채널을 통해 스트리밍 공개되었다. 이 영상에는 글로벌 히트곡 '뱅뱅뱅', '판타스틱 베이비'뿐만 아니라 지드래곤, 태양, 대성의 독보적이고 에너제틱한 솔로 무대까지 전부 고화질로 담겨있다. 빅데이터 결과에 따르면 #BANGCHELLA 키워드는 공연 종료 후에도 3일 연속 글로벌 트렌드 1위를 유지하며 전설의 귀환을 또 한 번 입증했다.\n\n출처: 코첼라 오피셜 유튜브 하이라이트 영상.",
+              ES: "¡El regreso completo de BIGBANG en el Outdoor Theatre de Coachella ya está oficialmente disponible para disfrutar en YouTube! Este video de 60 minutos captura la esencia de éxitos como 'Bang Bang Bang' y 'Fantastic Baby', así como los espectaculares números individuales de sus estrellas. La tendencia #BANGCHELLA sigue demostrando el poder del legendario grupo.\n\nFuente: Lanzamientos oficiales de medios de Coachella."
+            },
             videoId: 'uI6EwBBFFrQ', accent: '#FF6B6B',
             tags: ['BIGBANG', 'BANGCHELLA', 'FullConcert', 'Coachella2026'],
           },
@@ -553,6 +579,11 @@ export default function Dashboard() {
               EN: 'G-Dragon, Taeyang & Daesung lit up Coachella Outdoor Theatre with Bang Bang Bang, Fantastic Baby and more for 60 minutes.',
               KO: 'G-드래곤·태양·대성 트리오가 뱅뱅뱅, 판타스틱 베이비 등으로 코첼라 아웃도어 시어터를 60분간 불태웠다.',
               ES: 'G-Dragon, Taeyang y Daesung iluminaron el Outdoor Theatre de Coachella con Bang Bang Bang, Fantastic Baby y más durante 60 minutos.',
+            },
+            body: {
+              EN: "K-pop legends BIGBANG made a monumental return, closing out the Coachella Outdoor Theatre. Breaking a six-year hiatus, G-Dragon, Taeyang, and Daesung joined forces to celebrate their 20th anniversary with an electrifying 60-minute headliner-tier set. Fans witnessed a masterpiece of live performance as the trio executed unmatched stage presence, leaving critics calling it 'The absolute peak of K-Pop live mastery'.\n\nSource: Rolling Stone & Billboard Reviews.",
+              KO: "K팝의 영원한 레전드 '빅뱅'이 장장 6년의 공백을 깨고 코첼라 2026 아웃도어 시어터의 밤을 불태우며 전격 컴백했다! 지드래곤, 태양, 대성 트리오가 데뷔 20주년의 신호탄을 쏘아올리는 60분의 폭발적인 세트리스트(라이브 밴드 편곡)를 선사했다. 현지 매체와 평론가들은 '가장 완벽하게 조율된, K팝 역대 최고의 라이브 장악력'이라는 압도적인 찬사를 쏟아냈다.\n\n출처: 미국 롤링스톤(Rolling Stone) 프리뷰 및 전문가 라이브 리뷰.",
+              ES: "Las leyendas del K-Pop, BIGBANG, rompieron su pausa de seis años en una impresionante presentación de 60 minutos en el Outdoor Theatre de Coachella 2026. Para celebrar su vigésimo aniversario, G-Dragon, Taeyang y Daesung combinaron voces y una inmensa energía desatando la histeria entre los fans en lo que la crítica denomina 'el regreso de los verdaderos reyes del pop asiático'.\n\nFuente: Rolling Stone y Billboard Reviews."
             },
             videoId: 'WYEsVSmfoes', accent: '#FF00FF',
             tags: ['BIGBANG', 'BANGCHELLA', 'Coachella2026'],
@@ -616,19 +647,16 @@ export default function Dashboard() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                       />
                       {/* Play button */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <a
-                          href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                          target="_blank" rel="noopener noreferrer"
-                          className="w-14 h-14 rounded-full flex items-center justify-center bg-black/60 border-2 backdrop-blur-sm hover:scale-110 transition-all"
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div
+                          className="w-14 h-14 rounded-full flex items-center justify-center bg-black/60 border-2 backdrop-blur-sm group-hover:scale-110 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                           style={{ borderColor: `${issue.accent}80` }}
-                          aria-label={t('hotIssueWatchYT')}
                         >
                           <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
-                        </a>
+                        </div>
                       </div>
                       {/* Date top-left */}
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-sm border border-white/10">
+                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-sm border border-white/10 pointer-events-none">
                         <span className="text-[9px] font-black text-zinc-300 tracking-widest">{issue.date}</span>
                       </div>
                       {/* Slot + Archive ID top-right */}
@@ -651,20 +679,14 @@ export default function Dashboard() {
                       >{category}</span>
                       <h3 className="text-sm font-black tracking-tight leading-snug line-clamp-2">{headline}</h3>
                       <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 flex-1">{lead}</p>
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        {issue.tags.map((tag) => (
-                          <span key={tag} className="text-[9px] font-black text-zinc-600 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">#{tag}</span>
-                        ))}
+                      <div className="mt-auto pt-4 flex gap-2 w-full">
+                        <button 
+                          onClick={() => setSelectedIssue(issue)}
+                          className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition-all text-white"
+                        >
+                          {lang === 'KO' ? '기사 상세보기' : lang === 'ES' ? 'Ver Detalles' : 'Read Full Article'}
+                        </button>
                       </div>
-                      <a
-                        href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                        target="_blank" rel="noopener noreferrer"
-                        className="mt-2 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border text-[11px] font-black uppercase tracking-widest transition-all hover:scale-[1.02]"
-                        style={{ borderColor: `${issue.accent}40`, color: issue.accent, backgroundColor: `${issue.accent}10` }}
-                      >
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.75 12.64 12.64 0 00-8.07 0A4.83 4.83 0 014 6.69 48.75 48.75 0 003 12a48.75 48.75 0 001 5.31 4.83 4.83 0 003.75 2.75 12.64 12.64 0 008.08 0 4.83 4.83 0 003.77-2.75A48.75 48.75 0 0021 12a48.75 48.75 0 00-1.41-5.31zM10 15V9l5 3z" /></svg>
-                        {t('hotIssueWatchYT')}
-                      </a>
                     </div>
                   </motion.div>
                 );
@@ -711,7 +733,7 @@ export default function Dashboard() {
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: idx * 0.05 }}
-                              className="flex flex-col sm:flex-row items-start gap-4 p-5 hover:bg-white/5 transition-colors group"
+                              className="flex flex-col sm:flex-row items-center gap-4 p-5 hover:bg-white/5 transition-colors group"
                             >
                               {/* Thumbnail small */}
                               <div className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900">
@@ -734,25 +756,17 @@ export default function Dashboard() {
                                     style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
                                   >{category}</span>
                                   <span className="text-[9px] font-mono text-zinc-600">{issue.date}</span>
-                                  <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-500">{issue.slot}</span>
-                                  <span className="text-[8px] font-mono text-zinc-700">{issue.id}</span>
                                 </div>
-                                <h4 className="text-sm font-black tracking-tight leading-snug line-clamp-2 group-hover:text-white transition-colors">{headline}</h4>
-                                <p className="text-[11px] text-zinc-600 leading-relaxed line-clamp-1">{lead}</p>
-                                <div className="flex flex-wrap items-center gap-2">
-                                  {issue.tags.slice(0, 3).map((tag) => (
-                                    <span key={tag} className="text-[9px] font-black text-zinc-700 bg-white/5 px-1.5 py-0.5 rounded-full border border-white/5">#{tag}</span>
-                                  ))}
-                                  <a
-                                    href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                                    target="_blank" rel="noopener noreferrer"
-                                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all hover:scale-[1.02]"
-                                    style={{ borderColor: `${issue.accent}40`, color: issue.accent, backgroundColor: `${issue.accent}10` }}
-                                  >
-                                    <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.75 12.64 12.64 0 00-8.07 0A4.83 4.83 0 014 6.69 48.75 48.75 0 003 12a48.75 48.75 0 001 5.31 4.83 4.83 0 003.75 2.75 12.64 12.64 0 008.08 0 4.83 4.83 0 003.77-2.75A48.75 48.75 0 0021 12a48.75 48.75 0 00-1.41-5.31zM10 15V9l5 3z" /></svg>
-                                    {t('hotIssueWatchYT')}
-                                  </a>
-                                </div>
+                                <p className="text-sm font-black text-white w-full sm:w-auto" style={{ wordBreak: 'keep-all' }}>{headline}</p>
+                                <p className="text-xs text-zinc-400 w-full sm:w-auto line-clamp-1">{lead}</p>
+                              </div>
+                              <div className="shrink-0">
+                                <button 
+                                  onClick={() => setSelectedIssue(issue)}
+                                  className="text-[10px] font-black uppercase text-zinc-500 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-lg border border-white/10 whitespace-nowrap"
+                                >
+                                  {lang === 'KO' ? '상세보기' : lang === 'ES' ? 'Detalles' : 'Details'}
+                                </button>
                               </div>
                             </motion.div>
                           );
@@ -1254,7 +1268,7 @@ export default function Dashboard() {
         onClose={() => setIsOnboardingOpen(false)}
         lang={lang}
         onComplete={(country) => {
-          setUserCountry(country);  // ← handleSelectCountry(country) 를 이걸로 교체
+          setUserCountry(country);
           setToast({
             isVisible: true,
             message: t('syncSuccess'),
@@ -1262,13 +1276,89 @@ export default function Dashboard() {
           });
         }}
       />
-
       <Toast
         isVisible={toast.isVisible}
         message={toast.message}
         subMessage={toast.subMessage}
         onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
       />
+      {/* ── Hot Issue Detail Modal ── */}
+      <AnimatePresence>
+        {selectedIssue && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            onClick={() => setSelectedIssue(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              onClick={e => e.stopPropagation()}
+              className="w-full max-w-4xl glassmorphism rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-white/10"
+              style={{ boxShadow: `0 0 50px -10px ${selectedIssue.accent}50` }}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center p-6 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 rounded-lg text-xs font-black border tracking-widest uppercase bg-white/5" style={{ color: selectedIssue.accent, borderColor: `${selectedIssue.accent}50` }}>
+                    {selectedIssue.slot}
+                  </span>
+                  <span className="text-zinc-500 text-xs font-mono">{selectedIssue.id}</span>
+                </div>
+                <button
+                  onClick={() => setSelectedIssue(null)}
+                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                </button>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="overflow-y-auto custom-scrollbar flex-1">
+                <div className="w-full aspect-video bg-black">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="p-8 space-y-6">
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-black text-white leading-snug mb-3">
+                      {(selectedIssue.headline as Record<string,string>)[lang] ?? selectedIssue.headline['EN']}
+                    </h2>
+                    <p className="text-lg text-zinc-400 font-medium leading-relaxed">
+                      {(selectedIssue.lead as Record<string,string>)[lang] ?? selectedIssue.lead['EN']}
+                    </p>
+                  </div>
+                  
+                  <div className="w-full h-px bg-white/10" />
+
+                  <div className="text-sm text-zinc-300 leading-loose whitespace-pre-wrap font-medium">
+                    {selectedIssue.body ? ((selectedIssue.body as Record<string,string>)[lang] ?? selectedIssue.body['EN']) : (lang === 'KO' ? '상세 보도자료 내용을 불러오고 있습니다...' : 'Loading detailed press release...')}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-4">
+                    {selectedIssue.tags.map((tag: string) => (
+                      <span key={tag} className="text-xs text-zinc-500 font-bold tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </main>
   );
 }
