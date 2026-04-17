@@ -33,8 +33,8 @@ export async function getTodayBirthdays() {
     return { 
       success: true, 
       birthdays: [
-        ...todayArtists.map(a => ({ ...a, type: 'artist' })),
-        ...todayMembers.map(m => ({ ...m, type: 'member' }))
+        ...todayArtists.map(a => ({ ...a, type: 'artist' as const })),
+        ...todayMembers.map(m => ({ ...m, type: 'member' as const }))
       ] 
     };
   } catch (error: any) {
