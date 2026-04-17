@@ -22,14 +22,26 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
 
     console.log(`[Vote Action] Context: IP=${ip}, User=${user?.id || 'anon'}, Quota=${limit}`);
 
-    // 1. Security Scan: Check for ALL votes by this user/ip within the last 24 hours
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    // KST 09:00 daily reset: KST = UTC+9, so KST 09:00 = UTC 00:00
+    // Find the most recent UTC midnight (= KST 09:00) as the reset boundary
+    const nowUtc = new Date();
+    const todayResetUtc = new Date(Date.UTC(
+      nowUtc.getUTCFullYear(),
+      nowUtc.getUTCMonth(),
+      nowUtc.getUTCDate(),
+      0, 0, 0, 0
+    ));
+    // If current UTC time is before midnight (i.e. KST time is 00:00-08:59),
+    // use the PREVIOUS day's midnight as the reset point
+    const resetBoundary = nowUtc < todayResetUtc
+      ? new Date(todayResetUtc.getTime() - 24 * 60 * 60 * 1000)
+      : todayResetUtc;
 
     const { data: existingVotes, error: scanError } = await supabase
       .from('votes')
       .select('created_at')
       .eq(identifierType, identifierValue)
-      .gt('created_at', twentyFourHoursAgo)
+      .gt('created_at', resetBoundary.toISOString())
       .order('created_at', { ascending: false });
 
     if (scanError) {
@@ -39,12 +51,12 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
 
     if (existingVotes && existingVotes.length >= limit) {
       console.log(`[Vote Action] Quota exceeded. Used: ${existingVotes.length}/${limit}`);
-      const oldestBlockingVote = new Date(existingVotes[limit - 1].created_at);
-      const nextVoteDate = new Date(oldestBlockingVote.getTime() + 24 * 60 * 60 * 1000);
+      // Next reset = next UTC midnight (= next KST 09:00)
+      const nextResetUtc = new Date(resetBoundary.getTime() + 24 * 60 * 60 * 1000);
       return { 
         success: false, 
         error: 'COOLDOWN_ACTIVE', 
-        nextVoteAt: nextVoteDate.toISOString(),
+        nextVoteAt: nextResetUtc.toISOString(),
         limit
       };
     }

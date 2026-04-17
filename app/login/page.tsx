@@ -1,15 +1,15 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, AtSign, ShieldCheck, ChevronRight, Check } from 'lucide-react';
 import CountrySelector from '@/components/CountrySelector';
 import { Country } from '@/constants/countryData';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 import { getT, Language } from '@/constants/i18n';
-import { useEffect } from 'react';
 
 type AuthMode = 'login' | 'signup' | 'social';
 
@@ -19,11 +19,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [lang, setLang] = useState<Language>('EN');
 
-  // Initialize lang from localStorage
+  const router = useRouter();
+
+  // Initialize lang from localStorage and handle bfcache 
   useEffect(() => {
     const savedLang = localStorage.getItem('stan_lang') as Language;
     if (savedLang && ['EN', 'KO', 'ES'].includes(savedLang)) {
       setLang(savedLang);
+    }
+    
+    // Check if we just came back from an aborted OAuth flow (bfcache or standard back navigation)
+    if (sessionStorage.getItem('oauth_in_progress') === 'true') {
+      sessionStorage.removeItem('oauth_in_progress');
+      // A hard location replace clears Next.js corrupted state and forces a clean initial load
+      window.location.replace('/login');
     }
   }, []);
 
@@ -46,11 +55,12 @@ export default function LoginPage() {
   const handleSocialLogin = async (provider: 'google') => {
     try {
       setLoading(true);
+      sessionStorage.setItem('oauth_in_progress', 'true');
+      const origin = typeof window !== 'undefined' ? window.location.origin : 'https://standom.online';
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          // window.location.origin 대신 실제 도메인을 직접 입력합니다.
-          redirectTo: 'https://standom.online/auth/callback',
+          redirectTo: `${origin}/auth/callback`,
         },
       });
       if (error) throw error;
@@ -120,7 +130,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center relative px-4 overflow-hidden scrollbar-none">
+    <div className="flex min-h-screen flex-col items-center justify-center relative px-4 overflow-hidden scrollbar-none" translate="no">
       <div className="absolute inset-0 bg-black -z-20" />
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full -z-10" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-lime-600/10 blur-[120px] rounded-full -z-10" />

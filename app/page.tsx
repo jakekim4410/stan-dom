@@ -53,6 +53,8 @@ export default function Dashboard() {
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
+  const [showPastIssues, setShowPastIssues] = useState(false);
+  const [showPastBattles, setShowPastBattles] = useState(false);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -441,6 +443,337 @@ export default function Dashboard() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
 
+      {/* ── Today's K-POP Hot Issue Section ── */}
+      <section className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 py-10">{(() => {
+        // ── Hot Issue data ─────────────────────────────────────────────
+        // publishedAt: ISO UTC  |  slot: KST 09:00 = UTC 00:00, EST 09:00 = UTC 13:00
+        // Array is already newest-first; adding publishedAt keeps sort stable.
+        const HOT_ISSUES = [
+          {
+            id: '20260417_02', publishedAt: '2026-04-17T13:00:00Z', slot: 'EST 09:00',
+            date: '2026-04-17',
+            isNew: true,
+            category: { EN: 'New Release', KO: '신보 / MV', ES: 'Nuevo Lanzamiento' },
+            headline: {
+              EN: "Xdinary Heroes Drop 8th Mini Album 'DEAD AND' — 'Voyager' Out Now",
+              KO: "엑스디너리 히어로즈, 8번째 미니앨범 'DEAD AND' 발매 · 타이틀곡 'Voyager' 공개",
+              ES: "Xdinary Heroes lanza su 8.° mini álbum 'DEAD AND' — 'Voyager' ya disponible",
+            },
+            lead: {
+              EN: "JYP's rock band Xdinary Heroes releases 'DEAD AND' with 'Voyager' as the title track on April 17 at 1PM KST.",
+              KO: "JYP 소속 록 밴드 엑스디너리 히어로즈가 4월 17일 오후 1시 8번째 미니앨범 'DEAD AND'와 타이틀곡 'Voyager'를 전격 공개했다.",
+              ES: "La banda de rock de JYP, Xdinary Heroes, lanza 'DEAD AND' con 'Voyager' como tema principal el 17 de abril a la 1PM KST.",
+            },
+            videoId: 'C6FXANyVACw', accent: '#F59E0B',
+            tags: ['XdinaryHeroes', 'DEADAND', 'Voyager', 'JYP'],
+          },
+          {
+            id: '20260417_01', publishedAt: '2026-04-17T00:00:00Z', slot: 'KST 09:00',
+            date: '2026-04-17',
+            isNew: true,
+            category: { EN: 'Industry / Business', KO: '산업 / 비즈니스', ES: 'Industria / Negocios' },
+            headline: {
+              EN: "Big 4 File 'Fanomenon' JV + HYBE×Paramount K-Pop Movie Announced",
+              KO: "빅4 '파노메논' 공정위 신고 완료 + HYBE×파라마운트 K-POP 영화 발표",
+              ES: "Las Big 4 solicitan JV 'Fanomenon' + Se anuncia película K-Pop de HYBE×Paramount",
+            },
+            lead: {
+              EN: 'HYBE, SM, JYP & YG file joint venture for a global K-pop festival targeting 2027, while HYBE reveals a Hollywood film for Feb 2027.',
+              KO: 'HYBE·SM·JYP·YG 4사가 2027년 글로벌 K-POP 페스티벌 합작 신고를 마치고, HYBE는 2027년 2월 할리우드 K-POP 영화까지 발표했다.',
+              ES: 'HYBE, SM, JYP y YG presentan JV para un festival K-pop global en 2027, mientras HYBE revela una película de Hollywood para febrero de 2027.',
+            },
+            videoId: 'uI6EwBBFFrQ', accent: '#A855F7',
+            tags: ['Fanomenon', 'HYBE', 'BigFour', 'KPopMovie'],
+          },
+          {
+            id: '20260416_02', publishedAt: '2026-04-16T13:00:00Z', slot: 'EST 09:00',
+            date: '2026-04-16',
+            isNew: false,
+            category: { EN: 'Festival Review', KO: '페스티벌 리뷰', ES: 'Reseña Festival' },
+            headline: {
+              EN: 'Coachella 2025 K-Pop Weekend 1 Recap — LISA, JENNIE, ENHYPEN & XG Shine',
+              KO: '코첼라 2025 K-POP 위크엔드 1 종합 리뷰 — 리사·제니·엔하이픈·XG 무대 총정리',
+              ES: 'Resumen del Weekend 1 K-Pop en Coachella 2025 — LISA, JENNIE, ENHYPEN y XG brillan',
+            },
+            lead: {
+              EN: "LISA's solo debut set, JENNIE's Ruby Experience, ENHYPEN's 13-song run, and XG's choreography defined K-pop at Coachella 2025.",
+              KO: '리사 솔로 데뷔, 제니의 루비 익스피리언스, 엔하이픈의 13곡 세트리스트, XG의 파워풀한 안무까지 코첼라 2025 K-POP을 총정리했다.',
+              ES: 'El debut en solitario de LISA, The Ruby Experience de JENNIE, el set de ENHYPEN y la coreografía de XG definieron el K-pop en Coachella 2025.',
+            },
+            videoId: 'WYEsVSmfoes', accent: '#EC4899',
+            tags: ['Coachella2025', 'LISA', 'JENNIE', 'ENHYPEN', 'XG'],
+          },
+          {
+            id: '20260416_01', publishedAt: '2026-04-16T00:00:00Z', slot: 'KST 09:00',
+            date: '2026-04-16',
+            isNew: false,
+            category: { EN: 'Awards / Music', KO: '음원 / 수상', ES: 'Premios / Música' },
+            headline: {
+              EN: "BTS 'SWIM' Earns 3 AMA Nominations Including Artist of the Year",
+              KO: "BTS 'SWIM', 제52회 AMA 올해의 아티스트 포함 3개 부문 노미네이션",
+              ES: "BTS 'SWIM' logra 3 nominaciones a los AMA incluyendo Artista del Año",
+            },
+            lead: {
+              EN: 'BTS dominates the 52nd American Music Awards nominations alongside aespa, ENHYPEN, Stray Kids, LE SSERAFIM and KATSEYE.',
+              KO: 'BTS를 비롯해 aespa·ENHYPEN·스트레이 키즈·르세라핌·KATSEYE 등이 제52회 AMA를 석권했다.',
+              ES: 'BTS domina las nominaciones de los 52.os AMA junto a aespa, ENHYPEN, Stray Kids, LE SSERAFIM y KATSEYE.',
+            },
+            videoId: 'b4iVv91Z6lY', accent: '#37C561',
+            tags: ['BTS', 'SWIM', 'AMA2026', 'KPOP'],
+          },
+          {
+            id: '20260415_02', publishedAt: '2026-04-15T13:00:00Z', slot: 'EST 09:00',
+            date: '2026-04-15',
+            isNew: false,
+            category: { EN: 'Full Concert', KO: '풀 콘서트', ES: 'Concierto Completo' },
+            headline: {
+              EN: '#BANGCHELLA Full 60-min Concert Now on YouTube — Stream BIGBANG Coachella 2026',
+              KO: '#BANGCHELLA 풀 콘서트 공개 — 빅뱅 코첼라 2026 60분 전체 공연 유튜브 스트리밍 시작',
+              ES: '#BANGCHELLA Concierto Completo de 60 min ya en YouTube — Transmite BIGBANG Coachella 2026',
+            },
+            lead: {
+              EN: 'The full BIGBANG Outdoor Theatre performance at Coachella 2026 is now streamable, including Bang Bang Bang, Fantastic Baby and solo tracks.',
+              KO: '빅뱅 코첼라 2026 아웃도어 시어터 전체 공연이 유튜브에 공개됐다. 뱅뱅뱅·판타스틱 베이비·솔로 무대까지 전부 포함.',
+              ES: 'La actuación completa de BIGBANG en el Outdoor Theatre de Coachella 2026 ya está en streaming, incluyendo Bang Bang Bang y Fantastic Baby.',
+            },
+            videoId: 'uI6EwBBFFrQ', accent: '#FF6B6B',
+            tags: ['BIGBANG', 'BANGCHELLA', 'FullConcert', 'Coachella2026'],
+          },
+          {
+            id: '20260415_01', publishedAt: '2026-04-15T00:00:00Z', slot: 'KST 09:00',
+            date: '2026-04-15',
+            isNew: false,
+            category: { EN: 'Festival / Live', KO: '글로벌 공연 / 페스티벌', ES: 'Festival / Concierto' },
+            headline: {
+              EN: 'BIGBANG Returns at Coachella 2026 — A Legendary Comeback After 6 Years',
+              KO: '빅뱅, 코첼라 2026 전격 컴백… 6년 공백 깨고 20주년 신호탄',
+              ES: 'BIGBANG regresa en Coachella 2026 — Un regreso legendario tras 6 años',
+            },
+            lead: {
+              EN: 'G-Dragon, Taeyang & Daesung lit up Coachella Outdoor Theatre with Bang Bang Bang, Fantastic Baby and more for 60 minutes.',
+              KO: 'G-드래곤·태양·대성 트리오가 뱅뱅뱅, 판타스틱 베이비 등으로 코첼라 아웃도어 시어터를 60분간 불태웠다.',
+              ES: 'G-Dragon, Taeyang y Daesung iluminaron el Outdoor Theatre de Coachella con Bang Bang Bang, Fantastic Baby y más durante 60 minutos.',
+            },
+            videoId: 'WYEsVSmfoes', accent: '#FF00FF',
+            tags: ['BIGBANG', 'BANGCHELLA', 'Coachella2026'],
+          },
+        ];
+
+        // Sort newest first (already ordered, but sort guarantees it)
+        const sorted = [...HOT_ISSUES].sort((a, b) =>
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
+        const featured = sorted.slice(0, 3);
+        const past = sorted.slice(3);
+
+        return (
+          <>
+            {/* Section Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <div className="flex items-center gap-3">
+                  <div className="relative pr-4">
+                    <span className="text-xl font-black tracking-tighter">{t('hotIssueTitle')}</span>
+                    <div className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full animate-ping" />
+                    <div className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                  </div>
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mt-1">{t('hotIssueSub')}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                {/* Update schedule badge */}
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5">
+                  <svg viewBox="0 0 24 24" className="w-3 h-3 fill-zinc-500" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                  <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{t('updateSchedule')}</span>
+                </div>
+                {/* LIVE badge */}
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-red-500/30 bg-red-500/10">
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                  <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">LIVE</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Featured Cards (latest 3) ── */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {featured.map((issue) => {
+                const headline = (issue.headline as Record<string,string>)[lang] ?? issue.headline['EN'];
+                const lead = (issue.lead as Record<string,string>)[lang] ?? issue.lead['EN'];
+                const category = (issue.category as Record<string,string>)[lang] ?? issue.category['EN'];
+                return (
+                  <motion.div
+                    key={issue.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="group relative glassmorphism rounded-3xl overflow-hidden border border-white/5 flex flex-col hover:border-white/15 transition-all duration-500"
+                    whileHover={{ boxShadow: `0 0 40px -10px ${issue.accent}40` }}
+                  >
+                    {/* YouTube Thumbnail */}
+                    <div className="relative w-full aspect-video overflow-hidden bg-zinc-900">
+                      <img
+                        src={`https://img.youtube.com/vi/${issue.videoId}/hqdefault.jpg`}
+                        alt={headline}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                      />
+                      {/* Play button */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <a
+                          href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="w-14 h-14 rounded-full flex items-center justify-center bg-black/60 border-2 backdrop-blur-sm hover:scale-110 transition-all"
+                          style={{ borderColor: `${issue.accent}80` }}
+                          aria-label={t('hotIssueWatchYT')}
+                        >
+                          <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                        </a>
+                      </div>
+                      {/* Date top-left */}
+                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-sm border border-white/10">
+                        <span className="text-[9px] font-black text-zinc-300 tracking-widest">{issue.date}</span>
+                      </div>
+                      {/* Slot + Archive ID top-right */}
+                      <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+                        <span className="text-[8px] font-mono px-2 py-0.5 rounded bg-black/70 border border-white/10" style={{ color: issue.accent }}>{issue.slot}</span>
+                        <span className="text-[8px] font-mono px-2 py-0.5 rounded bg-black/70 border border-white/10 text-zinc-500">{issue.id}</span>
+                      </div>
+                      {/* NEW badge */}
+                      {issue.isNew && (
+                        <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-md text-[9px] font-black tracking-widest bg-red-500 text-white shadow-lg shadow-red-500/30 animate-pulse">
+                          {t('newTag')}
+                        </div>
+                      )}
+                    </div>
+                    {/* Card Body */}
+                    <div className="flex flex-col flex-1 p-5 gap-3">
+                      <span
+                        className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border w-fit"
+                        style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
+                      >{category}</span>
+                      <h3 className="text-sm font-black tracking-tight leading-snug line-clamp-2">{headline}</h3>
+                      <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 flex-1">{lead}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {issue.tags.map((tag) => (
+                          <span key={tag} className="text-[9px] font-black text-zinc-600 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">#{tag}</span>
+                        ))}
+                      </div>
+                      <a
+                        href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="mt-2 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border text-[11px] font-black uppercase tracking-widest transition-all hover:scale-[1.02]"
+                        style={{ borderColor: `${issue.accent}40`, color: issue.accent, backgroundColor: `${issue.accent}10` }}
+                      >
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.75 12.64 12.64 0 00-8.07 0A4.83 4.83 0 014 6.69 48.75 48.75 0 003 12a48.75 48.75 0 001 5.31 4.83 4.83 0 003.75 2.75 12.64 12.64 0 008.08 0 4.83 4.83 0 003.77-2.75A48.75 48.75 0 0021 12a48.75 48.75 0 00-1.41-5.31zM10 15V9l5 3z" /></svg>
+                        {t('hotIssueWatchYT')}
+                      </a>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* ── Past Issues Toggle Button ── */}
+            {past.length > 0 && (
+              <div className="mt-8 flex flex-col items-center gap-4">
+                <button
+                  onClick={() => setShowPastIssues(!showPastIssues)}
+                  className="flex items-center gap-3 px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/8 transition-all group"
+                >
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 group-hover:text-white transition-colors">
+                    {showPastIssues ? t('hidePastIssues') : `${t('viewPastIssues')} (${past.length})`}
+                  </span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className={`w-4 h-4 fill-zinc-500 group-hover:fill-white transition-all duration-300 ${showPastIssues ? 'rotate-180' : ''}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+                  </svg>
+                </button>
+
+                {/* ── Past Issues List ── */}
+                <AnimatePresence>
+                  {showPastIssues && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className="w-full overflow-hidden"
+                    >
+                      <div className="border border-white/8 rounded-3xl overflow-hidden bg-white/[0.02] backdrop-blur-sm divide-y divide-white/5">
+                        {past.map((issue, idx) => {
+                          const headline = (issue.headline as Record<string,string>)[lang] ?? issue.headline['EN'];
+                          const lead = (issue.lead as Record<string,string>)[lang] ?? issue.lead['EN'];
+                          const category = (issue.category as Record<string,string>)[lang] ?? issue.category['EN'];
+                          return (
+                            <motion.div
+                              key={issue.id}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: idx * 0.05 }}
+                              className="flex flex-col sm:flex-row items-start gap-4 p-5 hover:bg-white/5 transition-colors group"
+                            >
+                              {/* Thumbnail small */}
+                              <div className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900">
+                                <img
+                                  src={`https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`}
+                                  alt={headline}
+                                  className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="w-8 h-8 rounded-full bg-black/60 border flex items-center justify-center" style={{ borderColor: `${issue.accent}60` }}>
+                                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white ml-0.5" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                                  </div>
+                                </div>
+                              </div>
+                              {/* Text content */}
+                              <div className="flex flex-col gap-2 flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span
+                                    className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border"
+                                    style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
+                                  >{category}</span>
+                                  <span className="text-[9px] font-mono text-zinc-600">{issue.date}</span>
+                                  <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-500">{issue.slot}</span>
+                                  <span className="text-[8px] font-mono text-zinc-700">{issue.id}</span>
+                                </div>
+                                <h4 className="text-sm font-black tracking-tight leading-snug line-clamp-2 group-hover:text-white transition-colors">{headline}</h4>
+                                <p className="text-[11px] text-zinc-600 leading-relaxed line-clamp-1">{lead}</p>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  {issue.tags.slice(0, 3).map((tag) => (
+                                    <span key={tag} className="text-[9px] font-black text-zinc-700 bg-white/5 px-1.5 py-0.5 rounded-full border border-white/5">#{tag}</span>
+                                  ))}
+                                  <a
+                                    href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                                    target="_blank" rel="noopener noreferrer"
+                                    className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all hover:scale-[1.02]"
+                                    style={{ borderColor: `${issue.accent}40`, color: issue.accent, backgroundColor: `${issue.accent}10` }}
+                                  >
+                                    <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.75 12.64 12.64 0 00-8.07 0A4.83 4.83 0 014 6.69 48.75 48.75 0 003 12a48.75 48.75 0 001 5.31 4.83 4.83 0 003.75 2.75 12.64 12.64 0 008.08 0 4.83 4.83 0 003.77-2.75A48.75 48.75 0 0021 12a48.75 48.75 0 00-1.41-5.31zM10 15V9l5 3z" /></svg>
+                                    {t('hotIssueWatchYT')}
+                                  </a>
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </>
+        );
+      })()}
+      </section>
+
+
+      {/* ── Divider ── */}
+      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      </div>
+
       {/* ── Ranking Section ── */}
       <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 py-12 space-y-20">
 
@@ -795,6 +1128,81 @@ export default function Dashboard() {
 
               </div>
             </div>
+
+            {/* ── Past Battles Toggle ── */}
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <button
+                onClick={() => setShowPastBattles(!showPastBattles)}
+                className="flex items-center gap-3 px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[#37C561]/50 hover:bg-[#37C561]/5 transition-all group"
+              >
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 group-hover:text-[#37C561] transition-colors">
+                  {showPastBattles ? t('hidePastBattles') : `${t('pastBattles')}`}
+                </span>
+                <svg
+                  viewBox="0 0 24 24"
+                  className={`w-4 h-4 fill-zinc-500 group-hover:fill-[#37C561] transition-all duration-300 ${showPastBattles ? 'rotate-180' : ''}`}
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+                </svg>
+              </button>
+
+              <AnimatePresence>
+                {showPastBattles && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="w-full overflow-hidden max-w-4xl max-h-[400px] overflow-y-auto custom-scrollbar"
+                  >
+                    <div className="border border-white/8 rounded-3xl overflow-hidden bg-white/[0.02] backdrop-blur-sm divide-y divide-white/5 mt-4">
+                      {/* Past Battle 1 */}
+                      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 hover:bg-white/5 transition-colors group">
+                        <div className="flex flex-col items-center sm:items-start shrink-0 min-w-[120px]">
+                          <span className="px-3 py-1 rounded-full text-[10px] font-black text-[#A855F7] border border-[#A855F7]/30 bg-[#A855F7]/10 mb-2">2026. 03</span>
+                          <span className="text-sm font-black text-white">{lang === 'KO' ? '글로벌 루키즈' : lang === 'ES' ? 'Novatos Globales' : 'Global Rookies'}</span>
+                        </div>
+                        <div className="flex-1 flex flex-wrap gap-2 sm:gap-4 items-center justify-center sm:justify-start">
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">ILLIT</span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-[#37C561] font-black tracking-widest text-sm flex items-center gap-1">
+                            <Trophy size={14} className="text-yellow-400" /> BABYMONSTER
+                          </span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">KISS OF LIFE</span>
+                        </div>
+                        <div className="shrink-0 flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">{t('battleWinner')}: BABYMONSTER</span>
+                        </div>
+                      </div>
+
+                      {/* Past Battle 2 */}
+                      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 hover:bg-white/5 transition-colors group">
+                        <div className="flex flex-col items-center sm:items-start shrink-0 min-w-[120px]">
+                          <span className="px-3 py-1 rounded-full text-[10px] font-black text-[#3b82f6] border border-[#3b82f6]/30 bg-[#3b82f6]/10 mb-2">2026. 02</span>
+                          <span className="text-sm font-black text-white">{lang === 'KO' ? '2세대 귀환' : lang === 'ES' ? 'Regreso de la 2.ª Gen' : 'Return of 2nd Gen'}</span>
+                        </div>
+                        <div className="flex-1 flex flex-wrap gap-2 sm:gap-4 items-center justify-center sm:justify-start">
+                          <span className="text-[#37C561] font-black tracking-widest text-sm flex items-center gap-1">
+                            <Trophy size={14} className="text-yellow-400" /> SHINee
+                          </span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">2PM</span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">HIGHLIGHT</span>
+                        </div>
+                        <div className="shrink-0 flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">{t('battleWinner')}: SHINee</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
           </div>
         </section>
       </div>

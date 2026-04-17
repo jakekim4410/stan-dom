@@ -183,10 +183,24 @@ export const i18n: Record<Language, Record<string, string>> = {
     verifyFirst: 'Please verify your email address before signing in.',
     
     // Battle Zone
-    battleZoneTitle: '5TH GEN BATTLE ZONE',
-    battleZoneSub: 'RIIZE vs BOYNEXTDOOR vs TWS',
+    battleZoneTitle: 'MONTHLY BATTLE ZONE',
+    battleZoneSub: 'This Month: 5th Gen Rising Popcorn Battle (RIIZE vs BOYNEXTDOOR vs TWS)',
     votingRuleNotice: 'Members: 10 votes/day, Non-members: 3 votes/day',
+    pastBattles: 'View Past Battles',
+    hidePastBattles: 'Hide',
+    battleWinner: 'Winner',
     artistAlreadyExists: 'This artist has already been nominated.',
+
+    // Hot Issue Section
+    hotIssueTitle: "TODAY'S K-POP HOT ISSUE",
+    hotIssueSub: 'Latest trending topics from the global K-pop scene',
+    hotIssueWatchYT: 'Watch on YouTube',
+    hotIssueDateLabel: 'Published',
+    hotIssueCategoryLabel: 'Category',
+    viewPastIssues: 'View Past Issues',
+    hidePastIssues: 'Hide',
+    updateSchedule: 'Updated daily · KST 09:00 & EST 09:00',
+    newTag: 'NEW',
 
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
@@ -377,10 +391,25 @@ export const i18n: Record<Language, Record<string, string>> = {
     verifyFirst: '이메일 인증이 완료되지 않았습니다. 메일함을 확인해주세요.',
     
     // Battle Zone
-    battleZoneTitle: '5세대 라이징 배틀 존',
-    battleZoneSub: '라이즈 vs 보이넥스트도어 vs 투어스',
+    // Battle Zone
+    battleZoneTitle: 'MONTHLY BATTLE ZONE (월간 배틀존)',
+    battleZoneSub: '이달의 주제: 5세대 라이징 팝콘 배틀 (RIIZE vs BOYNEXTDOOR vs TWS)',
     votingRuleNotice: '회원가입 시 1일 10회, 비회원은 3회 투표 가능',
+    pastBattles: '지난 배틀 보기',
+    hidePastBattles: '접기',
+    battleWinner: '우승',
     artistAlreadyExists: '이미 등록된 아티스트입니다.',
+
+    // Hot Issue Section
+    hotIssueTitle: '오늘의 K-POP 핫이슈',
+    hotIssueSub: '글로벌 K-POP 씬 최신 핫 토픽',
+    hotIssueWatchYT: '유튜브에서 보기',
+    hotIssueDateLabel: '발행',
+    hotIssueCategoryLabel: '카테고리',
+    viewPastIssues: '지난이슈 보기',
+    hidePastIssues: '접기',
+    updateSchedule: '매일 업데이트 · KST 09:00 & EST 09:00',
+    newTag: 'NEW',
 
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
@@ -571,10 +600,25 @@ export const i18n: Record<Language, Record<string, string>> = {
     verifyFirst: 'Por favor, verifica tu email antes de iniciar sesión.',
     
     // Battle Zone
-    battleZoneTitle: 'ZONA DE BATALLA 5A GEN',
-    battleZoneSub: 'RIIZE vs BOYNEXTDOOR vs TWS',
+    // Battle Zone
+    battleZoneTitle: 'ZONA DE BATALLA MENSUAL',
+    battleZoneSub: 'Este Mes: Batalla de la 5.ª Generación (RIIZE vs BOYNEXTDOOR vs TWS)',
     votingRuleNotice: 'Miembros: 10 votos/día, No miembros: 3 votos/día',
+    pastBattles: 'Ver Batallas Anteriores',
+    hidePastBattles: 'Ocultar',
+    battleWinner: 'Ganador',
     artistAlreadyExists: 'Este artista ya ha sido nominado.',
+
+    // Hot Issue Section
+    hotIssueTitle: 'TEMA VIRAL K-POP DE HOY',
+    hotIssueSub: 'Últimas tendencias de la escena K-pop global',
+    hotIssueWatchYT: 'Ver en YouTube',
+    hotIssueDateLabel: 'Publicado',
+    hotIssueCategoryLabel: 'Categoría',
+    viewPastIssues: 'Ver Temas Anteriores',
+    hidePastIssues: 'Ocultar',
+    updateSchedule: 'Actualizado diariamente · KST 09:00 & EST 09:00',
+    newTag: 'NUEVO',
 
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',

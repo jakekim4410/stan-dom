@@ -18,13 +18,21 @@ export async function getRemainingVotes() {
     const identifierType = user ? 'user_id' : 'ip_address';
     const identifierValue = user ? user.id : ip;
 
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    // KST 09:00 daily reset (KST = UTC+9, KST 09:00 = UTC 00:00)
+    const nowUtc = new Date();
+    const todayResetUtc = new Date(Date.UTC(
+      nowUtc.getUTCFullYear(), nowUtc.getUTCMonth(), nowUtc.getUTCDate(),
+      0, 0, 0, 0
+    ));
+    const resetBoundary = nowUtc < todayResetUtc
+      ? new Date(todayResetUtc.getTime() - 24 * 60 * 60 * 1000)
+      : todayResetUtc;
 
     const { count, error } = await supabase
       .from('votes')
       .select('*', { count: 'exact', head: true })
       .eq(identifierType, identifierValue)
-      .gt('created_at', twentyFourHoursAgo);
+      .gt('created_at', resetBoundary.toISOString());
 
     if (error) throw error;
 
