@@ -22,11 +22,12 @@
   --neon-magenta: #FF00FF;
   --neon-magenta-dim: rgba(255, 0, 255, 0.15);
   --neon-lime: #37C561;
-  --neon-lime-dim: rgba(55, 197, 97, 0.15);
+  --neon-lime-rgb: 55, 197, 97;
+  --neon-lime-dim: rgba(var(--neon-lime-rgb), 0.15);
   --neon-blue: #0066ff;
   --glass: rgba(8, 10, 15, 0.6);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --spotlight-color: rgba(55, 197, 97, 0.04);
+  --spotlight-color: rgba(var(--neon-lime-rgb), 0.04);
 }
 
 html,
@@ -70,8 +71,8 @@ h6,
 /* ── Digital Grid ── */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(55, 197, 97, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(55, 197, 97, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(var(--neon-lime-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--neon-lime-rgb), 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
@@ -105,8 +106,8 @@ h6,
 @utility holographic-panel {
   background: rgba(10, 12, 20, 0.4);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(55, 197, 97, 0.15);
-  box-shadow: 0 0 20px rgba(55, 197, 97, 0.05), inset 0 0 15px rgba(55, 197, 97, 0.05);
+  border: 1px solid rgba(var(--neon-lime-rgb), 0.15);
+  box-shadow: 0 0 20px rgba(var(--neon-lime-rgb), 0.05), inset 0 0 15px rgba(var(--neon-lime-rgb), 0.05);
   border-radius: 1.5rem;
   position: relative;
   overflow: visible;
@@ -306,16 +307,13 @@ h6,
 
 /* ── Country Selector Banner Pulse ── */
 @keyframes border-pulse {
-
-  0%,
-  100% {
-    border-color: rgba(55, 197, 97, 0.3);
-    box-shadow: 0 0 10px rgba(55, 197, 97, 0.08);
+  0%, 100% {
+    border-color: rgba(var(--neon-lime-rgb), 0.3);
+    box-shadow: 0 0 10px rgba(var(--neon-lime-rgb), 0.08);
   }
-
   50% {
-    border-color: rgba(55, 197, 97, 0.7);
-    box-shadow: 0 0 24px rgba(55, 197, 97, 0.2);
+    border-color: rgba(var(--neon-lime-rgb), 0.7);
+    box-shadow: 0 0 24px rgba(var(--neon-lime-rgb), 0.2);
   }
 }
 

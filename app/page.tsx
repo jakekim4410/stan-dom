@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { toPng } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
 import { getRemainingVotes } from '@/actions/getRemainingVotes';
@@ -29,6 +30,12 @@ interface Artist {
   image_url: string | null;
   total_votes: number;
 }
+
+// Helper to convert hex to RGB for CSS variables
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '55, 197, 97';
+};
 
 /* Rank accent colors */
 const RANK_COLORS = ['#FF00FF', '#37C561', '#37C561']; // Magenta, Green, Green logic or keep Cyan? User said selection elements to green. I will use green for 2nd and 3rd for now or just 3rd. Actually 2nd was cyan. I'll change 2nd to brand green too.
@@ -61,6 +68,7 @@ export default function Dashboard() {
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
+  const hologramCardRef = useRef<HTMLDivElement>(null);
 
   const t = getT(lang);
 
@@ -132,10 +140,37 @@ export default function Dashboard() {
   };
 
   const refreshQuota = async () => {
-    const res = await getRemainingVotes();
-    if (res.success) {
-      setVoteQuota({ remaining: res.remaining!, limit: res.limit! });
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase.rpc('get_remaining_votes', { user_id: user.id });
+      if (data) setVoteQuota({ remaining: data[0].remaining, limit: data[0].limit });
     }
+  };
+
+  const handleDownloadCard = async () => {
+    if (hologramCardRef.current === null) return;
+    try {
+      setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
+      const dataUrl = await toPng(hologramCardRef.current, { 
+        cacheBust: true,
+        style: { transform: 'scale(1)', transformOrigin: 'top left' }
+      });
+      const link = document.createElement('a');
+      link.download = `standom-${showHologramCard?.artist.name}-card.png`.toLowerCase();
+      link.href = dataUrl;
+      link.click();
+      setToast({ isVisible: true, message: t('syncSuccess'), subMessage: 'Card saved to your device!' });
+    } catch (err) {
+      console.error('Download failed:', err);
+      setToast({ isVisible: true, message: 'Download Failed', subMessage: 'Please try again later' });
+    }
+  };
+
+  const handleCopyProfileLink = () => {
+    if (!showHologramCard) return;
+    const url = `${window.location.origin}/artist/${showHologramCard.artist.id || ''}`;
+    navigator.clipboard.writeText(url);
+    setToast({ isVisible: true, message: t('copyProfileLink'), subMessage: 'Link copied to clipboard!' });
   };
 
   const fetchArtists = async () => {
@@ -287,11 +322,14 @@ export default function Dashboard() {
     ? FANDOM_COLORS[topArtist.name] 
     : DEFAULT_THEME_COLOR;
 
-  // Inject Theme Color to entire site
+  // Inject Theme Color to entire site (Full Takeover)
   useEffect(() => {
     if (typeof document !== 'undefined') {
+      const rgb = hexToRgb(themeColor);
       document.documentElement.style.setProperty('--neon-lime', themeColor);
       document.documentElement.style.setProperty('--neon-cyan', themeColor);
+      document.documentElement.style.setProperty('--neon-lime-rgb', rgb);
+      document.documentElement.style.setProperty('--spotlight-color', `rgba(${rgb}, 0.04)`);
     }
   }, [themeColor]);
 
@@ -1512,18 +1550,40 @@ export default function Dashboard() {
             {/* Share Controls */}
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-              className="mt-8 flex flex-col items-center gap-4"
+              className="mt-8 flex flex-col items-center gap-3 w-full max-w-[280px]"
               onClick={(e) => e.stopPropagation()}
             >
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-black text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
+              <div className="flex gap-2 w-full">
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-black font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
+                >
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.13H5.028z" /></svg>
+                  X
+                </a>
+                <button
+                  onClick={() => {
+                    const url = `https://www.instagram.com/reels/create/`; // Or stories deep link
+                    window.open(url, '_blank');
+                    handleCopyProfileLink();
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-tr from-[#FFDC80] via-[#FD1D1D] to-[#833AB4] text-white font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-red-500/20"
+                >
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                  Instagram
+                </button>
+              </div>
+
+              <button
+                onClick={handleDownloadCard}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#37C561] text-black font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-green-500/20"
               >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.13H5.028z" /></svg>
-                {t('shareToX')}
-              </a>
-              <button onClick={() => setShowHologramCard(null)} className="text-xs text-zinc-500 font-bold hover:text-white transition-colors">
+                <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                {t('downloadCard')}
+              </button>
+
+              <button onClick={() => setShowHologramCard(null)} className="mt-2 text-[10px] text-zinc-500 font-bold hover:text-white transition-colors tracking-widest uppercase">
                 {t('close')}
               </button>
             </motion.div>
