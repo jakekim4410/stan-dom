@@ -219,6 +219,9 @@ export const i18n: Record<Language, Record<string, string>> = {
     instaStep4: 'Use the "LINK" sticker to paste the link!',
     openInstaApp: 'Open Instagram App',
     feedWarning: 'Note: Feed posts don\'t support links',
+    longPressToSave: 'Press and hold the image to save to your photos',
+    previewTitle: 'Preview & Save',
+    generateSuccess: 'Generation successful!',
 
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
@@ -446,6 +449,9 @@ export const i18n: Record<Language, Record<string, string>> = {
     instaStep4: '"링크" 스티커를 눌러 링크를 붙여넣으세요!',
     openInstaApp: '인스타그램 앱 열기',
     feedWarning: '주의: 일반 게시물은 링크를 지원하지 않습니다',
+    longPressToSave: '이미지를 길게 눌러 사진첩에 저장하세요',
+    previewTitle: '미리보기 및 저장',
+    generateSuccess: '이미지 생성 성공!',
 
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
@@ -673,6 +679,9 @@ export const i18n: Record<Language, Record<string, string>> = {
     instaStep4: '¡Usa el sticker de "ENLACE" para pegar el link!',
     openInstaApp: 'Abrir Instagram App',
     feedWarning: 'Nota: Los posts normales no admiten links',
+    longPressToSave: 'Mantén presionada la imagen para guardarla en tus fotos',
+    previewTitle: 'Vista previa y Guardar',
+    generateSuccess: '¡Generación exitosa!',
 
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',

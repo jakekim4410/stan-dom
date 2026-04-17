@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import html2canvas from 'html2canvas';
 import { toPng, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
@@ -65,6 +66,7 @@ export default function Dashboard() {
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
   const [showHologramCard, setShowHologramCard] = useState<{ artist: Artist; rank: number } | null>(null);
   const [showInstaGuide, setShowInstaGuide] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -151,28 +153,26 @@ export default function Dashboard() {
     if (hologramCardRef.current === null) return;
     try {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
-      const blob = await toBlob(hologramCardRef.current, { 
-        cacheBust: true,
-        pixelRatio: 1.5,
-        skipAutoScale: true,
-        style: { transform: 'scale(1)', transformOrigin: 'top left' }
+      
+      // html2canvas is more reliable for mobile browsers when capturing complex CSS
+      const canvas = await html2canvas(hologramCardRef.current, {
+        useCORS: true,
+        scale: 2,
+        backgroundColor: null,
+        logging: false,
+        onclone: (clonedDoc) => {
+          // You can modify the cloned DOM here if needed
+          const element = clonedDoc.getElementById('hologram-card-capture');
+          if (element) element.style.transform = 'scale(1)';
+        }
       });
       
-      if (!blob) throw new Error('Failed to generate image');
-      
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.download = `standom-${showHologramCard?.artist.name}-card.png`.toLowerCase();
-      link.href = url;
-      link.click();
-      
-      // Cleanup
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      
-      setToast({ isVisible: true, message: t('syncSuccess'), subMessage: 'Card saved! You can now share it.' });
+      const dataUrl = canvas.toDataURL('image/png');
+      setGeneratedImage(dataUrl);
+      setToast({ isVisible: true, message: t('generateSuccess'), subMessage: 'Instructions ready!' });
     } catch (err) {
       console.error('Download failed:', err);
-      setToast({ isVisible: true, message: 'Download Failed', subMessage: 'Please check your connection' });
+      setToast({ isVisible: true, message: 'Generation Failed', subMessage: 'Please check your connection' });
     }
   };
 
@@ -1665,6 +1665,46 @@ export default function Dashboard() {
               <button 
                 onClick={() => setShowInstaGuide(false)}
                 className="mt-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-white transition-colors"
+              >
+                {t('close')}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Generated Image Preview Modal (Final reliability fix for mobile) */}
+      <AnimatePresence>
+        {generatedImage && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl"
+            onClick={() => setGeneratedImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
+              onClick={e => e.stopPropagation()}
+              className="w-full max-w-sm flex flex-col items-center"
+            >
+              <div className="mb-6 text-center">
+                <h3 className="text-xl font-black text-white tracking-tighter uppercase mb-1">{t('previewTitle')}</h3>
+                <p className="text-[10px] font-bold text-[var(--neon-lime)] uppercase tracking-widest animate-pulse">
+                  ✨ {t('longPressToSave')} ✨
+                </p>
+              </div>
+
+              <div className="relative group w-full aspect-[2/3] rounded-[32px] overflow-hidden shadow-[0_0_80px_rgba(255,255,255,0.1)] border border-white/10">
+                <img 
+                  src={generatedImage} 
+                  alt="Support Card" 
+                  className="w-full h-full object-contain pointer-events-auto"
+                  onContextMenu={(e) => e.stopPropagation()} // Allow context menu
+                />
+              </div>
+
+              <button
+                onClick={() => setGeneratedImage(null)}
+                className="mt-8 px-12 py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-xs hover:scale-105 transition-all"
               >
                 {t('close')}
               </button>
