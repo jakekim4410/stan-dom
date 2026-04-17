@@ -140,10 +140,9 @@ export default function Dashboard() {
   };
 
   const refreshQuota = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data } = await supabase.rpc('get_remaining_votes', { user_id: user.id });
-      if (data) setVoteQuota({ remaining: data[0].remaining, limit: data[0].limit });
+    const res = await getRemainingVotes();
+    if (res.success) {
+      setVoteQuota({ remaining: res.remaining!, limit: res.limit! });
     }
   };
 
