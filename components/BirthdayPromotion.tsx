@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
 import { Cake, ChevronRight, Zap } from 'lucide-react';
 import Link from 'next/link';
+import MonthlyCalendarModal from './MonthlyCalendarModal';
 
 interface BirthdayStar {
   id: string;
@@ -12,11 +13,13 @@ interface BirthdayStar {
   image_url: string | null;
   artist_id?: string;
   type: 'artist' | 'member';
+  isUpcoming?: boolean;
 }
 
 export default function BirthdayPromotion({ lang }: { lang: string }) {
   const [stars, setStars] = useState<BirthdayStar[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -40,16 +43,26 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           </div>
           <div>
             <h3 className="text-xl font-black italic tracking-tighter uppercase leading-none">
-              {lang === 'KO' ? '오늘의 생일 스타' : 'Today’s B-Day Stars'}
+              {lang === 'KO' ? '이달의 생일 스타' : 'B-Day Stars'}
             </h3>
             <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">
               Celebrating the light of the fandom
             </p>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
-          <div className="w-1 h-1 rounded-full bg-neon-magenta animate-ping" />
-          <span className="text-[10px] font-black text-neon-magenta uppercase tracking-widest">Live Celebration</span>
+        <div className="flex items-center gap-2">
+          {/* Calendar Toggle Button */}
+          <button 
+            onClick={() => setIsCalendarOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+          >
+            <span className="text-[10px] font-black text-white uppercase tracking-widest hidden sm:inline">Monthly Calendar</span>
+            <ChevronRight size={14} className="text-white sm:hidden" />
+          </button>
+          <div className="hidden sm:flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <div className="w-1 h-1 rounded-full bg-neon-magenta animate-ping" />
+            <span className="text-[10px] font-black text-neon-magenta uppercase tracking-widest">Live Celebration</span>
+          </div>
         </div>
       </div>
 
@@ -66,9 +79,16 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
             displayName = star.name;
           }
 
+          const isUpcoming = star.isUpcoming;
+          const badgeText = isUpcoming ? 'D-1 UPCOMING' : 'HAPPY B-DAY';
+          const accentColor = isUpcoming ? 'bg-cyan-500' : 'bg-neon-magenta';
+          const borderColor = isUpcoming ? 'group-hover:border-cyan-500/50' : 'group-hover:border-neon-magenta/50';
+          const shadowColor = isUpcoming ? 'shadow-cyan-500/40' : 'shadow-neon-magenta/40';
+          const textColor = isUpcoming ? 'text-cyan-500' : 'text-neon-magenta';
+
           return (
             <motion.div
-              key={`${star.type}-${star.id}`}
+              key={`${star.type}-${star.id}-${isUpcoming ? 'up' : 'today'}`}
               whileHover={{ y: -5 }}
               className="flex-shrink-0 w-40 snap-start"
             >
@@ -76,7 +96,7 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
                 href={star.type === 'artist' ? `/artist/${star.id}` : `/artist/${star.artist_id}`}
                 className="block relative group"
               >
-                <div className="aspect-[3/4] rounded-3xl overflow-hidden border-2 border-white/10 group-hover:border-neon-magenta/50 transition-all shadow-xl bg-zinc-900">
+                <div className={`aspect-[3/4] rounded-3xl overflow-hidden border-2 border-white/10 ${borderColor} transition-all shadow-xl bg-zinc-900 opacity-${isUpcoming ? '80' : '100'} hover:opacity-100`}>
                   {star.image_url ? (
                     <img src={star.image_url} alt={displayName} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   ) : (
@@ -84,18 +104,18 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
                       {displayName.charAt(0)}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isUpcoming ? 'from-black/90' : 'from-black/80'} via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity`} />
                   
                   {/* Birthday Tag */}
-                  <div className="absolute top-3 left-3 px-2 py-1 rounded-lg bg-neon-magenta text-white text-[8px] font-black uppercase tracking-tighter z-10 shadow-lg shadow-neon-magenta/40">
-                    HAPPY B-DAY
+                  <div className={`absolute top-3 left-3 px-2 py-1 rounded-lg ${accentColor} text-white text-[8px] font-black uppercase tracking-tighter z-10 shadow-lg ${shadowColor}`}>
+                    {badgeText}
                   </div>
                   
                   <div className="absolute bottom-4 left-4 right-4">
                     <p className="text-sm font-black text-white truncate drop-shadow-md">
                       {displayName}
                     </p>
-                    <p className="text-[8px] font-bold text-neon-magenta uppercase tracking-widest opacity-80 mt-0.5">
+                    <p className={`text-[8px] font-bold ${textColor} uppercase tracking-widest opacity-80 mt-0.5`}>
                       {star.type === 'member' ? 'MEMBER' : 'SOLO / GROUP'}
                     </p>
                   </div>
@@ -105,6 +125,12 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           );
         })}
       </div>
+
+      <MonthlyCalendarModal 
+        isOpen={isCalendarOpen} 
+        onClose={() => setIsCalendarOpen(false)} 
+        lang={lang} 
+      />
     </div>
   );
 }

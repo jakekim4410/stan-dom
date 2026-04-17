@@ -7,8 +7,9 @@ import { toPng, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
 import { getRemainingVotes } from '@/actions/getRemainingVotes';
+import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail } from 'lucide-react';
+import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Language, getT } from '@/constants/i18n';
@@ -73,6 +74,7 @@ export default function Dashboard() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
+  const [birthdayArtistIds, setBirthdayArtistIds] = useState<Set<string>>(new Set());
   const bannerRef = useRef<HTMLDivElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
   const hologramCardRef = useRef<HTMLDivElement>(null);
@@ -138,7 +140,7 @@ export default function Dashboard() {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
-      await Promise.all([fetchArtists(), fetchCountryStats(), refreshQuota()]);
+      await Promise.all([fetchArtists(), fetchCountryStats(), refreshQuota(), fetchBirthdays()]);
     } catch (err) {
       console.error('Failed to fetch data:', err);
     } finally {
@@ -150,6 +152,20 @@ export default function Dashboard() {
     const res = await getRemainingVotes();
     if (res.success) {
       setVoteQuota({ remaining: res.remaining!, limit: res.limit! });
+    }
+  };
+
+  const fetchBirthdays = async () => {
+    const res = await getTodayBirthdays();
+    if (res.success && res.birthdays) {
+      // 오늘 생일인 대상(isUpcoming이 아닌)만 필터링해서 artist ID 추출
+      const todayStars = res.birthdays.filter((b: any) => !b.isUpcoming);
+      const ids = new Set<string>();
+      todayStars.forEach((star: any) => {
+        if (star.type === 'artist') ids.add(star.id);
+        else if (star.artist_id) ids.add(star.artist_id);
+      });
+      setBirthdayArtistIds(ids);
     }
   };
 
@@ -268,7 +284,7 @@ export default function Dashboard() {
       setToast({
         isVisible: true,
         message: t('voteTransmitted'),
-        subMessage: t('voltageIncreased')
+        subMessage: result.isBirthdayBonus ? '🎉 BIRTHDAY BONUS! +2 VOLTAGE APPLIED!' : t('voltageIncreased')
       });
       refreshQuota();
 
@@ -1071,27 +1087,35 @@ export default function Dashboard() {
                     </div>
 
                     {/* Vote button */}
-                    <button
-                      id={`vote-btn-${a.id}`}
-                      onClick={() => handleVote(a.id, a.total_votes)}
-                      disabled={!!activeVotes[a.id]}
-                      className={`w-full mt-8 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all relative z-10 ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' :
-                          activeVotes[a.id] === 'loading' ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : ''
-                        }`}
-                      style={{
-                        background: activeVotes[a.id] ? undefined : color,
-                        color: activeVotes[a.id] ? undefined : '#000',
-                        boxShadow: activeVotes[a.id] === 'success' ? '0 0 20px rgba(16,185,129,0.4)' : (userCountry && !activeVotes[a.id] ? `0 0 30px ${color}30` : 'none'),
-                      }}
-                    >
-                      {activeVotes[a.id] === 'success' ? (
-                        <><span>✓</span> <span>{t('voted')}</span></>
-                      ) : activeVotes[a.id] === 'loading' ? (
-                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        <><Vote size={18} /> <span>{t('transmitVote')}</span></>
+                    <div className="relative mt-8">
+                      {birthdayArtistIds.has(a.id) && !activeVotes[a.id] && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-neon-magenta rounded-md text-[8px] font-black text-white uppercase tracking-widest z-20 shadow-lg shadow-neon-magenta/50 flex items-center gap-1">
+                          <Cake size={10} />
+                          <span>X2 VOLTAGE</span>
+                        </div>
                       )}
-                    </button>
+                      <button
+                        id={`vote-btn-${a.id}`}
+                        onClick={() => handleVote(a.id, a.total_votes)}
+                        disabled={!!activeVotes[a.id]}
+                        className={`w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all relative z-10 ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' :
+                            activeVotes[a.id] === 'loading' ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : ''
+                          }`}
+                        style={{
+                          background: activeVotes[a.id] ? undefined : color,
+                          color: activeVotes[a.id] ? undefined : '#000',
+                          boxShadow: activeVotes[a.id] === 'success' ? '0 0 20px rgba(16,185,129,0.4)' : (userCountry && !activeVotes[a.id] ? `0 0 30px ${color}30` : 'none'),
+                        }}
+                      >
+                        {activeVotes[a.id] === 'success' ? (
+                          <><span>✓</span> <span>{t('voted')}</span></>
+                        ) : activeVotes[a.id] === 'loading' ? (
+                          <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <><Vote size={18} /> <span>{t('transmitVote')}</span></>
+                        )}
+                      </button>
+                    </div>
                   </motion.div>
                 );
               })}
@@ -1157,24 +1181,32 @@ export default function Dashboard() {
                     </div>
 
                     {/* Vote button */}
-                    <button
-                      onClick={() => handleVote(a.id, a.total_votes)}
-                      disabled={!!activeVotes[a.id]}
-                      className={`shrink-0 ml-3 px-4 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-black transition-all ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success'
-                        ? 'bg-emerald-500 border-emerald-400 text-white'
-                        : activeVotes[a.id] === 'loading'
-                          ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
-                          : 'border-zinc-700 hover:bg-[var(--neon-lime)] hover:text-black hover:border-[var(--neon-lime)]'
-                        }`}
-                    >
-                      {activeVotes[a.id] === 'success' ? (
-                        <span className="font-black text-lg">✓</span>
-                      ) : activeVotes[a.id] === 'loading' ? (
-                        <div className="w-4 h-4 border-2 border-zinc-500 border-t-zinc-200 rounded-full animate-spin" />
-                      ) : (
-                        <><Vote size={14} /> <span>VOTE</span></>
+                    <div className="relative shrink-0 ml-3">
+                      {birthdayArtistIds.has(a.id) && !activeVotes[a.id] && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-1 py-0.5 bg-neon-magenta rounded flex items-center gap-0.5 text-[8px] font-black text-white uppercase tracking-wider z-20 shadow-md shadow-neon-magenta/40 whitespace-nowrap">
+                          <Cake size={10} />
+                          <span>X2</span>
+                        </div>
                       )}
-                    </button>
+                      <button
+                        onClick={() => handleVote(a.id, a.total_votes)}
+                        disabled={!!activeVotes[a.id]}
+                        className={`px-4 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-black transition-all ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success'
+                          ? 'bg-emerald-500 border-emerald-400 text-white'
+                          : activeVotes[a.id] === 'loading'
+                            ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
+                            : 'border-zinc-700 hover:bg-[var(--neon-lime)] hover:text-black hover:border-[var(--neon-lime)]'
+                          }`}
+                      >
+                        {activeVotes[a.id] === 'success' ? (
+                          <span className="font-black text-lg">✓</span>
+                        ) : activeVotes[a.id] === 'loading' ? (
+                          <div className="w-4 h-4 border-2 border-zinc-500 border-t-zinc-200 rounded-full animate-spin" />
+                        ) : (
+                          <><Vote size={14} /> <span>VOTE</span></>
+                        )}
+                      </button>
+                    </div>
                   </motion.div>
                 );
               })}

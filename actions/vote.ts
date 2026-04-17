@@ -77,11 +77,20 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
       throw voteError;
     }
 
-    // 3. Increment total_votes
-    console.log(`[Vote Action] Fetching current vote count for artist ${artistId}...`);
+    // 3. Check for Birthday Bonus & Increment total_votes
+    console.log(`[Vote Action] Fetching current vote count and metadata for artist ${artistId}...`);
+    
+    // KST 기준 오늘의 날짜(MM-DD) 계산
+    const kstDateString = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Seoul',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(new Date());
+    const kstTargetMd = kstDateString.replace('/', '-'); // en-US format is MM/DD, replace with MM-DD
+    
     const { data: artistData, error: fetchError } = await supabase
       .from('artists')
-      .select('total_votes')
+      .select('total_votes, birthday')
       .eq('id', artistId)
       .single();
 
@@ -90,10 +99,23 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
       throw new Error(fetchError?.message || 'Artist not found');
     }
 
-    console.log(`[Vote Action] Updating artist ${artistId} votes to ${ (artistData.total_votes || 0) + 1 }...`);
+    // 멤버들의 생일도 확인
+    const { data: membersData } = await supabase
+      .from('members')
+      .select('birthday')
+      .eq('artist_id', artistId)
+      .not('birthday', 'is', null);
+
+    const isArtistBirthday = artistData.birthday?.slice(5) === kstTargetMd;
+    const isMemberBirthday = membersData?.some(m => m.birthday?.slice(5) === kstTargetMd);
+    const isBirthdayBonus = isArtistBirthday || isMemberBirthday;
+    
+    const voteValue = isBirthdayBonus ? 2 : 1;
+
+    console.log(`[Vote Action] Updating artist ${artistId} votes to ${(artistData.total_votes || 0) + voteValue} (Bonus: ${isBirthdayBonus})...`);
     const { error: updateError } = await supabase
       .from('artists')
-      .update({ total_votes: (artistData.total_votes || 0) + 1 })
+      .update({ total_votes: (artistData.total_votes || 0) + voteValue })
       .eq('id', artistId);
 
     if (updateError) {
@@ -103,7 +125,7 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
 
     console.log(`[Vote Action] ALL SUCCESSFUL. Revalidating path...`);
     revalidatePath('/');
-    return { success: true, countryCode };
+    return { success: true, countryCode, isBirthdayBonus };
   } catch (error: any) {
     console.error('[Vote Action] Unexpected fatal error:', error);
     return { success: false, error: error.message || 'An unexpected system error occurred' };
