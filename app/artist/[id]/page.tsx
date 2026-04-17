@@ -29,9 +29,12 @@ import {
   Terminal,
   Check,
   Zap,
-  Cake
+  Cake,
+  RefreshCcw,
+  Loader2
 } from 'lucide-react';
 import { getArtistMembers, Member } from '@/actions/getArtistMembers';
+import { syncArtistMetadata } from '@/actions/syncArtistMetadata';
 import Link from 'next/link';
 import { COUNTRY_DATA, Country } from '@/constants/countryData';
 import { getArtistTopTrack } from '@/actions/getArtistTopTrack';
@@ -117,6 +120,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [editingText, setEditingText] = useState('');
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
+  const [syncing, setSyncing] = useState(false);
 
   const t = getT(lang);
 
@@ -740,12 +744,49 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shadow-[0_0_15px_rgba(0,243,255,0.2)]">
-            <Database size={20} />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shadow-[0_0_15px_rgba(0,243,255,0.2)]">
+              <Database size={20} />
+            </div>
+            <h2 className="text-xl font-black italic tracking-tighter uppercase whitespace-nowrap">{t('fandomDensity')} / {lang === 'KO' ? '멤버 정보' : 'UNIT MEMBERS'}</h2>
           </div>
-          <h2 className="text-xl font-black italic tracking-tighter uppercase whitespace-nowrap">{t('fandomDensity')} / {lang === 'KO' ? '멤버 정보' : 'UNIT MEMBERS'}</h2>
+          
+          <button
+            onClick={async () => {
+              if (syncing) return;
+              setSyncing(true);
+              const res = await syncArtistMetadata(artistId, artistName);
+              if (res.success) {
+                const updated = await getArtistMembers(artistId);
+                if (updated.success) setMembers(updated.members || []);
+                setToast({
+                  isVisible: true,
+                  message: lang === 'KO' ? '동기화 완료' : 'Sync Successful',
+                  subMessage: lang === 'KO' ? '멤버 정보가 업데이트되었습니다.' : 'Member data has been refreshed.'
+                });
+              } else {
+                setToast({
+                  isVisible: true,
+                  message: 'Sync Failed',
+                  subMessage: res.error || 'Connection Timeout'
+                });
+              }
+              setSyncing(false);
+            }}
+            disabled={syncing}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group"
+            title="Force Sync Metadata"
+          >
+            {syncing ? (
+              <Loader2 size={14} className="animate-spin text-neon-cyan" />
+            ) : (
+              <RefreshCcw size={14} className="text-zinc-500 group-hover:text-neon-cyan transition-colors" />
+            )}
+            <span className="text-[10px] font-black text-zinc-500 group-hover:text-zinc-200 uppercase tracking-widest">
+              {syncing ? 'Connecting...' : 'Sync Node'}
+            </span>
+          </button>
         </div>
 
         {members.length > 0 ? (
