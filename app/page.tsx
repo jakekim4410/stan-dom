@@ -8,8 +8,9 @@ import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
 import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
+import { getLangName } from '@/utils/localization';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake } from 'lucide-react';
+import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Language, getT } from '@/constants/i18n';
@@ -30,7 +31,7 @@ type MapView = 'globe' | 'flat';
 
 interface Artist {
   id: string;
-  name: string;
+  name: string; // Now expected to be a JSON string like {"EN":"...", "KO":"..."}
   image_url: string | null;
   total_votes: number;
   birthday: string | null;
@@ -202,8 +203,26 @@ export default function Dashboard() {
   };
 
   const fetchArtists = async () => {
-    const { data, error } = await supabase.from('artists').select('*').order('total_votes', { ascending: false });
-    if (!error) setArtists(data || []);
+    const { data, error } = await supabase
+        .from('artists')
+        .select('*')
+        .order('total_votes', { ascending: false });
+      if (error) throw error;
+      
+      // Pre-parse names to handle localized objects directly
+      const parsedData = (data || []).map(a => {
+        let nameObj = a.name;
+        if (typeof a.name === 'string' && (a.name.startsWith('{') || a.name.startsWith('['))) {
+          try {
+            nameObj = JSON.parse(a.name);
+          } catch (e) {
+            console.warn('Failed to parse artist name JSON', a.id);
+          }
+        }
+        return { ...a, name: nameObj };
+      });
+
+      setArtists(parsedData);
   };
 
   const fetchCountryStats = async () => {
@@ -309,7 +328,7 @@ export default function Dashboard() {
       .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
       .map(([artistId, votes], i) => ({
-        name: artists.find(a => a.id === artistId)?.name ?? '???',
+        name: getLangName(artists.find(a => a.id === artistId)?.name, lang) || '???',
         votes,
         rank: i + 1,
       }));
@@ -318,13 +337,15 @@ export default function Dashboard() {
   // ── [추가] FlatMap용 artists 변환 ──────────────────────────
   const flatMapArtists = artists.map(a => ({
     id: a.id,
-    name: a.name,
+    name: getLangName(a.name, lang),
     image: a.image_url ?? undefined,
   }));
   // ──────────────────────────────────────────────────────────
 
   const filteredArtists = artists.filter(a =>
-    a.name.toLowerCase().includes(searchQuery.toLowerCase())
+    getLangName(a.name, lang).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    getLangName(a.name, 'EN').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    getLangName(a.name, 'KO').toLowerCase().includes(searchQuery.toLowerCase())
   );
   const top3 = filteredArtists.slice(0, 3);
   const others = filteredArtists.slice(3);
@@ -355,8 +376,8 @@ export default function Dashboard() {
     'TWS': '#3b82f6', // 청량 블루
   };
   const DEFAULT_THEME_COLOR = '#37C561';
-  const themeColor = topArtist && FANDOM_COLORS[topArtist.name] 
-    ? FANDOM_COLORS[topArtist.name] 
+  const themeColor = topArtist && FANDOM_COLORS[getLangName(topArtist.name, 'EN')] 
+    ? FANDOM_COLORS[getLangName(topArtist.name, 'EN')] 
     : DEFAULT_THEME_COLOR;
 
   // Inject Theme Color to entire site (Full Takeover)
@@ -421,7 +442,7 @@ export default function Dashboard() {
                 }}
               >
                 <span className="text-[10px] uppercase font-black tracking-widest flex items-center gap-1.5" style={{ color: themeColor, textShadow: `0 0 10px ${themeColor}` }}>
-                  🏆 <span className="text-zinc-300">CURRENT #1:</span> {topArtist.name}
+                  🏆 <span className="text-zinc-300">CURRENT #1:</span> {getLangName(topArtist.name, lang)}
                 </span>
                 <div className="relative group flex items-center justify-center">
                   <div className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center cursor-help pb-[1px] text-[10px] text-white">?</div>
@@ -1036,8 +1057,8 @@ export default function Dashboard() {
                         <div className="relative w-full h-full rounded-full border-4 overflow-hidden bg-zinc-900 flex items-center justify-center shadow-2xl group-hover/img:scale-105 transition-transform duration-500"
                           style={{ borderColor: `${color}40`, boxShadow: `0 0 30px ${color}20` }}>
                           {a.image_url
-                            ? <img src={a.image_url} alt={a.name} className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700" />
-                            : <span className="text-5xl font-black text-zinc-700">{a.name[0]}</span>
+                            ? <img src={a.image_url} alt={getLangName(a.name, lang)} className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700" />
+                            : <span className="text-5xl font-black text-zinc-700">{getLangName(a.name, lang)[0]}</span>
                           }
                         </div>
                         {isFirst && (
@@ -1050,7 +1071,7 @@ export default function Dashboard() {
                       {/* Name & Stats */}
                       <div className="text-center w-full">
                         <Link href={`/artist/${a.id}`} className="hover:opacity-80 transition-opacity inline-block group/title">
-                          <h3 className="text-3xl font-black tracking-tighter truncate max-w-[200px] group-hover/title:text-white">{a.name}</h3>
+                          <h3 className="text-3xl font-black tracking-tighter truncate max-w-[200px] group-hover/title:text-white">{getLangName(a.name, lang)}</h3>
                           <div className="h-0.5 w-0 group-hover/title:w-full bg-current mx-auto transition-all duration-300" style={{ color }} />
                         </Link>
 
@@ -1094,21 +1115,23 @@ export default function Dashboard() {
                         id={`vote-btn-${a.id}`}
                         onClick={() => handleVote(a.id, a.total_votes)}
                         disabled={!!activeVotes[a.id]}
-                        className={`w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all relative z-10 ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' :
+                        className={`w-full py-4 rounded-2xl font-black text-[11px] flex items-center justify-center gap-2.5 transition-all relative z-10 uppercase tracking-[0.15em] hover:scale-[1.02] active:scale-[0.98] ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success' ? 'bg-emerald-500 text-white' :
                             activeVotes[a.id] === 'loading' ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border-none' : ''
                           }`}
                         style={{
                           background: activeVotes[a.id] ? undefined : color,
                           color: activeVotes[a.id] ? undefined : '#000',
-                          boxShadow: activeVotes[a.id] === 'success' ? '0 0 20px rgba(16,185,129,0.4)' : (userCountry && !activeVotes[a.id] ? `0 0 30px ${color}30` : 'none'),
+                          boxShadow: activeVotes[a.id] === 'success' 
+                            ? '0 0 20px rgba(16,185,129,0.4)' 
+                            : (userCountry && !activeVotes[a.id] ? `0 10px 40px -10px ${color}80` : 'none'),
                         }}
                       >
                         {activeVotes[a.id] === 'success' ? (
-                          <><span>✓</span> <span>{t('voted')}</span></>
+                          <><CheckCircle2 size={16} /> <span>{t('voted')}</span></>
                         ) : activeVotes[a.id] === 'loading' ? (
                           <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                         ) : (
-                          <><Vote size={18} /> <span>{t('transmitVote')}</span></>
+                          <><Vote size={16} /> <span>{t('transmitVote')}</span></>
                         )}
                       </button>
                     </div>
@@ -1118,12 +1141,8 @@ export default function Dashboard() {
             </AnimatePresence>
           </div>
         </section>
-
-        {/* ── Birthday Stars ── */}
-        <BirthdayPromotion lang={lang} />
-
-        {/* ── Others ── */}
-        <section className="space-y-6">
+        {/* ── Upcoming Artists (Others) ── */}
+        <section id="upcoming-artists" className="space-y-6">
           <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
             <h3 className="text-xl font-black flex items-center gap-2 italic">
               <Sparkles size={20} className="text-[var(--neon-lime)]" />
@@ -1146,7 +1165,7 @@ export default function Dashboard() {
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="glassmorphism p-5 rounded-[1.5rem] flex items-center justify-between group border border-white/5 hover:border-[var(--neon-lime)]/30 transition-all"
+                    className="glassmorphism p-5 rounded-[2rem] flex items-center justify-between group border border-white/5 hover:border-[var(--neon-lime)]/30 transition-all overflow-hidden"
                   >
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <span className="w-6 font-mono text-zinc-600 font-black italic text-sm shrink-0">
@@ -1155,52 +1174,39 @@ export default function Dashboard() {
                       <Link href={`/artist/${a.id}`} className="flex items-center gap-3 group/link min-w-0">
                         <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-white/5 overflow-hidden flex items-center justify-center group-hover/link:border-[var(--neon-lime)]/40 transition-colors shrink-0">
                           {a.image_url
-                            ? <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />
-                            : <span className="font-black text-xl text-zinc-600">{a.name[0]}</span>
+                            ? <img src={a.image_url} alt={getLangName(a.name, lang)} className="w-full h-full object-cover" />
+                            : <span className="font-black text-xl text-zinc-600">{getLangName(a.name, lang)[0]}</span>
                           }
                         </div>
                         <div className="min-w-0">
                           <h4 className="font-black text-base tracking-tight leading-none group-hover/link:text-[var(--neon-lime)] transition-colors truncate">
-                            {a.name}
+                            {getLangName(a.name, lang)}
                           </h4>
-                          <div className="mt-2 space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[10px] text-zinc-600 font-black">{(a.total_votes || 0).toLocaleString()}</span>
-                              <span className="text-[10px] text-zinc-600">{pct}%</span>
-                            </div>
-                            <div className="progress-bar-track w-24">
-                              <div className="progress-bar-fill progress-bar-fill-other" style={{ width: `${pct}%` }} />
-                            </div>
+                          <div className="mt-2 space-y-1 text-zinc-500">
+                             <span className="text-[10px] font-mono font-black">{(a.total_votes || 0).toLocaleString()} VOLTAGE</span>
                           </div>
                         </div>
                       </Link>
                     </div>
 
-                    {/* Vote button */}
-                    <div className="relative shrink-0 ml-3">
-                      {birthdayArtistIds.has(a.id) && !activeVotes[a.id] && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-1 py-0.5 bg-neon-magenta rounded flex items-center gap-0.5 text-[8px] font-black text-white uppercase tracking-wider z-20 shadow-md shadow-neon-magenta/40 whitespace-nowrap">
-                          <Cake size={10} />
-                          <span>X2</span>
+                    <div className="flex items-center gap-3">
+                      {birthdayArtistIds.has(a.id) && (
+                        <div className="bg-neon-magenta/20 p-2 rounded-lg text-neon-magenta border border-neon-magenta/30">
+                          <Cake size={14} />
                         </div>
                       )}
                       <button
                         onClick={() => handleVote(a.id, a.total_votes)}
                         disabled={!!activeVotes[a.id]}
-                        className={`px-4 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-black transition-all ${isBounc ? 'vote-bounce' : ''} ${!userCountry ? 'opacity-50' : ''} ${activeVotes[a.id] === 'success'
-                          ? 'bg-emerald-500 border-emerald-400 text-white'
+                        className={`w-28 h-10 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${activeVotes[a.id] === 'success'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                           : activeVotes[a.id] === 'loading'
-                            ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed'
-                            : 'border-zinc-700 hover:bg-[var(--neon-lime)] hover:text-black hover:border-[var(--neon-lime)]'
-                          }`}
+                            ? 'bg-zinc-800 text-zinc-600'
+                            : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20'
+                        }`}
                       >
-                        {activeVotes[a.id] === 'success' ? (
-                          <span className="font-black text-lg">✓</span>
-                        ) : activeVotes[a.id] === 'loading' ? (
-                          <div className="w-4 h-4 border-2 border-zinc-500 border-t-zinc-200 rounded-full animate-spin" />
-                        ) : (
-                          <><Vote size={14} /> <span>VOTE</span></>
-                        )}
+                        {activeVotes[a.id] === 'success' ? <CheckCircle2 size={12} /> : <Vote size={12} />}
+                        {activeVotes[a.id] === 'success' ? t('voted') : t('voteShort')}
                       </button>
                     </div>
                   </motion.div>
@@ -1213,16 +1219,16 @@ export default function Dashboard() {
             <div className="flex justify-center mt-8">
               <button
                 onClick={() => setShowAllUpcoming(!showAllUpcoming)}
-                className="px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--neon-lime)]/50 hover:bg-[var(--neon-lime)]/5 transition-all group flex items-center gap-2"
+                className="px-8 py-3 rounded-full border border-white/5 hover:border-white/20 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-white/10"
               >
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] group-hover:text-[var(--neon-lime)] transition-colors">
-                  {showAllUpcoming ? t('showLess') : t('showMore')}
-                </span>
-                <div className={`w-1.5 h-1.5 rounded-full bg-[var(--neon-lime)] shadow-[0_0_8px_var(--neon-lime)] transition-transform duration-300 ${showAllUpcoming ? 'rotate-180' : ''}`} />
+                {showAllUpcoming ? t('showLess') : t('showMore')}
               </button>
             </div>
           )}
         </section>
+
+        {/* ── Birthday Stars ── Moved below Others ── */}
+        <BirthdayPromotion lang={lang} />
 
         {/* ── Divider ── */}
         <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4">
@@ -1259,7 +1265,7 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {['RIIZE', 'BOYNEXTDOOR', 'TWS'].map((name, i) => {
-                    const artist = artists.find(a => a.name.toUpperCase() === name);
+                    const artist = artists.find(a => getLangName(a.name, 'EN').toUpperCase() === name);
                     const votes = artist?.total_votes || 0;
                     const isTop = i === 0;
 
@@ -1284,7 +1290,7 @@ export default function Dashboard() {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <h4 className="font-black text-xl tracking-tighter truncate group-hover/artist:text-[var(--neon-lime)] transition-colors">{name}</h4>
+                              <h4 className="font-black text-xl tracking-tighter truncate group-hover/artist:text-[var(--neon-lime)] transition-colors">{getLangName(artist.name, lang)}</h4>
                               <span className="text-[10px] font-black text-zinc-600 uppercase">VOLTAGE: {votes.toLocaleString()}</span>
                             </div>
                           </Link>
@@ -1292,7 +1298,7 @@ export default function Dashboard() {
                           <div className="flex items-center gap-4 opacity-50">
                             <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center font-black text-xl text-zinc-700">{name[0]}</div>
                             <div className="min-w-0">
-                              <h4 className="font-black text-xl tracking-tighter truncate">{name}</h4>
+                              <h4 className="font-black text-xl tracking-tighter truncate">{getLangName(name, lang)}</h4>
                               <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest animate-pulse">DETECTING...</span>
                             </div>
                           </div>
@@ -1583,13 +1589,13 @@ export default function Dashboard() {
                   <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/50 shadow-2xl mb-4 bg-black">
                     <img 
                       src={showHologramCard.artist.image_url || ''} 
-                      alt={showHologramCard.artist.name} 
+                      alt={getLangName(showHologramCard.artist.name, lang)} 
                       className="w-full h-full object-cover" 
                       crossOrigin="anonymous"
                     />
                   </div>
                   <h3 className="text-2xl font-black tracking-tighter text-white drop-shadow-md text-center leading-tight">
-                    {showHologramCard.artist.name}
+                    {getLangName(showHologramCard.artist.name, lang)}
                   </h3>
                   <div className="mt-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
                     <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase whitespace-nowrap" style={{ color: '#37C561' }}>{t('hologramRank')} #{showHologramCard.rank}</span>
@@ -1620,7 +1626,7 @@ export default function Dashboard() {
             >
               <div className="flex gap-2 w-full">
                 <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', showHologramCard.artist.name))}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://standom.online')}&hashtags=${encodeURIComponent(`${showHologramCard.artist.name.replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('tweetTemplate').replace('{rank}', String(showHologramCard.rank)).replace('{artist}', getLangName(showHologramCard.artist.name, lang)))}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://standom.online')}&hashtags=${encodeURIComponent(`${getLangName(showHologramCard.artist.name, 'EN').replace(/\s+/g, '')},KPOP_VOTE,STANDOM`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-black font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-white/10"
                 >

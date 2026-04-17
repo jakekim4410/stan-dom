@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import SkeletonLoader from './SkeletonLoader';
 
 import { Language, getT } from '@/constants/i18n';
+import { getLangName } from '@/utils/localization';
 
 interface Artist {
   id: string;
@@ -112,7 +113,7 @@ export default function RankingBoard({
                     {/* 이름 부분: min-w-0이 중요합니다 */}
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-black text-white leading-tight uppercase tracking-tight break-words line-clamp-1">
-                        {artist.name}
+                        {getLangName(artist.name, lang)}
                       </h4>
                       <span className="text-[9px] font-mono font-black text-neon-lime">
                         <AnimatedNumber value={percent} />
@@ -152,7 +153,7 @@ export default function RankingBoard({
                       <div className="flex flex-col min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <h3 className="text-sm md:text-base font-black tracking-tight truncate group-hover:text-neon-lime transition-colors">
-                            {artist.name}
+                            {getLangName(artist.name, lang)}
                           </h3>
                         </div>
                         <div className="flex items-center gap-2">

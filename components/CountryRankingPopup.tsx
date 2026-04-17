@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, Medal } from 'lucide-react';
 import { Language, getT } from '@/constants/i18n';
+import { getLangName } from '@/utils/localization';
 
 interface CountryRankingPopupProps {
   countryCode: string;
@@ -80,7 +81,7 @@ export default function CountryRankingPopup({
                     {RANK_ICONS[index]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-sm tracking-tight truncate">{artist.name}</p>
+                    <p className="font-black text-sm tracking-tight truncate">{getLangName(artist.name, lang)}</p>
                     <p className="text-[10px] text-zinc-500 font-bold">
                       {artist.votes.toLocaleString()} {t('countryVotes')}
                     </p>

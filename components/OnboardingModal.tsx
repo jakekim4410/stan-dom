@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Search, ShieldCheck, Zap, User, UserPlus, Check, Navigation } from 'lucide-react';
+import { Globe, Search, ShieldCheck, Zap, User, UserPlus, Check, Navigation, Cake } from 'lucide-react';
 import { COUNTRY_DATA, Country } from '@/constants/countryData';
 import { Language, getT } from '@/constants/i18n';
 
@@ -179,6 +179,22 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
                         <h4 className="font-black text-white text-lg tracking-tight mb-1">{t('voltage')}</h4>
                         <p className="text-zinc-500 text-xs font-medium leading-relaxed">
                             {t('voltageSub')}
+                        </p>
+                    </div>
+                  </div>
+
+                  {/* Double Voltage Bonus Card */}
+                  <div className="p-6 rounded-3xl bg-neon-magenta/10 border border-neon-magenta/30 flex items-start gap-5 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-neon-magenta/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
+                    <div className="w-12 h-12 rounded-2xl bg-neon-magenta flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,0,255,0.3)]">
+                      <Cake size={24} className="text-white" />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-white text-lg tracking-tight mb-1">
+                          {lang === 'KO' ? '생일 2배 보너스' : 'Birthday x2 Bonus'}
+                        </h4>
+                        <p className="text-neon-magenta/80 text-xs font-bold leading-relaxed uppercase tracking-tight">
+                            {lang === 'KO' ? '오늘의 생일 스타에게 투표하면 볼티지가 2배로 쌓입니다!' : 'Voting for today\'s birthday stars grants 2x Voltage points!'}
                         </p>
                     </div>
                   </div>

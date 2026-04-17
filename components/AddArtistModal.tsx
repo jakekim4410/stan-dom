@@ -8,6 +8,7 @@ import { DeezerArtist } from '@/lib/deezer';
 import { addArtist } from '@/actions/addArtist';
 import { Language, getT } from '@/constants/i18n';
 import Link from 'next/link';
+import { getLangName } from '@/utils/localization';
 
 interface AddArtistModalProps {
   isOpen: boolean;
@@ -218,7 +219,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                     <div className="flex items-center gap-4">
                       {artist.imageUrl ? (
                         <div className="w-12 h-12 rounded-full overflow-hidden border border-white/10 shrink-0">
-                          <img src={artist.imageUrl} alt={artist.name} className="w-full h-full object-cover" />
+                          <img src={artist.imageUrl} alt={getLangName(artist.name, lang)} className="w-full h-full object-cover" />
                         </div>
                       ) : (
                         <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center shrink-0">
@@ -227,7 +228,7 @@ export default function AddArtistModal({ isOpen, onClose, lang, user }: AddArtis
                       )}
 
                       <div className="text-left flex flex-col">
-                        <span className="font-black text-lg tracking-tight group-hover:neon-text-cyan transition-all">{artist.name}</span>
+                        <span className="font-black text-lg tracking-tight group-hover:neon-text-cyan transition-all">{getLangName(artist.name, lang)}</span>
                         <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block -mt-1">
                           {artist.followers.toLocaleString()} {lang === 'KO' ? '팔로워' : (lang === 'ES' ? 'SEGUIDORES' : 'Followers')}
                         </span>

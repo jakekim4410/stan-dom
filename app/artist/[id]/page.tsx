@@ -50,6 +50,7 @@ import MemberPhotoModal from '@/components/MemberPhotoModal';
 import { toggleMemberLike } from '@/actions/toggleMemberLike';
 import { Language, getT } from '@/constants/i18n';
 import { use } from 'react';
+import { getLangName } from '@/utils/localization';
 
 interface Artist {
   id: string;
@@ -204,8 +205,20 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     ]);
 
     if (artistRes.data) {
-      setArtist(artistRes.data);
-      const trackRes = await getArtistTopTrack(artistRes.data.name);
+      // Pre-parse the artist name
+      let nameObj = artistRes.data.name;
+      if (typeof artistRes.data.name === 'string' && (artistRes.data.name.startsWith('{') || artistRes.data.name.startsWith('['))) {
+        try {
+          nameObj = JSON.parse(artistRes.data.name);
+        } catch (e) {
+          console.warn('Failed to parse artist name', artistId);
+        }
+      }
+      const parsedArtist = { ...artistRes.data, name: nameObj };
+      setArtist(parsedArtist);
+      
+      const enName = getLangName(nameObj, 'EN');
+      const trackRes = await getArtistTopTrack(enName);
       if (trackRes.success) setTopTrack(trackRes.track);
     }
 
@@ -561,7 +574,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                   animate={{ opacity: 1, x: 0 }}
                   className="text-5xl md:text-8xl font-black tracking-tighter leading-none mb-8"
                 >
-                  {artist.name}
+                  {getLangName(artist.name, lang)}
                 </motion.h1>
 
                 <div className="flex flex-row items-center justify-between sm:justify-start gap-4 sm:gap-10 py-8 border-y border-white/5 w-full">
@@ -801,7 +814,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
             onClick={async () => {
               if (syncing || !artist) return;
               setSyncing(true);
-              const res = await syncArtistMetadata(artistId, artist.name);
+              const enName = getLangName(artist.name, 'EN');
+              const res = await syncArtistMetadata(artistId, enName);
               if (res.success) {
                 const updated = await getArtistMembers(artistId);
                 if (updated.success) setMembers(updated.members || []);
@@ -837,14 +851,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         {members.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {members.map((member) => {
-              // Parse localized name
-              let displayName = member.name;
-              try {
-                const nameMap = JSON.parse(member.name);
-                displayName = nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0];
-              } catch (e) {
-                // Not JSON, use as is
-              }
+              const displayName = getLangName(member.name, lang);
 
               return (
                 <motion.div
@@ -1073,13 +1080,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                     <span className="text-[9px] font-black text-neon-cyan uppercase tracking-widest">
                       {t('transmit')} TO: {(() => {
                         const m = members.find(m => m.id === targetMemberId);
-                        if (!m) return 'MEMBER';
-                        try {
-                          const nameMap = JSON.parse(m.name);
-                          return nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0];
-                        } catch (e) {
-                          return m.name;
-                        }
+                        return m ? getLangName(m.name, lang) : 'MEMBER';
                       })()}
                     </span>
                     <button onClick={() => setTargetMemberId(null)} className="ml-2 hover:text-white transition-colors">
@@ -1159,12 +1160,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                                         {(() => {
                                           const m = members.find(mem => mem.id === c.member_id);
                                           if (!m) return 'MEMBER';
-                                          try {
-                                            const nameMap = JSON.parse(m.name);
-                                            return nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0];
-                                          } catch (e) {
-                                            return m.name;
-                                          }
+                                          return getLangName(m.name, lang);
                                         })()}
                                       </span>
                                     )}
@@ -1299,7 +1295,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         artistId={artistId}
-        artistName={artist?.name || ''}
+        artistName={getLangName(artist?.name, lang) || ''}
         currentImageUrl={artist?.image_url || null}
         lang={lang}
         onSuccess={(url) => {
@@ -1317,15 +1313,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
           onClose={() => setEditingMember(null)}
           memberId={editingMember.id}
           artistId={artistId}
-          artistName={artist?.name || ''}
-          memberName={(() => {
-            try {
-              const nameMap = JSON.parse(editingMember.name);
-              return nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0] as string;
-            } catch (e) {
-              return editingMember.name;
-            }
-          })()}
+          artistName={getLangName(artist?.name, lang) || ''}
+          memberName={getLangName(editingMember.name, lang)}
           currentImageUrl={editingMember.image_url}
           lang={lang}
           onSuccess={(url) => {

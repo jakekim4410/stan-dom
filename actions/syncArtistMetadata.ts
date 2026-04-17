@@ -3,6 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { searchMusicBrainzArtist, getArtistAndMembers, getPersonBirthday, getNameMap } from '@/lib/musicbrainz';
 import { revalidatePath } from 'next/cache';
+import { getLangName } from '@/utils/localization';
 
 export async function syncArtistMetadata(artistId: string, artistName: string) {
   try {
@@ -33,11 +34,12 @@ export async function syncArtistMetadata(artistId: string, artistName: string) {
       
       // Attempt to fetch individual birthdays for the first 15 members
       for (const m of mbData.members.slice(0, 15)) {
-        const mbPerson = await getPersonBirthday(m.name);
+        const plainName = getLangName(m.name, 'EN');
+        const mbPerson = await getPersonBirthday(plainName);
         
         // Use aliases from the member rel if available, else from direct lookup
-        const aliases = (mbPerson as any).aliases || m.aliases || [];
-        const nameMap = getNameMap(m.name, aliases);
+        const aliases = (mbPerson as any).aliases || [];
+        const nameMap = getNameMap(plainName, aliases);
 
         membersToInsert.push({
           artist_id: artistId,

@@ -16,6 +16,7 @@ import { updateMemberPhoto } from '@/actions/updateMemberPhoto';
 import { searchForArtists } from '@/actions/searchDeezer';
 import { DeezerArtist } from '@/lib/deezer';
 import { Language, getT } from '@/constants/i18n';
+import { getLangName } from '@/utils/localization';
 
 interface MemberPhotoModalProps {
   isOpen: boolean;
@@ -143,7 +144,7 @@ export default function MemberPhotoModal({
                 <h3 className="text-lg font-black italic uppercase tracking-tighter flex items-center gap-2">
                   <ImageIcon className="text-neon-magenta" size={18} />
                   {t('memberPhotoModalTitle')}:&nbsp;
-                  <span className="text-neon-magenta font-chakra">{memberName}</span>
+                  <span className="text-neon-magenta font-chakra">{getLangName(memberName, lang)}</span>
                 </h3>
                 <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">
                   {t('memberPhotoModalSub')}
@@ -234,7 +235,7 @@ export default function MemberPhotoModal({
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[11px] font-black uppercase text-white truncate leading-tight">{res.name}</p>
+                                  <p className="text-[11px] font-black uppercase text-white truncate leading-tight">{getLangName(res.name, lang)}</p>
                                   <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">
                                     {isSelected ? '✓ SELECTED' : 'MATCH_FOUND'}
                                   </p>

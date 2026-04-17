@@ -6,12 +6,14 @@ import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
 import { Cake, ChevronRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 import MonthlyCalendarModal from './MonthlyCalendarModal';
+import { getLangName } from '@/utils/localization';
 
 interface BirthdayStar {
   id: string;
   name: string;
   image_url: string | null;
   artist_id?: string;
+  artist_name?: string | null; // Added for group name
   type: 'artist' | 'member';
   isUpcoming?: boolean;
 }
@@ -43,10 +45,10 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           </div>
           <div>
             <h3 className="text-xl font-black italic tracking-tighter uppercase leading-none">
-              {lang === 'KO' ? '이달의 생일 스타' : 'B-Day Stars'}
+              {lang === 'KO' ? '오늘의 생일 스타' : 'Today\'s B-Day Stars'}
             </h3>
             <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">
-              Celebrating the light of the fandom
+              Celebrating the stars of today & tomorrow
             </p>
           </div>
         </div>
@@ -65,30 +67,58 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
           </div>
         </div>
       </div>
+      
+      {/* ── Double Voltage Guide Badge ── */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="mb-6 p-4 rounded-3xl bg-gradient-to-r from-neon-magenta/10 via-neon-magenta/5 to-transparent border border-neon-magenta/20 flex items-center justify-between group overflow-hidden relative"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-neon-magenta/10 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="w-12 h-12 rounded-2xl bg-neon-magenta flex items-center justify-center text-white shadow-[0_0_20px_rgba(255,0,255,0.4)]">
+            <Zap size={24} fill="currentColor" />
+          </div>
+          <div>
+            <h4 className="text-sm font-black text-white uppercase tracking-wider mb-0.5">
+              {lang === 'KO' ? '생일 축하 볼티지 피크!' : 'B-Day Voltage Peak!'}
+            </h4>
+            <p className="text-[11px] font-bold text-neon-magenta/80 uppercase tracking-widest leading-none">
+              {lang === 'KO' ? '오늘의 주인공에게 투표하면 볼티지가 2배로 쌓입니다' : 'Vote for today\'s stars to get 2x Voltage bonus'}
+            </p>
+          </div>
+        </div>
+        <div className="px-5 py-2 rounded-xl bg-neon-magenta text-black text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-neon-magenta/20 hidden md:block">
+          Double Voltage active
+        </div>
+      </motion.div>
 
       {stars.length === 0 ? (
-        <div className="w-full h-32 rounded-3xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 animate-pulse bg-white/5">
-          <Cake size={24} className="text-zinc-600" />
-          <p className="text-xs font-black text-zinc-500 uppercase tracking-widest">
-            {lang === 'KO' ? '현재 다가오는 생일자가 없습니다' : 'No upcoming birthdays today'}
-          </p>
-          <button onClick={() => setIsCalendarOpen(true)} className="text-[10px] text-neon-magenta hover:underline tracking-widest font-black uppercase mt-1">
-            {lang === 'KO' ? '월간 캘린더 확인하기' : 'View Monthly Calendar'}
-          </button>
+        <div className="w-full h-40 rounded-[2rem] border border-white/5 flex flex-col items-center justify-center gap-3 bg-white/[0.02] relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-b from-neon-magenta/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-600">
+            <Cake size={24} />
+          </div>
+          <div className="text-center relative z-10 font-chakra">
+            <p className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] mb-1">
+              {lang === 'KO' ? '오늘과 내일은 생일자가 없습니다' : 'No birthdays for today or tomorrow'}
+            </p>
+            <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mb-3">
+              {lang === 'KO' ? '달력을 확인하여 이번 달 라인업을 미리 준비하세요' : 'Plan ahead by checking the monthly lineup'}
+            </p>
+            <button 
+              onClick={() => setIsCalendarOpen(true)} 
+              className="px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] text-neon-magenta hover:bg-neon-magenta hover:text-white transition-all tracking-[0.2em] font-black uppercase flex items-center gap-2 mx-auto"
+            >
+              <span>{lang === 'KO' ? '월간 캘린더 전체보기' : 'Check Monthly Calendar'}</span>
+              <ChevronRight size={12} />
+            </button>
+          </div>
         </div>
       ) : (
         <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x">
           {stars.map((star) => {
-            // Parse JSON name if it represents a member's alias map
-            let displayName = star.name;
-            try {
-              if (star.name.startsWith('{')) {
-                const nameMap = JSON.parse(star.name);
-                displayName = nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0] || star.name;
-              }
-            } catch (e) {
-              displayName = star.name;
-            }
+            const displayName = getLangName(star.name, lang);
 
             const isUpcoming = star.isUpcoming;
             const badgeText = isUpcoming ? 'D-1 UPCOMING' : 'HAPPY B-DAY';
@@ -126,8 +156,10 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
                       <p className="text-sm font-black text-white truncate drop-shadow-md">
                         {displayName}
                       </p>
-                      <p className={`text-[8px] font-bold ${textColor} uppercase tracking-widest opacity-80 mt-0.5`}>
-                        {star.type === 'member' ? 'MEMBER' : 'SOLO / GROUP'}
+                      <p className={`text-[8px] font-bold ${textColor} uppercase tracking-widest opacity-80 mt-0.5 truncate`}>
+                        {star.type === 'member' && star.artist_name 
+                          ? getLangName(star.artist_name, lang) 
+                          : (lang === 'KO' ? '아티스트' : 'ARTIST')}
                       </p>
                     </div>
                   </div>

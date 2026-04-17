@@ -6,6 +6,7 @@ import { X, ExternalLink, Image as ImageIcon, CheckCircle2, AlertCircle, Loader2
 import { updateArtistPhoto } from '@/actions/updateArtistPhoto';
 import { searchForArtists } from '@/actions/searchDeezer';
 import { DeezerArtist } from '@/lib/deezer';
+import { getLangName } from '@/utils/localization';
 
 interface PhotoEditModalProps {
   isOpen: boolean;
@@ -111,7 +112,7 @@ export default function PhotoEditModal({
               <div>
                 <h3 className="text-lg font-black italic uppercase tracking-tighter flex items-center gap-2">
                   <ImageIcon className="text-[#37C561]" size={18} />
-                  {t('photoModalTitle')}: <span className="text-[#37C561] font-chakra">{artistName}</span>
+                  {t('photoModalTitle')}: <span className="text-[#37C561] font-chakra">{getLangName(artistName, lang)}</span>
                 </h3>
                 <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">{t('photoModalSub')}</p>
               </div>
@@ -196,7 +197,7 @@ export default function PhotoEditModal({
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-[11px] font-black uppercase text-white truncate leading-tight">{res.name}</p>
+                                <p className="text-[11px] font-black uppercase text-white truncate leading-tight">{getLangName(res.name, lang)}</p>
                                 <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">MATCH_SELECTED</p>
                               </div>
                             </button>

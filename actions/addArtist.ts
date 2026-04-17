@@ -49,11 +49,13 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
     // 1.5 Sync with MusicBrainz for Birthday and Members
     let birthday = manualBirthday;
     let members: { name: string; birthday: string | null }[] = [];
+    let localizedName = JSON.stringify({ EN: cleanName, KO: cleanName, ES: cleanName });
 
     const mbid = await searchMusicBrainzArtist(cleanName);
     if (mbid) {
       const mbData = await getArtistAndMembers(mbid);
       if (mbData) {
+        localizedName = mbData.name; // This is already JSON string from our updated lib
         if (!birthday) birthday = mbData.birthday;
         if (mbData.members) members = mbData.members;
       }
@@ -63,7 +65,7 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
     const { data: artistData, error } = await supabase
       .from('artists')
       .insert({
-        name: cleanName,
+        name: localizedName,
         image_url: imageUrl || null,
         total_votes: 0,
         birthday: birthday || null
@@ -77,7 +79,7 @@ export async function addArtist(artistName: string, providedImageUrl?: string | 
     if (artistData && members.length > 0) {
       const membersToInsert = members.map(m => ({
         artist_id: artistData.id,
-        name: m.name,
+        name: m.name, // Already JSON string from mbData
         birthday: m.birthday
       }));
       

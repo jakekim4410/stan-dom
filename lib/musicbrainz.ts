@@ -5,15 +5,14 @@
 
 export interface MBArtist {
   id: string;
-  name: string;
+  name: string; // JSON string
   birthday: string | null;
   members?: MBMember[];
 }
 
 export interface MBMember {
-  name: string;
+  name: string; // JSON string
   birthday: string | null;
-  aliases?: MBAlias[];
 }
 
 export interface MBAlias {
@@ -62,7 +61,7 @@ export async function getArtistAndMembers(mbid: string): Promise<MBArtist | null
 
     const artist: MBArtist = {
       id: data.id,
-      name: data.name,
+      name: JSON.stringify(getNameMap(data.name, data.aliases || [])),
       birthday: data['life-span']?.begin || null,
       members: []
     };
@@ -75,14 +74,9 @@ export async function getArtistAndMembers(mbid: string): Promise<MBArtist | null
     );
 
     if (memberRels && memberRels.length > 0) {
-      // For each member, we need their individual birthday. 
-      // Since fetching each one is slow, we'll suggest a "Sync" button later 
-      // or try to fetch the top 5 here if needed.
-      // For now, we collect names and IDs.
       artist.members = memberRels.map((rel: any) => ({
-        name: rel.artist.name,
-        birthday: null,
-        aliases: rel.artist.aliases || []
+        name: JSON.stringify(getNameMap(rel.artist.name, rel.artist.aliases || [])),
+        birthday: null
       }));
     }
 
@@ -125,7 +119,11 @@ export function getNameMap(defaultName: string, aliases: MBAlias[]): Record<stri
   const en = aliases.find(a => a.locale === 'en');
   if (en) {
     map.EN = en.name;
-    map.ES = en.name; // Use English as fallback for Spanish for now
+    map.ES = en.name; 
+  } else if (!defaultName.match(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/) && defaultName.match(/[a-zA-Z]/)) {
+    // If default name is already Latin, use it for EN/ES
+    map.EN = defaultName;
+    map.ES = defaultName;
   }
 
   return map;

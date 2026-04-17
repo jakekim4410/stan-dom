@@ -4,6 +4,7 @@ import React from 'react';
 import { TerminalSquare, Globe, Navigation, LogIn, User } from 'lucide-react';
 import Link from 'next/link';
 import { Language, getT } from '@/constants/i18n';
+import { getLangName } from '@/utils/localization';
 
 interface MobileHeaderProps {
   topArtist: { name: string; thumbnail: string } | null;
@@ -43,7 +44,7 @@ export default function MobileHeader({ topArtist, mode, onToggleMode, lang, curr
           </span>
 
           <span className="text-[10px] font-bold text-white tracking-widest truncate max-w-[80px]">
-            {topArtist?.name || 'INITIALIZING...'}
+            {topArtist?.name ? getLangName(topArtist.name, lang) : 'INITIALIZING...'}
           </span>
         </div>
       </div>

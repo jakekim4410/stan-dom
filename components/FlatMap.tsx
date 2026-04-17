@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Language } from '@/constants/i18n';
 import { COUNTRY_DATA } from '@/constants/countryData';
+import { getLangName } from '@/utils/localization';
 
 /* ─── 좌표 유틸 ──────────────────────────────────────────── */
 const FLAT_COORDS_MAP: Record<string, [number, number]> = COUNTRY_DATA.reduce(
@@ -825,7 +826,7 @@ export default function FlatMap({
                               {artist.image ? (
                                 <img
                                   src={artist.image}
-                                  alt={artist.name}
+                                  alt={getLangName(artist.name, lang)}
                                   className="w-14 h-14 rounded-full object-cover mt-1"
                                   style={{ border: `2px solid ${medalColor}50` }}
                                 />
@@ -838,15 +839,15 @@ export default function FlatMap({
                                     color: medalColor,
                                   }}
                                 >
-                                  {artist.name.charAt(0).toUpperCase()}
+                                  {getLangName(artist.name, lang).charAt(0).toUpperCase()}
                                 </div>
                               )}
                               <span
                                 className="text-[11px] font-black text-center leading-tight w-full truncate px-1"
                                 style={{ color: isFirst ? medalColor : 'rgba(255,255,255,0.8)' }}
-                                title={artist.name}
+                                title={getLangName(artist.name, lang)}
                               >
-                                {artist.name}
+                                {getLangName(artist.name, lang)}
                               </span>
                               <div className="flex flex-col items-center gap-1 w-full">
                                 <span className="text-[13px] font-black tabular-nums" style={{ color: medalColor }}>
@@ -898,18 +899,18 @@ export default function FlatMap({
                                 {realIdx + 1}
                               </span>
                               {artist.image ? (
-                                <img src={artist.image} alt={artist.name} className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10" />
+                                <img src={artist.image} alt={getLangName(artist.name, lang)} className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10" />
                               ) : (
                                 <div
-                                  className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-xs font-black"
+                                  className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black mt-1"
                                   style={{ background: `${color}18`, border: `1px solid ${color}30`, color: `${color}99` }}
                                 >
-                                  {artist.name.charAt(0).toUpperCase()}
+                                  {getLangName(artist.name, lang).charAt(0).toUpperCase()}
                                 </div>
                               )}
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1.5">
-                                  <span className="text-[13px] font-bold text-white/90 truncate leading-none">{artist.name}</span>
+                                  <span className="text-[13px] font-bold text-white/90 truncate leading-none">{getLangName(artist.name, lang)}</span>
                                   <span className="text-[12px] font-black ml-2 shrink-0 tabular-nums" style={{ color }}>
                                     {artist.votes.toLocaleString()}
                                   </span>
