@@ -755,9 +755,9 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
           
           <button
             onClick={async () => {
-              if (syncing) return;
+              if (syncing || !artist) return;
               setSyncing(true);
-              const res = await syncArtistMetadata(artistId, artistName);
+              const res = await syncArtistMetadata(artistId, artist.name);
               if (res.success) {
                 const updated = await getArtistMembers(artistId);
                 if (updated.success) setMembers(updated.members || []);
