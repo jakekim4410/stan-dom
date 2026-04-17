@@ -65,6 +65,20 @@ const NAME_UPDATES = [
   { nameContains: '김기범', en: 'Key', ko: '키' },
   { nameContains: 'Gong, Minji', en: 'Minzy', ko: '민지' },
   { nameContains: '공찬식', en: 'Gongchan', ko: '공찬' },
+
+  // Japanese & Chinese Name Corrections
+  { id: 'e125fd29-b77e-4331-bbd5-f74b23d16561', en: 'Shotaro', ko: '쇼타로' },
+  { id: 'aae339d1-9847-478b-ba19-818b50e3b9d9', en: 'Kazuha', ko: '카즈하' },
+  { id: 'e22b59c6-35a6-4469-9779-bb97bffd4df7', en: 'Momo', ko: '모모' },
+  { id: '79c22e0c-b1e5-4ef3-9b0b-534f6cba33f9', en: 'Renjun', ko: '런쥔' },
+  { id: 'f9b06d9b-07b7-4608-9c2d-505232448cad', en: 'Yiren', ko: '이런' },
+  { id: '674b023a-d2b8-4710-81e5-46d4a2987101', en: 'Mashiho', ko: '마시호' },
+  { id: '1893257e-54e7-428d-b1f2-d1828cc0801a', en: 'Asahi', ko: '아사히' },
+  { id: '0e3591e2-82b8-476a-ab4c-e18a17a15c2f', en: 'Yoshi', ko: '요시' },
+  { id: '5065dedc-33ff-4d22-be8e-ac5a0dcbb299', en: 'Jay B', ko: '제이비' },
+  // Missing Sana and Sakura in the search above but usually needed
+  { nameContains: 'SANA', en: 'Sana', ko: '사나' },
+  { nameContains: 'SAKURA', en: 'Sakura', ko: '사쿠라' },
 ];
 
 async function run() {
