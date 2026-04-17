@@ -968,6 +968,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                     title={COUNTRY_NAMES[code] || code}
                   >
                     {COUNTRY_FLAGS[code] || '🌐'}
+                  </div>
+                ))}
                 {comments.length === 0 && (
                   <div className="w-7 h-7 rounded-full border-2 border-black bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-500">?</div>
                 )}
