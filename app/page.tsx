@@ -988,10 +988,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Birthday Promotion Bar (New) */}
-        <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4">
-          <BirthdayPromotion lang={lang} />
-        </div>
 
         {/* ── Top 3 ── */}
         <section>
