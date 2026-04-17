@@ -416,7 +416,7 @@ export default function Dashboard() {
             {user ? (
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-full text-xs font-black uppercase tracking-tighter hover:bg-white hover:text-black transition-colors"
+                className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-full text-xs font-black uppercase tracking-tighter hover:bg-[var(--neon-lime)] hover:text-black transition-colors"
               >
                 {t('logout')}
               </button>
@@ -463,10 +463,10 @@ export default function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#37C561]/10 border border-[#37C561]/30"
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[var(--neon-lime)]/10 border border-[var(--neon-lime)]/30"
               >
-                <div className="w-1.5 h-1.5 bg-[#37C561] rounded-full shadow-[0_0_8px_#37C561]" />
-                <span className="text-[10px] font-black text-[#37C561] uppercase tracking-widest leading-none">
+                <div className="w-1.5 h-1.5 bg-[var(--neon-lime)] rounded-full shadow-[0_0_8px_var(--neon-lime)]" />
+                <span className="text-[10px] font-black text-[var(--neon-lime)] uppercase tracking-widest leading-none">
                   {t('nodeStable')}
                 </span>
               </motion.div>
@@ -479,7 +479,7 @@ export default function Dashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5"
               >
-                <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[#37C561]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
+                <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[var(--neon-lime)]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
                   {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
                 </span>
@@ -496,7 +496,7 @@ export default function Dashboard() {
               <button
                 onClick={() => setMapView('globe')}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'globe'
-                  ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
+                  ? 'bg-[var(--neon-lime)] text-black shadow-[0_0_20px_rgba(var(--neon-lime-rgb),0.3)]'
                   : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   }`}
               >
@@ -506,7 +506,7 @@ export default function Dashboard() {
               <button
                 onClick={() => setMapView('flat')}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'flat'
-                  ? 'bg-[#37C561] text-black shadow-[0_0_20px_rgba(55,197,97,0.3)]'
+                  ? 'bg-[var(--neon-lime)] text-black shadow-[0_0_20px_rgba(var(--neon-lime-rgb),0.3)]'
                   : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   }`}
               >
