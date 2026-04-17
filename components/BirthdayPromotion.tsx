@@ -53,44 +53,57 @@ export default function BirthdayPromotion({ lang }: { lang: string }) {
         </div>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x">
-        {stars.map((star) => (
-          <motion.div
-            key={`${star.type}-${star.id}`}
-            whileHover={{ y: -5 }}
-            className="flex-shrink-0 w-40 snap-start"
-          >
-            <Link 
-              href={star.type === 'artist' ? `/artist/${star.id}` : `/artist/${star.artist_id}`}
-              className="block relative group"
+    <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar snap-x">
+        {stars.map((star) => {
+          // Parse JSON name if it represents a member's alias map
+          let displayName = star.name;
+          try {
+            if (star.name.startsWith('{')) {
+              const nameMap = JSON.parse(star.name);
+              displayName = nameMap[lang] || nameMap['EN'] || Object.values(nameMap)[0] || star.name;
+            }
+          } catch (e) {
+            displayName = star.name;
+          }
+
+          return (
+            <motion.div
+              key={`${star.type}-${star.id}`}
+              whileHover={{ y: -5 }}
+              className="flex-shrink-0 w-40 snap-start"
             >
-              <div className="aspect-[3/4] rounded-3xl overflow-hidden border-2 border-white/10 group-hover:border-neon-magenta/50 transition-all shadow-xl bg-zinc-900">
-                {star.image_url ? (
-                  <img src={star.image_url} alt={star.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-800">
-                    {star.name[0]}
+              <Link 
+                href={star.type === 'artist' ? `/artist/${star.id}` : `/artist/${star.artist_id}`}
+                className="block relative group"
+              >
+                <div className="aspect-[3/4] rounded-3xl overflow-hidden border-2 border-white/10 group-hover:border-neon-magenta/50 transition-all shadow-xl bg-zinc-900">
+                  {star.image_url ? (
+                    <img src={star.image_url} alt={displayName} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-800">
+                      {displayName.charAt(0)}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                  
+                  {/* Birthday Tag */}
+                  <div className="absolute top-3 left-3 px-2 py-1 rounded-lg bg-neon-magenta text-white text-[8px] font-black uppercase tracking-tighter z-10 shadow-lg shadow-neon-magenta/40">
+                    HAPPY B-DAY
                   </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
-                
-                {/* Birthday Tag */}
-                <div className="absolute top-3 left-3 px-2 py-1 rounded-lg bg-neon-magenta text-white text-[8px] font-black uppercase tracking-tighter z-10 shadow-lg shadow-neon-magenta/40">
-                  HAPPY B-DAY
+                  
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="text-sm font-black text-white truncate drop-shadow-md">
+                      {displayName}
+                    </p>
+                    <p className="text-[8px] font-bold text-neon-magenta uppercase tracking-widest opacity-80 mt-0.5">
+                      {star.type === 'member' ? 'MEMBER' : 'SOLO / GROUP'}
+                    </p>
+                  </div>
                 </div>
-                
-                <div className="absolute bottom-4 left-4 right-4">
-                  <p className="text-sm font-black text-white truncate drop-shadow-md">
-                    {star.name}
-                  </p>
-                  <p className="text-[8px] font-bold text-neon-magenta uppercase tracking-widest opacity-80 mt-0.5">
-                    {star.type === 'member' ? 'MEMBER' : 'SOLO / GROUP'}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+              </Link>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
