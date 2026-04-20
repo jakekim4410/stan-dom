@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -129,6 +129,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [syncing, setSyncing] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [targetMemberId, setTargetMemberId] = useState<string | null>(null);
+  const [isMemberChatOpen, setIsMemberChatOpen] = useState(false);
   const [likingMemberId, setLikingMemberId] = useState<string | null>(null);
 
   const t = getT(lang);
@@ -491,6 +492,9 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
     const others = comments.filter(c => c.id !== topComment!.id);
     return [topComment, ...others];
   }, [comments]);
+
+  const groupComments = useMemo(() => sortedComments.filter(c => !c.member_id), [sortedComments]);
+  const memberComments = useMemo(() => sortedComments.filter(c => targetMemberId && c.member_id === targetMemberId), [sortedComments, targetMemberId]);
 
   // 상단 국기 배지: 최근 순서 유지하며 중복 국적 제거
   const recentCountryCodes = useMemo(() => {
@@ -896,8 +900,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                          onClick={(e) => {
                            e.stopPropagation();
                            setTargetMemberId(member.id);
-                           // Smooth scroll to comment section
-                           document.getElementById('live-hub')?.scrollIntoView({ behavior: 'smooth' });
+                           setIsMemberChatOpen(true);
                          }}
                          className="text-zinc-600 hover:text-neon-cyan transition-colors"
                        >
@@ -1075,20 +1078,6 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
               )}
 
               <div className="relative group">
-                {targetMemberId && (
-                  <div className="absolute -top-10 left-0 flex items-center gap-2 bg-neon-cyan/20 border border-neon-cyan/30 px-3 py-1.5 rounded-xl animate-in fade-in slide-in-from-bottom-2">
-                    <Zap size={10} className="text-neon-cyan" />
-                    <span className="text-[9px] font-black text-neon-cyan uppercase tracking-widest">
-                      {t('transmit')} TO: {(() => {
-                        const m = members.find(m => m.id === targetMemberId);
-                        return m ? getLangName(m.name, lang) : 'MEMBER';
-                      })()}
-                    </span>
-                    <button onClick={() => setTargetMemberId(null)} className="ml-2 hover:text-white transition-colors">
-                      <X size={10} />
-                    </button>
-                  </div>
-                )}
                 <textarea
                   placeholder={user ? t('commentPlaceholder') : t('loginRequiredPlaceholder')}
                   value={commentText}
@@ -1096,13 +1085,13 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                   maxLength={140}
                   rows={2}
                   disabled={!user}
-                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && user) { e.preventDefault(); handleSendComment(); } }}
+                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && user) { e.preventDefault(); setTargetMemberId(null); setTimeout(handleSendComment, 0); } }}
                   className="w-full bg-zinc-900/50 rounded-xl p-4 text-sm font-bold border border-white/5 outline-none focus:border-neon-magenta/50 focus:bg-zinc-900/80 transition-all placeholder:text-zinc-700 resize-none font-chakra"
                 />
                 <div className="absolute bottom-3 right-3 flex items-center gap-4">
                   <span className="text-[10px] font-bold text-zinc-700">{commentText.length}/140</span>
                   <button
-                    onClick={handleSendComment}
+                    onClick={() => { setTargetMemberId(null); setTimeout(handleSendComment, 0); }}
                     disabled={!commentText.trim() || sending || !user}
                     className="w-10 h-10 rounded-xl bg-neon-magenta text-white flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale transition-all shadow-lg shadow-neon-magenta/20"
                   >
@@ -1125,7 +1114,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                 </div>
               ) : (
                 <>
-                  {sortedComments
+                  {groupComments
                     .slice((currentPage - 1) * COMMENTS_PER_PAGE, currentPage * COMMENTS_PER_PAGE)
                     .map((c, idx) => {
                       const isPinned = currentPage === 1 && idx === 0 && c.likes_count > 0;
@@ -1245,7 +1234,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                     })}
 
                   {/* 페이지네이션 */}
-                  {sortedComments.length > COMMENTS_PER_PAGE && (
+                  {groupComments.length > COMMENTS_PER_PAGE && (
                     <div className="flex items-center justify-center gap-4 pt-4">
                       <button
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -1255,11 +1244,11 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                         <ChevronLeft size={16} />
                       </button>
                       <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                        {currentPage} / {Math.ceil(sortedComments.length / COMMENTS_PER_PAGE)}
+                        {currentPage} / {Math.ceil(groupComments.length / COMMENTS_PER_PAGE)}
                       </span>
                       <button
-                        onClick={() => setCurrentPage(p => Math.min(Math.ceil(sortedComments.length / COMMENTS_PER_PAGE), p + 1))}
-                        disabled={currentPage === Math.ceil(sortedComments.length / COMMENTS_PER_PAGE)}
+                        onClick={() => setCurrentPage(p => Math.min(Math.ceil(groupComments.length / COMMENTS_PER_PAGE), p + 1))}
+                        disabled={currentPage === Math.ceil(groupComments.length / COMMENTS_PER_PAGE)}
                         className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-zinc-500 hover:border-neon-cyan/50 hover:text-neon-cyan disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                       >
                         <ChevronRight size={16} />
@@ -1328,6 +1317,97 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
           }}
         />
       )}
+
+      {/* ── Member Chat Modal ── */}
+      <AnimatePresence>
+        {isMemberChatOpen && targetMemberId && (() => {
+          const m = members.find(mem => mem.id === targetMemberId);
+          if (!m) return null;
+          return (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                onClick={() => { setIsMemberChatOpen(false); setTargetMemberId(null); }}
+                className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between p-5 border-b border-white/5 bg-white/[0.02]">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border border-white/10 bg-zinc-900 flex-shrink-0">
+                      {m.image_url ? <img src={m.image_url} alt={getLangName(m.name, lang)} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-lg font-black">{getLangName(m.name, lang)[0]}</div>}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black uppercase text-white">{getLangName(m.name, lang)}</h3>
+                      <p className="text-[10px] font-bold text-neon-cyan/70 tracking-widest">{t('transmit')} LINE ACTIVE</p>
+                    </div>
+                  </div>
+                  <button onClick={() => { setIsMemberChatOpen(false); setTargetMemberId(null); }} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors text-zinc-400 hover:text-white">
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Feed Scroll */}
+                <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5 custom-scrollbar">
+                  {memberComments.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-zinc-800 gap-4 py-10 grayscale opacity-40">
+                      <Terminal size={24} />
+                      <p className="font-black text-[10px] uppercase tracking-[0.2em] italic text-center">NO DATA.<br/>BE THE FIRST TO TRANSMIT.</p>
+                    </div>
+                  ) : (
+                    memberComments.map((c) => (
+                      <div key={c.id} className="flex flex-col gap-1.5">
+                        <div className="flex items-center gap-2">
+                           {c.country_code && (
+                             <span className="text-[10px] w-4 h-4 flex items-center justify-center bg-zinc-900 rounded border border-white/5" title={COUNTRY_NAMES[c.country_code]}>{COUNTRY_FLAGS[c.country_code] ?? '🌐'}</span>
+                           )}
+                           <span className="text-[10px] font-black uppercase text-zinc-400 flex items-center gap-1.5">
+                             {c.display_name || 'Anonymous Fan'}
+                           </span>
+                           <span className="text-[9px] font-bold text-zinc-700 italic ml-auto">{new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                        <div className={`p-3 rounded-2xl rounded-tl-none border bg-white/5 border-white/10 relative`}>
+                          <p className="text-sm text-zinc-200 font-medium leading-relaxed font-chakra">{c.content}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Input Area */}
+                <div className="p-4 border-t border-white/5 bg-black/40">
+                  <div className="relative">
+                    <textarea
+                      placeholder={user ? (lang === 'KO' ? `${getLangName(m.name, lang)} 팬들에게 메시지를 남기세요...` : `Transmit message to ${getLangName(m.name, lang)} fans...`) : t('loginRequiredPlaceholder')}
+                      value={commentText}
+                      onChange={e => setCommentText(e.target.value.slice(0, 140))}
+                      maxLength={140}
+                      rows={2}
+                      disabled={!user}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && user) { e.preventDefault(); handleSendComment(); } }}
+                      className="w-full bg-zinc-900/80 rounded-xl p-4 pr-16 text-sm font-bold border border-white/10 outline-none focus:border-neon-cyan/50 focus:bg-zinc-900 transition-all placeholder:text-zinc-700 resize-none font-chakra"
+                    />
+                    <div className="absolute bottom-3 right-3 flex items-center gap-3">
+                      <button
+                        onClick={handleSendComment}
+                        disabled={!commentText.trim() || sending || !user}
+                        className="w-8 h-8 rounded-lg bg-neon-cyan text-black flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-30 transition-all shadow-lg shadow-neon-cyan/20"
+                      >
+                        <Send size={14} className={sending ? 'animate-pulse' : ''} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          );
+        })()}
+      </AnimatePresence>
 
       <Toast
         isVisible={toast.isVisible}
