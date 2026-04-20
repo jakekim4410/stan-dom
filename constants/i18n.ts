@@ -227,6 +227,12 @@ export const i18n: Record<Language, Record<string, string>> = {
     previewTitle: 'Preview & Save',
     generateSuccess: 'Generation successful!',
 
+    // Exit Notification
+    exitTitle: 'Leave STAN.DOM?',
+    exitMessage: 'Your support matters! K-pop artists need your VOLTAGE. Come back soon!',
+    exitStay: 'Stay & Support',
+    exitLeave: 'Leave',
+
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
     localLeader: 'LOCAL LEADER',
@@ -511,6 +517,12 @@ export const i18n: Record<Language, Record<string, string>> = {
     longPressToSave: '이미지를 길게 눌러 사진첩에 저장하세요',
     previewTitle: '미리보기 및 저장',
     generateSuccess: '이미지 생성 성공!',
+
+    // Exit Notification
+    exitTitle: 'STAN.DOM을 떠나시겠습니까?',
+    exitMessage: '아티스트에게 당신의 볼티지가 필요합니다! 곧 돌아오세요!',
+    exitStay: '계속 응원하기',
+    exitLeave: '나가기',
 
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
@@ -797,6 +809,12 @@ export const i18n: Record<Language, Record<string, string>> = {
     previewTitle: 'Vista previa y Guardar',
     generateSuccess: '¡Generación exitosa!',
 
+    // Exit Notification
+    exitTitle: '¿Salir de STAN.DOM?',
+    exitMessage: '¡Tu apoyo importa! Los artistas K-pop necesitan tu VOLTAJE. ¡Vuelve pronto!',
+    exitStay: 'Quedarse y Apoyar',
+    exitLeave: 'Salir',
+
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',
     localLeader: 'LÍDER LOCAL',
@@ -806,6 +824,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     alreadyVoted: 'Ya votado',
     selectCountryFirst: 'Selecciona tu país primero',
     cancel: 'Cancelar',
+    noCommentsYet: 'Aún no hay mensajes.',
 
     // Calendar & Months
     month1: 'Enero',

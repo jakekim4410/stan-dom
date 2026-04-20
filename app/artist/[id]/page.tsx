@@ -51,6 +51,7 @@ import { toggleMemberLike } from '@/actions/toggleMemberLike';
 import { Language, getT } from '@/constants/i18n';
 import { use } from 'react';
 import { getLangName } from '@/utils/localization';
+import ExitNotification from '@/components/ExitNotification';
 
 interface Artist {
   id: string;
@@ -988,7 +989,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         </section>
 
         {/* Cheering Board (Right 7) */}
-        <section className="lg:col-span-7 space-y-8">
+        <section id="live-hub" className="lg:col-span-7 space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-lg md:text-xl font-black italic flex items-center gap-3 min-w-0 flex-1">
               <MessageCircle className="text-neon-magenta shrink-0" size={24} />
@@ -1334,6 +1335,9 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         subMessage={toast.subMessage}
         onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
       />
+
+      {/* ── Exit Notification ── */}
+      <ExitNotification lang={lang} />
     </main>
   );
 }

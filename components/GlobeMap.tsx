@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import dynamic from 'next/dynamic';
 import { Language, getT } from '@/constants/i18n';
 import { COUNTRY_DATA } from '@/constants/countryData';
+import { getLangName } from '@/utils/localization';
 
 const Globe = dynamic(() => import('react-globe.gl'), {
   ssr: false,
@@ -156,7 +157,8 @@ export default function GlobeMap({
     const top3 = Object.entries(countryVotes).sort((a, b) => b[1] - a[1]).slice(0, 3);
     if (top3.length === 0) return `<li style="color: #666; font-size: 10px; font-weight: 900; letter-spacing: 0.1em;">${t('noCountryData')}</li>`;
     return top3.map(([id, count], idx) => {
-      const name = artists.find(a => a.id === id)?.name || 'SYNC_ERROR';
+      const artist = artists.find(a => a.id === id);
+      const name = artist ? getLangName(artist.name, lang) : 'SYNC_ERROR';
       const color = idx === 0 ? C_MAGENTA : idx === 1 ? C_GREEN : C_LIME;
       return `
         <li style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;">
@@ -165,7 +167,7 @@ export default function GlobeMap({
           <span style="font-family:monospace;opacity:0.6;font-size:10px;margin-left:8px;">${count.toLocaleString()}</span>
         </li>`;
     }).join('');
-  }, [detailedVotes, artists]);
+  }, [detailedVotes, artists, lang, t]);
 
   return (
     <div className="relative flex flex-col items-center justify-center overflow-visible py-4">
