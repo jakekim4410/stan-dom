@@ -70,6 +70,7 @@ export default function Dashboard() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [showPastIssues, setShowPastIssues] = useState(false);
+  const [pastIssuePage, setPastIssuePage] = useState(0);
   const [showPastBattles, setShowPastBattles] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
   const [hotIssues, setHotIssues] = useState<HotIssue[]>([]);
@@ -793,7 +794,7 @@ export default function Dashboard() {
             {past.length > 0 && (
               <div className="mt-8 flex flex-col items-center gap-4">
                 <button
-                  onClick={() => setShowPastIssues(!showPastIssues)}
+                  onClick={() => { setShowPastIssues(!showPastIssues); setPastIssuePage(0); }}
                   className="flex items-center gap-3 px-8 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/8 transition-all group"
                 >
                   <span className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 group-hover:text-white transition-colors">
@@ -818,70 +819,120 @@ export default function Dashboard() {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="w-full overflow-hidden"
                     >
-                      <div className="border border-white/8 rounded-3xl overflow-hidden bg-white/[0.02] backdrop-blur-sm divide-y divide-white/5">
-                        {past.map((issue, idx) => {
-                          const headline = (issue.headline as Record<string,string>)[lang] ?? issue.headline['EN'];
-                          const lead = (issue.lead as Record<string,string>)[lang] ?? issue.lead['EN'];
-                          const category = (issue.category as Record<string,string>)[lang] ?? issue.category['EN'];
-                          return (
-                            <motion.div
-                              key={issue.id}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: idx * 0.05 }}
-                              className="flex flex-col sm:flex-row items-center gap-4 p-5 hover:bg-white/5 transition-colors group"
-                            >
-                              {/* Thumbnail small */}
-                              <a
-                                href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900 block"
-                              >
-                                <img
-                                  src={`https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`}
-                                  alt={headline}
-                                  className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
-                                />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <div className="w-8 h-8 rounded-full bg-black/60 border flex items-center justify-center" style={{ borderColor: `${issue.accent}60` }}>
-                                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white ml-0.5" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
-                                  </div>
-                                </div>
-                              </a>
-                              {/* Text content */}
-                              <div className="flex flex-col gap-2 flex-1 min-w-0">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span
-                                    className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border"
-                                    style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
-                                  >{category}</span>
-                                  <span className="text-[9px] font-mono text-zinc-600">{issue.date}</span>
-                                </div>
-                                <p className="text-sm font-black text-white w-full sm:w-auto" style={{ wordBreak: 'keep-all' }}>{headline}</p>
-                                <p className="text-xs text-zinc-400 w-full sm:w-auto line-clamp-1">{lead}</p>
-                              </div>
-                              <div className="shrink-0 flex flex-col gap-1.5">
-                                <a
-                                  href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-[10px] font-black uppercase text-center px-4 py-2 rounded-lg whitespace-nowrap block hover:brightness-110 transition-all"
-                                  style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
+                      {(() => {
+                        const PAST_PAGE_SIZE = 4;
+                        const pageCount = Math.ceil(past.length / PAST_PAGE_SIZE);
+                        const paginated = past.slice(pastIssuePage * PAST_PAGE_SIZE, (pastIssuePage + 1) * PAST_PAGE_SIZE);
+                        return (
+                          <>
+                            <div className="border border-white/8 rounded-3xl overflow-hidden bg-white/[0.02] backdrop-blur-sm divide-y divide-white/5">
+                              {paginated.map((issue, idx) => {
+                                const headline = (issue.headline as Record<string,string>)[lang] ?? issue.headline['EN'];
+                                const lead = (issue.lead as Record<string,string>)[lang] ?? issue.lead['EN'];
+                                const category = (issue.category as Record<string,string>)[lang] ?? issue.category['EN'];
+                                return (
+                                  <motion.div
+                                    key={issue.id}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                    className="flex flex-col sm:flex-row items-center gap-4 p-5 hover:bg-white/5 transition-colors group"
+                                  >
+                                    {/* Thumbnail small */}
+                                    <a
+                                      href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900 block"
+                                    >
+                                      <img
+                                        src={`https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`}
+                                        alt={headline}
+                                        className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+                                      />
+                                      <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-full bg-black/60 border flex items-center justify-center" style={{ borderColor: `${issue.accent}60` }}>
+                                          <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white ml-0.5" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                                        </div>
+                                      </div>
+                                    </a>
+                                    {/* Text content */}
+                                    <div className="flex flex-col gap-2 flex-1 min-w-0">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <span
+                                          className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border"
+                                          style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
+                                        >{category}</span>
+                                        <span className="text-[9px] font-mono text-zinc-600">{issue.date}</span>
+                                      </div>
+                                      <p className="text-sm font-black text-white w-full sm:w-auto" style={{ wordBreak: 'keep-all' }}>{headline}</p>
+                                      <p className="text-xs text-zinc-400 w-full sm:w-auto line-clamp-1">{lead}</p>
+                                    </div>
+                                    <div className="shrink-0 flex flex-col gap-1.5">
+                                      <a
+                                        href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[10px] font-black uppercase text-center px-4 py-2 rounded-lg whitespace-nowrap block hover:brightness-110 transition-all"
+                                        style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
+                                      >
+                                        ▶ YouTube
+                                      </a>
+                                      <button
+                                        onClick={() => setSelectedIssue(issue)}
+                                        className="text-[10px] font-black uppercase text-zinc-500 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-lg border border-white/10 whitespace-nowrap"
+                                      >
+                                        {t('details')}
+                                      </button>
+                                    </div>
+                                  </motion.div>
+                                );
+                              })}
+                            </div>
+
+                            {/* ── Pagination controls ── */}
+                            {pageCount > 1 && (
+                              <div className="flex items-center justify-center gap-3 pt-5">
+                                {/* Prev */}
+                                <button
+                                  onClick={() => setPastIssuePage(p => Math.max(0, p - 1))}
+                                  disabled={pastIssuePage === 0}
+                                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-25 hover:bg-white/10 transition-all"
                                 >
-                                  ▶ YouTube
-                                </a>
-                                <button 
-                                  onClick={() => setSelectedIssue(issue)}
-                                  className="text-[10px] font-black uppercase text-zinc-500 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-lg border border-white/10 whitespace-nowrap"
-                                >
-                                  {t('details')}
+                                  <svg viewBox="0 0 24 24" className="w-4 h-4 fill-zinc-400" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+                                  </svg>
                                 </button>
+
+                                {/* Page dots */}
+                                <div className="flex items-center gap-1.5">
+                                  {Array.from({ length: pageCount }).map((_, i) => (
+                                    <button
+                                      key={i}
+                                      onClick={() => setPastIssuePage(i)}
+                                      className={`h-2 rounded-full transition-all duration-300 ${i === pastIssuePage ? 'bg-white w-5' : 'bg-zinc-600 hover:bg-zinc-400 w-2'}`}
+                                    />
+                                  ))}
+                                </div>
+
+                                {/* Next */}
+                                <button
+                                  onClick={() => setPastIssuePage(p => Math.min(pageCount - 1, p + 1))}
+                                  disabled={pastIssuePage === pageCount - 1}
+                                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-25 hover:bg-white/10 transition-all"
+                                >
+                                  <svg viewBox="0 0 24 24" className="w-4 h-4 fill-zinc-400" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                                  </svg>
+                                </button>
+
+                                {/* Page counter */}
+                                <span className="text-[10px] font-mono text-zinc-500 ml-1 tabular-nums">{pastIssuePage + 1} / {pageCount}</span>
                               </div>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </motion.div>
                   )}
                 </AnimatePresence>
