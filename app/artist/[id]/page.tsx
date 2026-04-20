@@ -132,6 +132,12 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
   const [isMemberChatOpen, setIsMemberChatOpen] = useState(false);
   const [likingMemberId, setLikingMemberId] = useState<string | null>(null);
 
+  const formatCount = (num: number) => {
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    if (num > 99) return '99+';
+    return num.toString();
+  };
+
   const t = getT(lang);
 
   useEffect(() => {
@@ -902,9 +908,10 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                            setTargetMemberId(member.id);
                            setIsMemberChatOpen(true);
                          }}
-                         className="text-zinc-600 hover:text-neon-cyan transition-colors"
+                         className="flex items-center gap-1 text-zinc-600 hover:text-neon-cyan transition-colors"
                        >
                          <MessageCircle size={12} />
+                         <span className="text-[9px] font-black">{formatCount(comments.filter(c => c.member_id === member.id).length)}</span>
                        </button>
                     </div>
 
@@ -1353,7 +1360,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
                 </div>
 
                 {/* Feed Scroll */}
-                <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col-reverse space-y-reverse space-y-5 custom-scrollbar">
                   {memberComments.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-zinc-800 gap-4 py-10 grayscale opacity-40">
                       <Terminal size={24} />
