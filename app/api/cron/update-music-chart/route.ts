@@ -67,7 +67,13 @@ export async function GET(request: Request) {
       await new Promise(res => setTimeout(res, 50));
     }
 
-    // 4. Supabase 기존 데이터 전체 삭제 후 새로운 순위 삽입 (단순 교체)
+    // 4. 안전 검사: 데이터가 없으면 기존 데이터를 지우지 않고 중단
+    if (chartData.length === 0) {
+      console.error('[CRON] No tracks to update. Aborting to protect existing data.');
+      return NextResponse.json({ error: 'No tracks found from iTunes' }, { status: 500 });
+    }
+
+    // 5. Supabase 기존 데이터 전체 삭제 후 새로운 순위 삽입 (단순 교체)
     // - onConflict 문제 방지 및 깔끔한 갱신을 위해 전부 지우고 새로 넣습니다
     await supabase.from('kpop_charts').delete().neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
 
