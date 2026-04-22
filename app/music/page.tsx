@@ -231,7 +231,7 @@ const MusicChartPage = () => {
                 transition={{ delay: index * 0.015 }}
                 key={track.id}
                 onClick={() => handlePlay(track)}
-                className={`group flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer border ${
+                className={`group flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer border w-full overflow-hidden max-w-full ${
                   isActive
                     ? 'bg-[#37C561]/10 border-[#37C561]/30 shadow-[0_0_20px_rgba(55,197,97,0.08)]'
                     : 'bg-zinc-900/40 border-white/5 hover:bg-zinc-900/80 hover:border-white/10'
