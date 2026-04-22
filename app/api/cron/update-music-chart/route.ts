@@ -20,8 +20,8 @@ export async function GET(request: Request) {
     const spotifyToken = await getSpotifyToken();
     
     // 3. Spotify K-Pop ON! 플레이리스트 가져오기 (Top 50)
-    // Playlist ID: 37i9dQZF1DX4JAvhLs9Zqr
-    const playlistRes = await fetch('https://api.spotify.com/v1/playlists/37i9dQZF1DX4JAvhLs9Zqr/tracks?limit=50', {
+    // Playlist ID: 37i9dQZF1DX9tPFwDMOaN1
+    const playlistRes = await fetch('https://api.spotify.com/v1/playlists/37i9dQZF1DX9tPFwDMOaN1/tracks?limit=50', {
       headers: { 'Authorization': `Bearer ${spotifyToken}` }
     });
     const playlistData = await playlistRes.json();
