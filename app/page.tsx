@@ -564,7 +564,7 @@ export default function Dashboard() {
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black text-[#37C561] border border-[#37C561]/30 hover:bg-[#37C561]/10 transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(55,197,97,0.1)] hover:shadow-[0_0_25px_rgba(55,197,97,0.2)]"
             >
               <Music2 size={14} />
-              <span>{lang === 'KO' ? '음악 차트' : 'Music Chart'}</span>
+              <span>{t('musicChartBtn')}</span>
             </Link>
 
             <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.2em] whitespace-nowrap">
