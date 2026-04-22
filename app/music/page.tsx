@@ -19,7 +19,7 @@ const MusicChartPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState<Language>('EN');
   const [showSourceInfo, setShowSourceInfo] = useState(false);
-  const { playTrack, setPlaylist, currentTrack } = useMusic();
+  const { playTrack, setPlaylist, currentTrack, togglePlay } = useMusic();
   const router = useRouter();
   const t = getT(lang);
 
@@ -56,7 +56,11 @@ const MusicChartPage = () => {
   }, []);
 
   const handlePlay = (track: any) => {
-    playTrack(track);
+    if (currentTrack?.id === track.id) {
+      togglePlay();
+    } else {
+      playTrack(track);
+    }
   };
 
   // 앨범아트가 하나라도 있는지 확인
