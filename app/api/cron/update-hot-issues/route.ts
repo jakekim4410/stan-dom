@@ -170,8 +170,9 @@ Source: ${sourceName}
         return null;
       };
 
-      // Try 1: News title + K-POP focused
-      let vid = await attemptSearch(`${query} K-POP official`);
+      // Try 1: First 5 words of title + K-POP
+      const shortQuery = query.split(' ').slice(0, 5).join(' ');
+      let vid = await attemptSearch(`${shortQuery} K-POP`);
       if (vid) return vid;
 
       // Try 2: Artist Fallback (Official MV)

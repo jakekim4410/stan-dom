@@ -27,7 +27,8 @@ export async function GET() {
     try {
       // headline은 {EN, KO, ES} JSON 객체 - EN 제목 사용
       const titleEN = typeof a.headline === 'object' ? a.headline?.EN : a.headline;
-      const query = encodeURIComponent(`${titleEN} K-POP MV`);
+      const shortTitle = titleEN.split(' ').slice(0, 5).join(' ');
+      const query = encodeURIComponent(`${shortTitle} K-POP`);
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=5&key=${YOUTUBE_API_KEY}`;
       const res = await fetch(url);
 
@@ -49,10 +50,10 @@ export async function GET() {
         continue;
       }
 
-      // 공식 MV나 쇼케이스 영상 우선 선택 (official, mv, live 포함된 영상)
+      // 공식 MV나 뉴스 관련 영상 우선 선택
       const preferred = data.items.find((item: any) => {
         const t = (item.snippet.title || '').toLowerCase();
-        return t.includes('official') || t.includes('mv') || t.includes('m/v');
+        return t.includes('official') || t.includes('mv') || t.includes('news') || t.includes('live');
       });
       const vid = (preferred || data.items[0]).id.videoId;
 
