@@ -155,7 +155,15 @@ const MusicPlayer = () => {
               startTick();
             },
             onStateChange: (e: any) => {
-              if (e.data === 0) nextTrack(); // ENDED
+              if (e.data === 0) {
+                const currentTime = playerRef.current?.getCurrentTime() || 0;
+                if (currentTime < 1) {
+                  console.warn('[MusicPlayer] Video ended immediately, stopping to prevent rapid skips.');
+                  stopTrack();
+                } else {
+                  nextTrack(); // ENDED normally
+                }
+              }
             },
             onError: (e: any) => {
               console.warn('[MusicPlayer] YT error:', e.data);
