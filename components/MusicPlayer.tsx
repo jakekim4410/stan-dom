@@ -118,7 +118,7 @@ const MusicPlayer = () => {
         setTimeout(() => nextTrack(), 300);
       }
     } catch (e) {
-      console.error('[MusicPlayer] Fallback fetch error:', e);
+      console.warn('[MusicPlayer] Fallback fetch error:', e);
       setTimeout(() => nextTrack(), 300);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -158,7 +158,7 @@ const MusicPlayer = () => {
               if (e.data === 0) nextTrack(); // ENDED
             },
             onError: (e: any) => {
-              console.error('[MusicPlayer] YT error:', e.data);
+              console.warn('[MusicPlayer] YT error:', e.data);
               if ([101, 150].includes(e.data)) {
                 tryFallback();
               } else if ([2, 5, 100].includes(e.data)) {
@@ -175,7 +175,7 @@ const MusicPlayer = () => {
           playerRef.current.setVolume(isMuted ? 0 : volume);
           if (isPlayingRef.current) playerRef.current.playVideo();
           startTick();
-        } catch (err) { console.error('[MusicPlayer] loadVideoById:', err); }
+        } catch (err) { console.warn('[MusicPlayer] loadVideoById:', err); }
       }
     };
 

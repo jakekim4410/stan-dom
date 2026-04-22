@@ -7,10 +7,6 @@ import { createClient } from '@supabase/supabase-js';
  * YouTube API 할당량 불필요 — 수동으로 검증된 ID 리스트 사용.
  */
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // 수동으로 확인된 임베딩 가능한 YouTube 공식 오디오 ID
 // Topic 채널 또는 공식 오디오 버전 = 임베딩 제한 없음
@@ -42,6 +38,11 @@ export async function GET(req: NextRequest) {
   if (secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   const { data: tracks, error } = await supabase
     .from('kpop_charts')
