@@ -236,16 +236,16 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Music Chart Page
     musicChartBtn: 'Weekly Hot 50',
     musicChartTitle: 'K-POP CHART 50',
-    musicChartSub: 'Based on global Spotify streaming data & YouTube official audio. Experience the pulse of the world\'s standard in K-Pop popularity.',
+    musicChartSub: 'Based on global iTunes chart data & YouTube official audio. Experience the pulse of the world\'s standard in K-Pop popularity.',
     musicChartSync: 'Real-time Global Sync',
-    musicChartRefresh: 'Refresh Registry',
+    musicChartRefresh: 'Refresh',
     musicChartScanning: 'Scanning Global Registry...',
     musicChartOffline: 'Registry Offline',
     musicChartRetry: 'Wait a few seconds and try refreshing.',
     musicChartListen: 'Listen Now',
     musicChartGoHome: '← Back to Dashboard',
-    musicChartSourceNote: 'Source: Based on global Spotify chart data & YouTube streaming',
-    musicChartSourceSub: 'Rankings reflect real-time global streaming volume across Spotify and YouTube.',
+    musicChartSourceNote: 'Source: Global iTunes chart data & YouTube streaming',
+    musicChartSourceSub: 'Rankings reflect real-time global streaming volume on iTunes and YouTube.',
     musicChartYouTubeDisclaimer: 'Streaming via YouTube · Ads may appear',
 
     // Missing Keys
@@ -542,7 +542,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Music Chart Page
     musicChartBtn: '주간 핫 50',
     musicChartTitle: 'K-POP 차트 50',
-    musicChartSub: '글로벌 Spotify 스트리밍 데이터와 YouTube 공식 오디오 기반. 전 세계 K-Pop 인기도의 기준을 확인하세요.',
+    musicChartSub: '글로벌 iTunes 차트 데이터와 YouTube 공식 오디오 기반. 전 세계 K-Pop 인기도의 기준을 확인하세요.',
     musicChartSync: '실시간 글로벌 동기화',
     musicChartRefresh: '새로고침',
     musicChartScanning: '글로벌 레지스트리 스캔 중...',
@@ -550,8 +550,8 @@ export const i18n: Record<Language, Record<string, string>> = {
     musicChartRetry: '잠시 후 새로고침을 시도해보세요.',
     musicChartListen: '듣기',
     musicChartGoHome: '← 대시보드로 돌아가기',
-    musicChartSourceNote: '출처: 글로벌 Spotify 차트 데이터 & YouTube 스트리밍 기반',
-    musicChartSourceSub: '순위는 Spotify 및 YouTube의 실시간 글로벌 스트리밍 수량을 기반으로 합니다.',
+    musicChartSourceNote: '출처: 글로벌 iTunes 차트 데이터 & YouTube 스트리밍 기반',
+    musicChartSourceSub: '순위는 iTunes 및 YouTube의 실시간 글로벌 스트리밍 수량을 기반으로 합니다.',
     musicChartYouTubeDisclaimer: 'YouTube를 통한 스트리밍 · 광고가 발생할 수 있습니다',
 
     // Missing Keys
@@ -848,7 +848,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Music Chart Page
     musicChartBtn: 'Top 50 Semanal',
     musicChartTitle: 'K-POP CHART 50',
-    musicChartSub: 'Basado en datos globales de Spotify y audio oficial de YouTube.',
+    musicChartSub: 'Basado en datos globales de iTunes y audio oficial de YouTube.',
     musicChartSync: 'Sincronización Global en Vivo',
     musicChartRefresh: 'Actualizar',
     musicChartScanning: 'Escaneando el Registro Global...',
@@ -856,8 +856,8 @@ export const i18n: Record<Language, Record<string, string>> = {
     musicChartRetry: 'Espera unos segundos e intenta actualizar.',
     musicChartListen: 'Escuchar',
     musicChartGoHome: '← Volver al Panel',
-    musicChartSourceNote: 'Fuente: Datos globales de Spotify & YouTube',
-    musicChartSourceSub: 'Los rankings reflejan el volumen de streaming global en tiempo real.',
+    musicChartSourceNote: 'Fuente: Datos globales de iTunes & YouTube',
+    musicChartSourceSub: 'Los rankings reflejan el volumen de streaming global en tiempo real en iTunes y YouTube.',
     musicChartYouTubeDisclaimer: 'Streaming vía YouTube · Pueden aparecer anuncios',
 
     // Missing Keys

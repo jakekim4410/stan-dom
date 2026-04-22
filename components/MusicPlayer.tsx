@@ -43,7 +43,7 @@ const VOL_STYLE = `
 `;
 
 const MusicPlayer = () => {
-  const { currentTrack, isPlaying, togglePlay, nextTrack, prevTrack, playTrack } = useMusic();
+  const { currentTrack, isPlaying, togglePlay, nextTrack, prevTrack, stopTrack } = useMusic();
 
   const playerRef      = useRef<any>(null);
   const readyRef       = useRef(false);   // onReady 완료 여부
@@ -399,7 +399,7 @@ const MusicPlayer = () => {
 
                   {/* 닫기 */}
                   <button
-                    onClick={() => playTrack(null as any)}
+                    onClick={stopTrack}
                     className="p-1.5 hover:bg-white/10 rounded-full text-zinc-600 hover:text-white transition-colors flex-shrink-0"
                     title="플레이어 닫기"
                   >

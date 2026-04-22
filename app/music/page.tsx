@@ -99,7 +99,7 @@ const MusicChartPage = () => {
               CHART 50
             </span>
           </h1>
-          <p className="mt-3 text-zinc-500 font-medium max-w-xl uppercase tracking-tight text-xs">
+          <p className="mt-3 text-zinc-300 font-medium max-w-xl break-keep text-sm leading-relaxed">
             {t('musicChartSub')}
           </p>
 
@@ -123,13 +123,13 @@ const MusicChartPage = () => {
                   <p>{t('musicChartSourceSub')}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     <a
-                      href="https://charts.spotify.com"
+                      href="https://music.apple.com/kr/browse"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] text-[10px] font-bold hover:bg-[#1DB954]/20 transition-colors"
+                      className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#FC3C44]/10 border border-[#FC3C44]/20 text-[#FC3C44] text-[10px] font-bold hover:bg-[#FC3C44]/20 transition-colors"
                     >
                       <ExternalLink size={9} />
-                      Spotify Charts
+                      iTunes
                     </a>
                     <a
                       href="https://charts.youtube.com"
@@ -296,8 +296,8 @@ const MusicChartPage = () => {
             <span>{t('musicChartSourceNote')}</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 rounded bg-[#1DB954]/10 text-[#1DB954] border border-[#1DB954]/20">
-              Spotify
+            <span className="px-2 py-0.5 rounded bg-[#FC3C44]/10 text-[#FC3C44] border border-[#FC3C44]/20">
+              iTunes
             </span>
             <span className="px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">
               YouTube

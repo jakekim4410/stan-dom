@@ -16,38 +16,39 @@ export async function GET(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // 2. Spotify Access Token 가져오기
-    const spotifyToken = await getSpotifyToken();
+    // 2. iTunes RSS Top K-Pop Songs (US, Genre 51 = K-Pop) 가져오기
+    const itunesRes = await fetch('https://itunes.apple.com/us/rss/topsongs/limit=50/genre=51/json');
+    if (!itunesRes.ok) throw new Error('iTunes API failed');
     
-    // 3. Spotify K-Pop ON! 플레이리스트 가져오기 (Top 50)
-    // Playlist ID: 37i9dQZF1DX9tPFwDMOaN1
-    const playlistRes = await fetch('https://api.spotify.com/v1/playlists/37i9dQZF1DX9tPFwDMOaN1/tracks?limit=50', {
-      headers: { 'Authorization': `Bearer ${spotifyToken}` }
-    });
-    const playlistData = await playlistRes.json();
-    const tracks = playlistData.items || [];
+    const itunesData = await itunesRes.json();
+    const tracks = itunesData.feed?.entry || [];
 
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
     const chartData = [];
 
-    // 4. 각 트랙별 유튜브 매핑 및 데이터 준비
+    // 3. 각 트랙별 유튜브 매핑 및 데이터 준비
     for (let i = 0; i < tracks.length; i++) {
-      const track = tracks[i].track;
-      if (!track) continue;
-
-      const artistName = track.artists[0].name;
-      const trackTitle = track.name;
-      const spotifyId = track.id;
-      const albumArt = track.album.images[0]?.url;
-      const previewUrl = track.preview_url;
+      const entry = tracks[i];
+      const trackTitle = entry['im:name']?.label;
+      const artistName = entry['im:artist']?.label;
+      const albumArtRaw = entry['im:image']?.[2]?.label || entry['im:image']?.[0]?.label;
+      const albumArt = albumArtRaw ? albumArtRaw.replace('170x170bb', '600x600bb') : null;
+      
+      // iTunes 고유 ID
+      const itunesId = entry.id?.attributes?.['im:id'] || `itunes_${i}`;
 
       // 유튜브 비디오 ID 검색 (간단한 검색 쿼리 사용)
       const searchQuery = `${artistName} ${trackTitle} official audio`;
-      const ytRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`
-      );
-      const ytData = await ytRes.json();
-      const youtubeId = ytData.items?.[0]?.id?.videoId || '';
+      let youtubeId = '';
+      try {
+        const ytRes = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`
+        );
+        const ytData = await ytRes.json();
+        youtubeId = ytData.items?.[0]?.id?.videoId || '';
+      } catch (e) {
+        console.warn(`YT Fetch failed for ${trackTitle}`, e);
+      }
 
       chartData.push({
         rank: i + 1,
@@ -55,30 +56,31 @@ export async function GET(request: Request) {
         artist: artistName,
         album_art: albumArt,
         youtube_id: youtubeId,
-        spotify_id: spotifyId,
-        preview_url: previewUrl,
+        spotify_id: itunesId, // 컬럼명 재활용
         updated_at: new Date().toISOString()
       });
 
-      // API 할당량 보호를 위해 짧은 지연 (선택 사항)
-      // await new Promise(res => setTimeout(res, 100));
+      // API 할당량 보호를 위해 짧은 지연
+      await new Promise(res => setTimeout(res, 50));
     }
 
-    // 5. Supabase에 테이블 데이터 업데이트 (Upsert)
-    // 주의: kpop_charts 테이블이 미리 생성되어 있어야 합니다.
-    const { error: upsertError } = await supabase
-      .from('kpop_charts')
-      .upsert(chartData, { onConflict: 'spotify_id' });
+    // 4. Supabase 기존 데이터 전체 삭제 후 새로운 순위 삽입 (단순 교체)
+    // - onConflict 문제 방지 및 깔끔한 갱신을 위해 전부 지우고 새로 넣습니다
+    await supabase.from('kpop_charts').delete().neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
 
-    if (upsertError) {
-      console.error('[CRON] Database upsert failed:', upsertError);
-      return NextResponse.json({ error: 'Database update failed', details: upsertError }, { status: 500 });
+    const { error: insertError } = await supabase
+      .from('kpop_charts')
+      .insert(chartData);
+
+    if (insertError) {
+      console.error('[CRON] Database insert failed:', insertError);
+      return NextResponse.json({ error: 'Database update failed', details: insertError }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
       count: chartData.length,
-      message: 'Successfully updated K-Pop chart from Spotify & YouTube'
+      message: 'Successfully updated K-Pop chart from iTunes & YouTube'
     });
 
   } catch (error: any) {
@@ -87,18 +89,3 @@ export async function GET(request: Request) {
   }
 }
 
-async function getSpotifyToken() {
-  const client_id = process.env.SPOTIFY_CLIENT_ID;
-  const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-
-  const res = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64'),
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: 'grant_type=client_credentials'
-  });
-  const data = await res.json();
-  return data.access_token;
-}

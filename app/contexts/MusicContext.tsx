@@ -18,6 +18,7 @@ interface MusicContextType {
   playlist: Track[];
   setPlaylist: (tracks: Track[]) => void;
   playTrack: (track: Track) => void;
+  stopTrack: () => void;
   togglePlay: () => void;
   nextTrack: () => void;
   prevTrack: () => void;
@@ -33,6 +34,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const playTrack = (track: Track) => {
     setCurrentTrack(track);
     setIsPlaying(true);
+  };
+
+  const stopTrack = () => {
+    setIsPlaying(false);
+    setCurrentTrack(null);
   };
 
   const togglePlay = () => {
@@ -62,6 +68,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       playlist,
       setPlaylist,
       playTrack,
+      stopTrack,
       togglePlay,
       nextTrack,
       prevTrack,
