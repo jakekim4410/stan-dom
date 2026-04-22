@@ -489,7 +489,7 @@ const MusicPlayer = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 right-4 z-40 w-[360px] h-[400px] max-h-[50vh] bg-black/80 backdrop-blur-3xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+            className="fixed bottom-24 left-4 right-4 sm:left-auto sm:w-[360px] z-40 h-[400px] max-h-[50vh] bg-black/80 backdrop-blur-3xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col mx-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-white/5 bg-black/40">
