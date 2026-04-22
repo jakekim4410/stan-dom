@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useMusic } from '@/app/contexts/MusicContext';
 import {
   Play, Pause, SkipForward, SkipBack, X,
-  Volume2, VolumeX, AlertCircle,
+  Volume2, VolumeX, AlertCircle, Mic2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,12 +15,29 @@ declare global {
   }
 }
 
-// ── 시간 포맷 (초 → mm:ss) ──────────────────────────────────
 const fmt = (sec: number) => {
   if (!isFinite(sec) || sec < 0) return '0:00';
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60).toString().padStart(2, '0');
   return `${m}:${s}`;
+};
+
+// ── LRC 가사 파싱 유틸 ──────────────────────────────────────
+const parseLRC = (lrc: string) => {
+  const lines = lrc.split('\n');
+  const parsed: { time: number; text: string }[] = [];
+  for (const line of lines) {
+    const match = line.match(/^\[(\d{2}):(\d{2}\.\d{2,3})\](.*)/);
+    if (match) {
+      const min = parseInt(match[1], 10);
+      const sec = parseFloat(match[2]);
+      const text = match[3].trim();
+      if (text) {
+        parsed.push({ time: min * 60 + sec, text });
+      }
+    }
+  }
+  return parsed;
 };
 
 // ── 볼륨 슬라이더 스타일 ────────────────────────────────────
@@ -55,10 +72,15 @@ const MusicPlayer = () => {
   const [isMuted,    setIsMuted]      = useState(false);
   const prevVolRef = useRef(80);
 
-  // ── 진행 바 / 시간 ──────────────────────────────────────
   const [elapsed,  setElapsed]  = useState(0);
   const [duration, setDuration] = useState(0);
   const [seeking,  setSeeking]  = useState(false);
+
+  // ── 가사 (Lyrics/Fanchant) 상태 ────────────────────────
+  const [lyrics, setLyrics] = useState<{ time: number; text: string }[]>([]);
+  const [showLyrics, setShowLyrics] = useState(false);
+  const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
+  const lyricsContainerRef = useRef<HTMLDivElement>(null);
 
   // ── ref 사본 (closure 안에서 최신값 읽기) ──────────────
   const isPlayingRef   = useRef(isPlaying);
@@ -126,9 +148,23 @@ const MusicPlayer = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextTrack, isMuted, volume]);
 
-  // ── 4. 플레이어 초기화 / 트랙 전환 ─────────────────────
+  // ── 4. 플레이어 초기화 / 트랙 전환 / 가사 로드 ──────────
   useEffect(() => {
     if (!isApiReady || !currentTrack) return;
+
+    // 가사 초기화 및 로드
+    setLyrics([]);
+    setIsLoadingLyrics(true);
+    fetch(`https://lrclib.net/api/search?track_name=${encodeURIComponent(currentTrack.title)}&artist_name=${encodeURIComponent(currentTrack.artist)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data[0] && data[0].syncedLyrics) {
+          setLyrics(parseLRC(data[0].syncedLyrics));
+        }
+      })
+      .catch(err => console.error('[MusicPlayer] Lyrics fetch failed:', err))
+      .finally(() => setIsLoadingLyrics(false));
+
     if (loadingRef.current) return;
 
     setElapsed(0);
@@ -245,6 +281,20 @@ const MusicPlayer = () => {
 
   // ── 8. 언마운트 정리 ────────────────────────────────────
   useEffect(() => () => stopTick(), [stopTick]);
+
+  // ── 가사 스크롤 동기화 ─────────────────────────────────
+  const activeLineIndex = lyrics.findIndex(
+    (l, i) => elapsed >= l.time && (i === lyrics.length - 1 || elapsed < lyrics[i + 1].time)
+  );
+
+  useEffect(() => {
+    if (showLyrics && lyricsContainerRef.current) {
+      const activeEl = lyricsContainerRef.current.querySelector('.lyric-active');
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [activeLineIndex, showLyrics]);
 
   const hasArt = currentTrack?.album_art?.trim();
   const progress = duration > 0 ? (elapsed / duration) * 100 : 0;
@@ -408,6 +458,15 @@ const MusicPlayer = () => {
                     </span>
                   </div>
 
+                  {/* 가사 토글 버튼 */}
+                  <button
+                    onClick={() => setShowLyrics(!showLyrics)}
+                    className={`hidden sm:flex p-2 flex-shrink-0 transition-colors ${showLyrics ? 'text-[var(--neon-lime)] drop-shadow-[0_0_8px_var(--neon-lime)]' : 'text-zinc-500 hover:text-white'}`}
+                    title="가사/응원법 보기"
+                  >
+                    <Mic2 size={16} />
+                  </button>
+
                   {/* 닫기 */}
                   <button
                     onClick={stopTrack}
@@ -418,6 +477,64 @@ const MusicPlayer = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── 10. 가사/응원법 패널 ──────────────────────────── */}
+      <AnimatePresence>
+        {currentTrack && showLyrics && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-24 right-4 z-40 w-[360px] h-[400px] max-h-[50vh] bg-black/80 backdrop-blur-3xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-white/5 bg-black/40">
+              <h3 className="text-white font-bold text-sm flex items-center gap-2 uppercase tracking-widest">
+                <Mic2 size={16} className="text-[var(--neon-lime)]" />
+                Fanchant
+              </h3>
+              <button onClick={() => setShowLyrics(false)} className="text-zinc-500 hover:text-white">
+                <X size={16} />
+              </button>
+            </div>
+            
+            {/* Lyrics Container */}
+            <div 
+              ref={lyricsContainerRef}
+              className="flex-1 overflow-y-auto p-6 space-y-4 relative scrollbar-hide"
+              style={{ scrollBehavior: 'smooth', msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            >
+              {isLoadingLyrics ? (
+                <div className="flex flex-col items-center justify-center h-full text-zinc-500 gap-3">
+                  <div className="w-6 h-6 border-2 border-[var(--neon-lime)] border-t-transparent rounded-full animate-spin" />
+                  <p className="text-xs uppercase tracking-widest font-bold">Loading Lyrics...</p>
+                </div>
+              ) : lyrics.length > 0 ? (
+                <div className="py-[100px]"> {/* 상하 여백을 줘서 스크롤 시 중앙에 잘 오게 함 */}
+                  {lyrics.map((line, i) => {
+                    const isActive = i === activeLineIndex;
+                    return (
+                      <div
+                        key={i}
+                        className={`transition-all duration-500 min-h-[24px] ${isActive ? 'lyric-active scale-105 origin-left' : 'opacity-40 hover:opacity-70'}`}
+                      >
+                        <p className={`font-bold tracking-tight leading-relaxed ${isActive ? 'text-[var(--neon-lime)] text-lg drop-shadow-[0_0_8px_rgba(55,197,97,0.4)]' : 'text-zinc-300 text-sm'}`}>
+                          {line.text}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-zinc-500 gap-2">
+                  <Mic2 size={24} className="opacity-20 mb-2" />
+                  <p className="text-xs uppercase tracking-widest font-bold">No Synced Lyrics Found</p>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
