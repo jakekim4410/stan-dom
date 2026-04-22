@@ -107,15 +107,24 @@ const MusicChartPage = () => {
       </div>
 
       {/* ── 헤더 섹션 ── */}
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 mt-6">
-        <div>
-          <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase leading-none">
-            K-POP{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">
-              CHART 50
-            </span>
-          </h1>
-          <p className="mt-3 text-zinc-300 font-medium max-w-xl break-keep text-sm leading-relaxed">
+      <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 mt-6">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between md:justify-start gap-3">
+            <h1 className="text-[28px] sm:text-3xl md:text-5xl font-black italic tracking-tighter uppercase leading-none whitespace-nowrap">
+              K-POP{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">
+                CHART 50
+              </span>
+            </h1>
+            <button
+              onClick={fetchChart}
+              className="md:hidden flex items-center justify-center p-2 bg-zinc-900 border border-white/10 rounded-xl text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all active:scale-95 shadow-lg flex-shrink-0"
+              aria-label="Refresh Chart"
+            >
+              <RefreshCcw size={16} className={loading ? 'animate-spin' : ''} />
+            </button>
+          </div>
+          <p className="mt-2 text-zinc-400 font-medium text-xs md:text-sm leading-relaxed max-w-xl line-clamp-2 md:line-clamp-none break-words whitespace-normal">
             {t('musicChartSub')}
           </p>
 
@@ -165,7 +174,7 @@ const MusicChartPage = () => {
 
         <button
           onClick={fetchChart}
-          className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-white/5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors flex-shrink-0"
+          className="hidden md:flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-white/5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors flex-shrink-0"
         >
           <RefreshCcw size={14} className={loading ? 'animate-spin' : ''} />
           {t('musicChartRefresh')}
@@ -230,15 +239,15 @@ const MusicChartPage = () => {
               >
                 {/* 순위 */}
                 <div
-                  className={`w-8 flex-shrink-0 text-center font-mono font-black italic text-sm transition-colors ${
-                    isActive ? 'text-[#37C561]' : 'text-zinc-700 group-hover:text-[#37C561]'
+                  className={`w-6 md:w-8 flex-shrink-0 text-center font-mono font-black italic text-[11px] md:text-sm transition-colors ${
+                    isActive ? 'text-[#37C561]' : 'text-zinc-600 group-hover:text-[#37C561]'
                   }`}
                 >
                   {String(track.rank).padStart(2, '0')}
                 </div>
 
-                {/* 앨범아트 (있을 때만 표시하되, 없을 경우 컬러 그라데이션+첫글자로 예쁘게 표시) */}
-                <div className="relative h-10 w-10 flex-shrink-0 rounded-lg overflow-hidden border border-white/10 shadow-lg">
+                {/* 앨범아트 */}
+                <div className="relative h-11 w-11 md:h-12 md:w-12 flex-shrink-0 rounded-[10px] overflow-hidden border border-white/10 shadow-lg">
                   {hasArt ? (
                     <>
                       <img
@@ -278,15 +287,15 @@ const MusicChartPage = () => {
                 </div>
 
                 {/* 제목 & 아티스트 */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 pr-2">
                   <h3
-                    className={`text-sm font-bold truncate uppercase tracking-tight transition-colors ${
+                    className={`text-[13px] md:text-sm font-bold truncate uppercase tracking-tight transition-colors ${
                       isActive ? 'text-[#37C561]' : 'text-white'
                     }`}
                   >
                     {track.title}
                   </h3>
-                  <p className="text-[11px] text-zinc-500 truncate uppercase tracking-widest font-medium">
+                  <p className="text-[10px] md:text-[11px] text-zinc-500 truncate uppercase tracking-widest font-medium mt-0.5">
                     {track.artist}
                   </p>
                 </div>

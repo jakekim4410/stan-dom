@@ -461,7 +461,7 @@ const MusicPlayer = () => {
                   {/* 가사 토글 버튼 */}
                   <button
                     onClick={() => setShowLyrics(!showLyrics)}
-                    className={`hidden sm:flex p-2 flex-shrink-0 transition-colors ${showLyrics ? 'text-[var(--neon-lime)] drop-shadow-[0_0_8px_var(--neon-lime)]' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex p-2 flex-shrink-0 transition-colors ${showLyrics ? 'text-[var(--neon-lime)] drop-shadow-[0_0_8px_var(--neon-lime)]' : 'text-zinc-500 hover:text-white'}`}
                     title="가사/응원법 보기"
                   >
                     <Mic2 size={16} />
