@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
@@ -10,7 +10,7 @@ import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
 import { getLangName } from '@/utils/localization';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2 } from 'lucide-react';
+import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2, Music2 } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Language, getT } from '@/constants/i18n';
@@ -557,8 +557,16 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Right: Map preference */}
+          {/* Right: Map preference & Music */}
           <div className="flex items-center justify-between sm:justify-start gap-4 px-2 sm:px-0 bg-black/20 lg:bg-transparent rounded-2xl py-2 lg:py-0 border border-white/5 lg:border-none">
+            <Link
+              href="/music"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black text-[#37C561] border border-[#37C561]/30 hover:bg-[#37C561]/10 transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(55,197,97,0.1)] hover:shadow-[0_0_25px_rgba(55,197,97,0.2)]"
+            >
+              <Music2 size={14} />
+              <span>{lang === 'KO' ? '음악 차트' : 'Music Chart'}</span>
+            </Link>
+
             <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.2em] whitespace-nowrap">
               {t('visMode')}
             </span>
@@ -724,13 +732,19 @@ export default function Dashboard() {
                   >
                     {/* YouTube Thumbnail – click to watch */}
                     <a
-                      href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                      href={issue.videoId
+                        ? `https://www.youtube.com/watch?v=${issue.videoId}`
+                        : `https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="relative w-full aspect-video overflow-hidden bg-zinc-900 block"
                     >
                       <img
-                        src={`https://img.youtube.com/vi/${issue.videoId}/hqdefault.jpg`}
+                        src={issue.videoId
+                          ? `https://img.youtube.com/vi/${issue.videoId}/hqdefault.jpg`
+                          : `https://img.youtube.com/vi/gdZLi9oWNZg/hqdefault.jpg`
+                        }
                         alt={headline}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                       />
@@ -750,7 +764,7 @@ export default function Dashboard() {
                       {/* Slot + Archive ID top-right */}
                       <div className="absolute top-3 right-3 flex flex-col items-end gap-1 pointer-events-none">
                         <span className="text-[8px] font-mono px-2 py-0.5 rounded bg-black/70 border border-white/10" style={{ color: issue.accent }}>{issue.slot}</span>
-                        <span className="text-[8px] font-mono px-2 py-0.5 rounded bg-black/70 border border-white/10 text-zinc-500">{issue.id}</span>
+
                       </div>
                       {/* NEW badge */}
                       {issue.isNew && (
@@ -765,18 +779,30 @@ export default function Dashboard() {
                         className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border w-fit"
                         style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
                       >{category}</span>
-                      <h3 className="text-sm font-black tracking-tight leading-snug line-clamp-2">{headline}</h3>
-                      <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 flex-1">{lead}</p>
+                      <h3 className="text-sm font-black tracking-tight leading-snug line-clamp-2 overflow-hidden text-ellipsis">{headline}</h3>
+                      <p className="text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3 overflow-hidden text-ellipsis mb-auto">{lead}</p>
                       <div className="mt-auto pt-4 flex gap-2 w-full">
-                        <a
-                          href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
-                          style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
-                        >
-                          ▶ YouTube
-                        </a>
+                        {issue.videoId ? (
+                          <a
+                            href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
+                            style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
+                          >
+                            ▶ YouTube
+                          </a>
+                        ) : (
+                          <a
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
+                            style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
+                          >
+                            🔍 YouTube Search
+                          </a>
+                        )}
                         <button 
                           onClick={() => setSelectedIssue(issue)}
                           className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition-all text-white"
@@ -840,13 +866,19 @@ export default function Dashboard() {
                                   >
                                     {/* Thumbnail small */}
                                     <a
-                                      href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                                      href={issue.videoId
+                                        ? `https://www.youtube.com/watch?v=${issue.videoId}`
+                                        : `https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`
+                                      }
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900 block"
                                     >
                                       <img
-                                        src={`https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`}
+                                        src={issue.videoId
+                                          ? `https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`
+                                          : `https://img.youtube.com/vi/gdZLi9oWNZg/mqdefault.jpg`
+                                        }
                                         alt={headline}
                                         className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
                                       />
@@ -866,17 +898,20 @@ export default function Dashboard() {
                                         <span className="text-[9px] font-mono text-zinc-600">{issue.date}</span>
                                       </div>
                                       <p className="text-sm font-black text-white w-full sm:w-auto" style={{ wordBreak: 'keep-all' }}>{headline}</p>
-                                      <p className="text-xs text-zinc-400 w-full sm:w-auto line-clamp-1">{lead}</p>
+                                      <p className="text-xs text-zinc-400 w-full sm:w-auto line-clamp-2 overflow-hidden text-ellipsis">{lead}</p>
                                     </div>
                                     <div className="shrink-0 flex flex-col gap-1.5">
                                       <a
-                                        href={`https://www.youtube.com/watch?v=${issue.videoId}`}
+                                        href={issue.videoId
+                                          ? `https://www.youtube.com/watch?v=${issue.videoId}`
+                                          : `https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`
+                                        }
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-[10px] font-black uppercase text-center px-4 py-2 rounded-lg whitespace-nowrap block hover:brightness-110 transition-all"
                                         style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
                                       >
-                                        ▶ YouTube
+                                        {issue.videoId ? '▶ YouTube' : '🔍 Search'}
                                       </a>
                                       <button
                                         onClick={() => setSelectedIssue(issue)}

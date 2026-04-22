@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { MusicProvider } from "@/app/contexts/MusicContext";
+import MusicPlayer from "@/components/MusicPlayer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,7 +52,10 @@ export default function RootLayout({
     >
       <body className="min-h-[100dvh] flex flex-col font-sans bg-black text-white selection:bg-[#37C561]/30 overflow-x-hidden antialiased">
         <BackgroundEffects />
-        {children}
+        <MusicProvider>
+          {children}
+          <MusicPlayer />
+        </MusicProvider>
       </body>
     </html>
   );

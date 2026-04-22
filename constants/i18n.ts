@@ -233,6 +233,20 @@ export const i18n: Record<Language, Record<string, string>> = {
     exitStay: 'Stay & Support',
     exitLeave: 'Leave',
 
+    // Music Chart Page
+    musicChartTitle: 'K-POP CHART 50',
+    musicChartSub: 'Based on global Spotify streaming data & YouTube official audio. Experience the pulse of the world\'s standard in K-Pop popularity.',
+    musicChartSync: 'Real-time Global Sync',
+    musicChartRefresh: 'Refresh Registry',
+    musicChartScanning: 'Scanning Global Registry...',
+    musicChartOffline: 'Registry Offline',
+    musicChartRetry: 'Wait a few seconds and try refreshing.',
+    musicChartListen: 'Listen Now',
+    musicChartGoHome: '← Back to Dashboard',
+    musicChartSourceNote: 'Source: Based on global Spotify chart data & YouTube streaming',
+    musicChartSourceSub: 'Rankings reflect real-time global streaming volume across Spotify and YouTube.',
+    musicChartYouTubeDisclaimer: 'Streaming via YouTube · Ads may appear',
+
     // Missing Keys
     globalLeader: 'GLOBAL LEADER',
     localLeader: 'LOCAL LEADER',
@@ -524,6 +538,20 @@ export const i18n: Record<Language, Record<string, string>> = {
     exitStay: '계속 응원하기',
     exitLeave: '나가기',
 
+    // Music Chart Page
+    musicChartTitle: 'K-POP 차트 50',
+    musicChartSub: '글로벌 Spotify 스트리밍 데이터와 YouTube 공식 오디오 기반. 전 세계 K-Pop 인기도의 기준을 확인하세요.',
+    musicChartSync: '실시간 글로벌 동기화',
+    musicChartRefresh: '새로고침',
+    musicChartScanning: '글로벌 레지스트리 스캔 중...',
+    musicChartOffline: '레지스트리 오프라인',
+    musicChartRetry: '잠시 후 새로고침을 시도해보세요.',
+    musicChartListen: '듣기',
+    musicChartGoHome: '← 대시보드로 돌아가기',
+    musicChartSourceNote: '출처: 글로벌 Spotify 차트 데이터 & YouTube 스트리밍 기반',
+    musicChartSourceSub: '순위는 Spotify 및 YouTube의 실시간 글로벌 스트리밍 수량을 기반으로 합니다.',
+    musicChartYouTubeDisclaimer: 'YouTube를 통한 스트리밍 · 광고가 발생할 수 있습니다',
+
     // Missing Keys
     globalLeader: '글로벌 뱅가드',
     localLeader: '로컬 유닛',
@@ -814,6 +842,20 @@ export const i18n: Record<Language, Record<string, string>> = {
     exitMessage: '¡Tu apoyo importa! Los artistas K-pop necesitan tu VOLTAJE. ¡Vuelve pronto!',
     exitStay: 'Quedarse y Apoyar',
     exitLeave: 'Salir',
+
+    // Music Chart Page
+    musicChartTitle: 'K-POP CHART 50',
+    musicChartSub: 'Basado en datos globales de Spotify y audio oficial de YouTube.',
+    musicChartSync: 'Sincronización Global en Vivo',
+    musicChartRefresh: 'Actualizar',
+    musicChartScanning: 'Escaneando el Registro Global...',
+    musicChartOffline: 'Registro Sin Conexión',
+    musicChartRetry: 'Espera unos segundos e intenta actualizar.',
+    musicChartListen: 'Escuchar',
+    musicChartGoHome: '← Volver al Panel',
+    musicChartSourceNote: 'Fuente: Datos globales de Spotify & YouTube',
+    musicChartSourceSub: 'Los rankings reflejan el volumen de streaming global en tiempo real.',
+    musicChartYouTubeDisclaimer: 'Streaming vía YouTube · Pueden aparecer anuncios',
 
     // Missing Keys
     globalLeader: 'LÍDER GLOBAL',
