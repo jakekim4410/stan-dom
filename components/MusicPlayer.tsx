@@ -113,13 +113,13 @@ const MusicPlayer = () => {
         playerRef.current.setVolume(isMuted ? 0 : volume);
         if (isPlayingRef.current) playerRef.current.playVideo();
       } else {
-        // 대체 영상도 없으면 다음 곡
-        console.warn('[MusicPlayer] No fallback found, skipping track');
-        setTimeout(() => nextTrack(), 300);
+        // 대체 영상도 없으면 재생 상태 해제 후 멈춤 (무한 스킵 방지)
+        console.warn('[MusicPlayer] No fallback found, stopping track to prevent rapid skips');
+        stopTrack();
       }
     } catch (e) {
       console.warn('[MusicPlayer] Fallback fetch error:', e);
-      setTimeout(() => nextTrack(), 300);
+      stopTrack();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextTrack, isMuted, volume]);
@@ -162,7 +162,8 @@ const MusicPlayer = () => {
               if ([101, 150].includes(e.data)) {
                 tryFallback();
               } else if ([2, 5, 100].includes(e.data)) {
-                setTimeout(() => nextTrack(), 300);
+                console.warn('[MusicPlayer] Unplayable video, stopping.');
+                stopTrack();
               }
             },
           },

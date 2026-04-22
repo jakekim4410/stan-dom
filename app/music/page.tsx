@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useMusic } from '@/app/contexts/MusicContext';
-import { Play, TrendingUp, RefreshCcw, ArrowLeft, Info, Music, ExternalLink } from 'lucide-react';
+import { Play, TrendingUp, RefreshCcw, ArrowLeft, Info, Search, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Language, getT } from '@/constants/i18n';
@@ -17,6 +17,7 @@ const MusicChartPage = () => {
   const [tracks, setTracks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [lang, setLang] = useState<Language>('EN');
   const [showSourceInfo, setShowSourceInfo] = useState(false);
   const { playTrack, setPlaylist, currentTrack, togglePlay } = useMusic();
@@ -156,6 +157,22 @@ const MusicChartPage = () => {
         </button>
       </div>
 
+      {/* ── 검색 필터 ── */}
+      <div className="mb-6">
+        <div className="relative max-w-sm">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search size={16} className="text-zinc-500" />
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by title or artist..."
+            className="block w-full pl-10 pr-4 py-2.5 bg-zinc-900/60 border border-white/10 rounded-xl text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#37C561]/50 focus:ring-1 focus:ring-[#37C561]/50 transition-colors"
+          />
+        </div>
+      </div>
+
       {/* ── 콘텐츠 ── */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -174,7 +191,12 @@ const MusicChartPage = () => {
         </div>
       ) : (
         <div className="grid gap-1.5">
-          {tracks.map((track, index) => {
+          {tracks
+            .filter((t) => 
+              t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+              t.artist.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((track, index) => {
             const isActive = currentTrack?.id === track.id;
             const hasArt = track.album_art && track.album_art.trim() !== '';
 
@@ -197,7 +219,7 @@ const MusicChartPage = () => {
                     isActive ? 'text-[#37C561]' : 'text-zinc-700 group-hover:text-[#37C561]'
                   }`}
                 >
-                  {String(index + 1).padStart(2, '0')}
+                  {String(track.rank).padStart(2, '0')}
                 </div>
 
                 {/* 앨범아트 (있을 때만 표시하되, 없을 경우 컬러 그라데이션+첫글자로 예쁘게 표시) */}
