@@ -16,7 +16,9 @@ interface MusicContextType {
   currentTrack: Track | null;
   isPlaying: boolean;
   playlist: Track[];
+  activePlaylist: Track[];
   setPlaylist: (tracks: Track[]) => void;
+  setActivePlaylist: (tracks: Track[]) => void;
   playTrack: (track: Track) => void;
   stopTrack: () => void;
   togglePlay: () => void;
@@ -30,6 +32,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState<Track[]>([]);
+  const [activePlaylist, setActivePlaylist] = useState<Track[]>([]);
 
   const playTrack = (track: Track) => {
     setCurrentTrack(track);
@@ -46,18 +49,23 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const nextTrack = () => {
-    if (!currentTrack || playlist.length === 0) return;
-    const currentIndex = playlist.findIndex(t => t.id === currentTrack.id);
-    const nextIndex = (currentIndex + 1) % playlist.length;
-    setCurrentTrack(playlist[nextIndex]);
+    if (!currentTrack) return;
+    // 필터가 적용된 경우 activePlaylist 사용, 아니면 전체 playlist 사용
+    const list = activePlaylist.length > 0 ? activePlaylist : playlist;
+    if (list.length === 0) return;
+    const currentIndex = list.findIndex(t => t.id === currentTrack.id);
+    const nextIndex = (currentIndex + 1) % list.length;
+    setCurrentTrack(list[nextIndex]);
     setIsPlaying(true);
   };
 
   const prevTrack = () => {
-    if (!currentTrack || playlist.length === 0) return;
-    const currentIndex = playlist.findIndex(t => t.id === currentTrack.id);
-    const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-    setCurrentTrack(playlist[prevIndex]);
+    if (!currentTrack) return;
+    const list = activePlaylist.length > 0 ? activePlaylist : playlist;
+    if (list.length === 0) return;
+    const currentIndex = list.findIndex(t => t.id === currentTrack.id);
+    const prevIndex = (currentIndex - 1 + list.length) % list.length;
+    setCurrentTrack(list[prevIndex]);
     setIsPlaying(true);
   };
 
@@ -66,7 +74,9 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       currentTrack,
       isPlaying,
       playlist,
+      activePlaylist,
       setPlaylist,
+      setActivePlaylist,
       playTrack,
       stopTrack,
       togglePlay,

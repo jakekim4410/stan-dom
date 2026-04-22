@@ -20,7 +20,7 @@ const MusicChartPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [lang, setLang] = useState<Language>('EN');
   const [showSourceInfo, setShowSourceInfo] = useState(false);
-  const { playTrack, setPlaylist, currentTrack, togglePlay } = useMusic();
+  const { playTrack, setPlaylist, setActivePlaylist, currentTrack, togglePlay } = useMusic();
   const router = useRouter();
   const t = getT(lang);
 
@@ -55,6 +55,21 @@ const MusicChartPage = () => {
   useEffect(() => {
     fetchChart();
   }, []);
+
+  // 검색어가 바뀌면 필터된 곡만 activePlaylist로 세팅 (이 곡끼리만 next/prev 이동)
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      // 필터 없음 → 전체 playlist 사용 (activePlaylist 초기화)
+      setActivePlaylist([]);
+    } else {
+      const filtered = tracks.filter((t) =>
+        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.artist.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setActivePlaylist(filtered);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, tracks]);
 
   const handlePlay = (track: any) => {
     if (currentTrack?.id === track.id) {

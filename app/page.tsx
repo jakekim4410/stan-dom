@@ -73,6 +73,7 @@ export default function Dashboard() {
   const [pastIssuePage, setPastIssuePage] = useState(0);
   const [showPastBattles, setShowPastBattles] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
+  const [issueVideoActive, setIssueVideoActive] = useState(false);
   const [hotIssues, setHotIssues] = useState<HotIssue[]>([]);
   const [hotIssuesLoading, setHotIssuesLoading] = useState(true);
   const [showHologramCard, setShowHologramCard] = useState<{ artist: Artist; rank: number } | null>(null);
@@ -86,6 +87,11 @@ export default function Dashboard() {
   const hologramCardRef = useRef<HTMLDivElement>(null);
 
   const t = getT(lang);
+
+  // 뉴스 모달이 바뀌면 영상 재생 상태 리셋
+  useEffect(() => {
+    setIssueVideoActive(false);
+  }, [selectedIssue]);
 
   useEffect(() => {
     // Initialize language from localStorage
@@ -561,10 +567,24 @@ export default function Dashboard() {
           <div className="flex items-center justify-between sm:justify-start gap-4 px-2 sm:px-0 bg-black/20 lg:bg-transparent rounded-2xl py-2 lg:py-0 border border-white/5 lg:border-none">
             <Link
               href="/music"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black text-[#37C561] border border-[#37C561]/30 hover:bg-[#37C561]/10 transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(55,197,97,0.1)] hover:shadow-[0_0_25px_rgba(55,197,97,0.2)]"
+              className="relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest overflow-hidden group transition-all duration-300 hover:scale-105 active:scale-95"
+              style={{
+                background: 'linear-gradient(135deg, rgba(55,197,97,0.12), rgba(55,197,97,0.04))',
+                border: '1px solid rgba(55,197,97,0.45)',
+                boxShadow: '0 0 18px rgba(55,197,97,0.18), inset 0 0 15px rgba(55,197,97,0.04)',
+                color: '#37C561',
+              }}
             >
-              <Music2 size={14} />
-              <span>{t('musicChartBtn')}</span>
+              {/* 호버 글로우 */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#37C561]/0 via-[#37C561]/15 to-[#37C561]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" />
+              {/* 펜싱 아이콘 */}
+              <div className="relative flex items-center justify-center shrink-0">
+                <div className="absolute w-4 h-4 bg-[#37C561] rounded-full animate-ping opacity-30" />
+                <Music2 size={14} className="relative" />
+              </div>
+              <span className="relative whitespace-nowrap">{t('musicChartBtn')}</span>
+              {/* LIVE 배지 */}
+              <span className="relative text-[8px] px-1.5 py-0.5 bg-[#37C561] text-black rounded-full font-black tracking-widest leading-none shrink-0">LIVE</span>
             </Link>
 
             <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.2em] whitespace-nowrap">
@@ -1519,16 +1539,40 @@ export default function Dashboard() {
 
               {/* Scrollable Content */}
               <div className="overflow-y-auto custom-scrollbar flex-1">
-                <div className="w-full aspect-video bg-black">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1`}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
+                <div className="w-full aspect-video bg-black relative overflow-hidden">
+                  {issueVideoActive ? (
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    ></iframe>
+                  ) : (
+                    <button
+                      onClick={() => setIssueVideoActive(true)}
+                      className="relative w-full h-full group cursor-pointer block"
+                    >
+                      <img
+                        src={`https://img.youtube.com/vi/${selectedIssue.videoId}/maxresdefault.jpg`}
+                        onError={(e) => { (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${selectedIssue.videoId}/hqdefault.jpg`; }}
+                        alt="thumbnail"
+                        className="w-full h-full object-cover brightness-75 group-hover:brightness-90 transition-all duration-300"
+                      />
+                      {/* 클릭하여 재생 오버레이 */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                        <div className="w-20 h-20 rounded-full bg-red-600/90 flex items-center justify-center shadow-2xl shadow-red-600/40 group-hover:scale-110 transition-transform duration-200 border-2 border-white/20">
+                          <svg viewBox="0 0 24 24" className="w-9 h-9 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                        </div>
+                        <span className="text-white text-xs font-black uppercase tracking-widest bg-black/60 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/10">
+                          클릭하여 재생
+                        </span>
+                      </div>
+                    </button>
+                  )}
                 </div>
                 <div className="p-8 space-y-6">
                   <div>
