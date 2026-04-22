@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Chakra_Petch, Noto_Sans_KR } from "next/font/google";
 import BackgroundEffects from "@/components/BackgroundEffects";
+import Script from "next/script";
 import "./globals.css";
 
 const chakra = Chakra_Petch({
@@ -50,6 +51,14 @@ export default function RootLayout({
       lang="en"
       className={`${chakra.variable} ${notoSans.variable} antialiased`}
     >
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7904032658716092"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="min-h-[100dvh] flex flex-col font-sans bg-black text-white selection:bg-[#37C561]/30 overflow-x-hidden antialiased">
         <BackgroundEffects />
         <MusicProvider>

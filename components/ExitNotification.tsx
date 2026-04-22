@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Language, getT } from '@/constants/i18n';
 import { Zap, LogOut } from 'lucide-react';
@@ -12,18 +12,9 @@ interface ExitNotificationProps {
 export default function ExitNotification({ lang }: ExitNotificationProps) {
   const [showModal, setShowModal] = useState(false);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const isBackActionRef = useRef(false);
+  const allowBackRef = useRef(false);
   const t = getT(lang);
-
-  // === beforeunload: 브라우저 탭 닫기 / 새로고침 / 주소창 이동 ===
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      // 표준 방식: returnValue 설정 시 브라우저 기본 종료 확인 다이얼로그 표시
-      e.returnValue = '';
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
 
   // === 외부 링크 클릭 감지: 사이트를 완전히 벗어나는 경우 커스텀 모달 표시 ===
   useEffect(() => {
@@ -42,6 +33,7 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
         e.preventDefault();
         e.stopPropagation();
         setPendingHref(href);
+        isBackActionRef.current = false;
         setShowModal(true);
       }
     };
@@ -50,41 +42,45 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
     return () => document.removeEventListener('click', handleClick, true);
   }, []);
 
-  // === visibilitychange: 사용자가 다른 탭으로 이동하거나 앱을 최소화할 때 ===
-  // (모바일 환경에서 앱 종료 감지에 유용)
+  // === 뒤로가기 감지 (History API Trap) ===
   useEffect(() => {
-    let lastHidden: number | null = null;
+    // 초기에 빈 상태를 하나 푸시하여 사용자가 뒤로가기를 누를 공간을 확보
+    window.history.pushState({ trap: true }, '', window.location.href);
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        lastHidden = Date.now();
-      }
+    const handlePopState = (e: PopStateEvent) => {
+      if (allowBackRef.current) return;
+
+      // 뒤로가기 클릭 시 커스텀 모달 띄우기
+      isBackActionRef.current = true;
+      setPendingHref(null);
+      setShowModal(true);
+
+      // 다시 state를 push해서 현재 페이지에 머물게 함
+      window.history.pushState({ trap: true }, '', window.location.href);
     };
 
-    const handlePageHide = () => {
-      // pagehide는 실제 페이지 떠남 시 발생 (모바일 브라우저 포함)
-      // 여기서는 별도 처리 없음 (beforeunload로 충분)
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('pagehide', handlePageHide);
+    window.addEventListener('popstate', handlePopState);
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('pagehide', handlePageHide);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
   const handleStay = useCallback(() => {
     setPendingHref(null);
     setShowModal(false);
+    isBackActionRef.current = false;
   }, []);
 
   const handleLeave = useCallback(() => {
+    setShowModal(false);
     if (pendingHref) {
       window.open(pendingHref, '_blank', 'noopener,noreferrer');
+      setPendingHref(null);
+    } else if (isBackActionRef.current) {
+      // 뒤로가기 허용 플래그를 켜고, 스택에 쌓인 트랩 2개를 건너뛰어 진짜 이전 페이지로 이동
+      allowBackRef.current = true;
+      window.history.go(-2);
     }
-    setPendingHref(null);
-    setShowModal(false);
   }, [pendingHref]);
 
   return (
