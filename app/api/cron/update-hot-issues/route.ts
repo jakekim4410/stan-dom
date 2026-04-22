@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+export const maxDuration = 60; // Vercel Hobby tier maximum
+export const dynamic = 'force-dynamic';
+
 // Vercel Cron은 GET 요청만 지원합니다.
 export async function GET(request: Request) {
   try {
@@ -69,17 +72,21 @@ export async function GET(request: Request) {
 
     let allArticles: any[] = [];
     // 데일리 크론은 무리를 주지 않기 위해 상위 5개 청크(약 75명)만 우선 검색
-    for (const chunk of chunks.slice(0, 5)) {
+    const fetchPromises = chunks.slice(0, 5).map(async (chunk) => {
       const q = `(${chunk.map(name => `"${name}"`).join(' OR ')}) AND (kpop OR "k-pop")`;
       const gnewsUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=en&sortby=publishedAt&max=10&apikey=${GNEWS_API_KEY}`;
       try {
         const res = await fetch(gnewsUrl);
         const data = await res.json();
-        if (data.articles) allArticles.push(...data.articles);
+        if (data.articles) return data.articles;
       } catch (e) {
         console.error(`[CRON] Fetch for query ${q} failed:`, e);
       }
-    }
+      return [];
+    });
+
+    const results = await Promise.all(fetchPromises);
+    allArticles = results.flat();
 
     // JS 기반 검열 (정치, 요리, 경제 제외)
     const badWords = ["president", "first lady", "minister", "modi", "politics", "noodles", "food", "cuisine", "ramen"];
@@ -191,34 +198,33 @@ Source: ${sourceName}
     };
 
 
-    // 7. 데이터 생성 및 Upsert
-    const inserts = [];
+    // 7. 데이터 생성 및 Upsert (병렬 처리로 속도 2배 향상)
+    const processPromises = articlesToProcess.map(async (raw, i) => {
+      const isSlot1 = (i === 0);
+      
+      console.log(`[CRON] Expanding: ${raw.title}`);
+      const expanded = await expandWithGemini(raw.title, raw.source?.name || 'News');
+      
+      const artist = artistNames.find(n => raw.title.toLowerCase().includes(n.toLowerCase()));
+      const videoId = await searchYouTube(raw.title, artist || '');
 
-    for (let i = 0; i < articlesToProcess.length; i++) {
-        const raw = articlesToProcess[i];
-        const isSlot1 = (i === 0);
-        
-        console.log(`[CRON] Expanding: ${raw.title}`);
-        const expanded = await expandWithGemini(raw.title, raw.source?.name || 'News');
-        
-        const artist = artistNames.find(n => raw.title.toLowerCase().includes(n.toLowerCase()));
-        const videoId = await searchYouTube(raw.title, artist || '');
+      return {
+        id: `${todayIdPrefix}_0${i + 1}`,
+        published_at: `${todayKST}T${isSlot1 ? '00:00:00' : '09:00:00'}Z`,
+        slot: isSlot1 ? 'KST 09:00' : 'KST 18:00',
+        date: todayKST,
+        category: expanded.category,
+        headline: expanded.headline,
+        lead: expanded.lead,
+        body: expanded.body,
+        video_id: videoId,
+        accent: isSlot1 ? '#9333EA' : '#E11D48', 
+        tags: ['News', 'KPOP', raw.source?.name?.substring(0,6).replace(/\s+/g, '') || 'Hot'],
+        is_active: true
+      };
+    });
 
-        inserts.push({
-          id: `${todayIdPrefix}_0${i + 1}`,
-          published_at: `${todayKST}T${isSlot1 ? '00:00:00' : '09:00:00'}Z`,
-          slot: isSlot1 ? 'KST 09:00' : 'KST 18:00',
-          date: todayKST,
-          category: expanded.category,
-          headline: expanded.headline,
-          lead: expanded.lead,
-          body: expanded.body,
-          video_id: videoId,
-          accent: isSlot1 ? '#9333EA' : '#E11D48', 
-          tags: ['News', 'KPOP', raw.source?.name?.substring(0,6).replace(/\s+/g, '') || 'Hot'],
-          is_active: true
-        });
-    }
+    const inserts = await Promise.all(processPromises);
 
     const { error: upsertError } = await supabase
       .from('hot_issues')
