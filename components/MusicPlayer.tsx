@@ -80,6 +80,7 @@ const MusicPlayer = () => {
   const [lyrics, setLyrics] = useState<{ time: number; text: string }[]>([]);
   const [showLyrics, setShowLyrics] = useState(false);
   const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
+  const [syncOffset, setSyncOffset] = useState(0);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
 
   // ── ref 사본 (closure 안에서 최신값 읽기) ──────────────
@@ -152,8 +153,9 @@ const MusicPlayer = () => {
   useEffect(() => {
     if (!isApiReady || !currentTrack) return;
 
-    // 가사 초기화 및 로드
+    // 가사 및 싱크 초기화
     setLyrics([]);
+    setSyncOffset(0);
     setIsLoadingLyrics(true);
     fetch(`https://lrclib.net/api/search?track_name=${encodeURIComponent(currentTrack.title)}&artist_name=${encodeURIComponent(currentTrack.artist)}`)
       .then(res => res.json())
@@ -283,8 +285,9 @@ const MusicPlayer = () => {
   useEffect(() => () => stopTick(), [stopTick]);
 
   // ── 가사 스크롤 동기화 ─────────────────────────────────
+  const adjustedElapsed = elapsed - syncOffset;
   const activeLineIndex = lyrics.findIndex(
-    (l, i) => elapsed >= l.time && (i === lyrics.length - 1 || elapsed < lyrics[i + 1].time)
+    (l, i) => adjustedElapsed >= l.time && (i === lyrics.length - 1 || adjustedElapsed < lyrics[i + 1].time)
   );
 
   useEffect(() => {
@@ -497,9 +500,21 @@ const MusicPlayer = () => {
                 <Mic2 size={16} className="text-[var(--neon-lime)]" />
                 Fanchant
               </h3>
-              <button onClick={() => setShowLyrics(false)} className="text-zinc-500 hover:text-white">
-                <X size={16} />
-              </button>
+              <div className="flex items-center gap-3">
+                {/* 싱크 조절 버튼 */}
+                {lyrics.length > 0 && (
+                  <div className="flex items-center gap-1.5 bg-white/5 rounded-lg px-2 py-1 border border-white/10">
+                    <button onClick={() => setSyncOffset(s => s - 0.5)} className="text-zinc-400 hover:text-white px-1 font-mono text-xs" title="가사 빠르게 (-0.5s)">-</button>
+                    <span className="text-[10px] text-zinc-300 font-mono font-bold w-12 text-center tracking-tighter" title="현재 싱크 오프셋">
+                      {syncOffset > 0 ? '+' : ''}{syncOffset.toFixed(1)}s
+                    </span>
+                    <button onClick={() => setSyncOffset(s => s + 0.5)} className="text-zinc-400 hover:text-white px-1 font-mono text-xs" title="가사 느리게 (+0.5s)">+</button>
+                  </div>
+                )}
+                <button onClick={() => setShowLyrics(false)} className="text-zinc-500 hover:text-white p-1">
+                  <X size={16} />
+                </button>
+              </div>
             </div>
             
             {/* Lyrics Container */}
