@@ -63,8 +63,10 @@ const MusicPlayer = () => {
   // ── ref 사본 (closure 안에서 최신값 읽기) ──────────────
   const isPlayingRef   = useRef(isPlaying);
   const currentTrkRef  = useRef(currentTrack);
+  const nextTrackRef   = useRef(nextTrack);   // stale closure 방지: 항상 최신 nextTrack 사용
   useEffect(() => { isPlayingRef.current   = isPlaying;    }, [isPlaying]);
   useEffect(() => { currentTrkRef.current  = currentTrack; }, [currentTrack]);
+  useEffect(() => { nextTrackRef.current   = nextTrack;    }, [nextTrack]);
 
   // ── 1. YouTube IFrame API 로드 ──────────────────────────
   useEffect(() => {
@@ -161,7 +163,7 @@ const MusicPlayer = () => {
                   console.warn('[MusicPlayer] Video ended immediately, stopping to prevent rapid skips.');
                   stopTrack();
                 } else {
-                  nextTrack(); // ENDED normally
+                  nextTrackRef.current(); // 항상 최신 nextTrack 호출 (stale closure 방지)
                 }
               }
             },
