@@ -179,7 +179,14 @@ Source: ${sourceName}
         vid = await attemptSearch(`${artistName} Official MV`);
         if (vid) return vid;
       }
-      return 'ArmDp-zijuc'; // NewJeans - Super Shy fallback (embeddable)
+      const fallbacks = [
+        'ArmDp-zijuc', // NewJeans - Super Shy
+        'Zp804HSY03A', // (G)I-DLE - Fate
+        'gdZLi9oWNZg', // BTS - Dynamite
+        'd9IxdwEFk1c', // BLACKPINK - How You Like That
+        'wkZpBWkhbck', // LE SSERAFIM - SMART
+      ];
+      return fallbacks[Math.floor(Math.random() * fallbacks.length)];
     };
 
 
