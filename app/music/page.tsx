@@ -196,34 +196,45 @@ const MusicChartPage = () => {
                   {String(index + 1).padStart(2, '0')}
                 </div>
 
-                {/* 앨범아트 (있을 때만) */}
-                {hasAnyAlbumArt && (
-                  <div className="relative h-10 w-10 flex-shrink-0">
-                    {hasArt ? (
-                      <>
-                        <img
-                          src={track.album_art}
-                          alt={track.title}
-                          className="h-full w-full object-cover rounded-lg"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                        <div
-                          className={`absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg transition-opacity ${
-                            isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                          }`}
-                        >
-                          <Play size={16} fill="currentColor" className="text-white" />
-                        </div>
-                      </>
-                    ) : (
-                      <div className="h-full w-full rounded-lg bg-zinc-800 flex items-center justify-center">
-                        <Music size={16} className="text-zinc-600" />
+                {/* 앨범아트 (있을 때만 표시하되, 없을 경우 컬러 그라데이션+첫글자로 예쁘게 표시) */}
+                <div className="relative h-10 w-10 flex-shrink-0 rounded-lg overflow-hidden border border-white/10 shadow-lg">
+                  {hasArt ? (
+                    <>
+                      <img
+                        src={track.album_art}
+                        alt={track.title}
+                        className="h-full w-full object-cover rounded-lg"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                      <div
+                        className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
+                          isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                      >
+                        <Play size={16} fill="currentColor" className="text-white" />
                       </div>
-                    )}
-                  </div>
-                )}
+                    </>
+                  ) : (
+                    // 이쁘게 표시되는 컬러 기반 첫글자 대체 이미지
+                    <div 
+                      className="h-full w-full flex items-center justify-center text-white font-black text-sm shadow-inner transition-transform group-hover:scale-110" 
+                      style={{ 
+                        background: `linear-gradient(135deg, hsl(${(index * 45) % 360}, 80%, 60%), hsl(${((index * 45) + 60) % 360}, 80%, 40%))` 
+                      }}
+                    >
+                      {track.artist.charAt(0).toUpperCase()}
+                      <div
+                        className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
+                          isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                      >
+                        <Play size={16} fill="currentColor" className="text-white" />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* 제목 & 아티스트 */}
                 <div className="flex-1 min-w-0">
