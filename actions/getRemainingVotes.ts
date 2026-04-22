@@ -36,11 +36,26 @@ export async function getRemainingVotes() {
 
     if (error) throw error;
 
+    // 추가 보상된 투표권(광고 시청) 계산
+    const { count: adCount, error: adError } = await supabase
+      .from('rewarded_ads')
+      .select('*', { count: 'exact', head: true })
+      .eq(identifierType, identifierValue)
+      .gt('created_at', resetBoundary.toISOString());
+
+    if (adError) {
+      console.error('[GetVotes Action] Ad count error (ignoring):', adError);
+    }
+
+    const rewardedVotes = (adCount || 0) * 3; // 광고 1편당 3표
+    const finalLimit = limit + rewardedVotes;
+
     return { 
       success: true, 
       count: count || 0, 
-      limit, 
-      remaining: Math.max(0, limit - (count || 0)) 
+      limit: finalLimit, 
+      remaining: Math.max(0, finalLimit - (count || 0)),
+      adViewsToday: adCount || 0
     };
   } catch (error: any) {
     console.error('[GetVotes Action] Error:', error);

@@ -10,7 +10,7 @@ import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
 import { getLangName } from '@/utils/localization';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2, Music2 } from 'lucide-react';
+import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2, Music2, Gift } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Language, getT } from '@/constants/i18n';
@@ -20,6 +20,7 @@ import CountrySelector from '@/components/CountrySelector';
 import OnboardingModal from '@/components/OnboardingModal';
 import { Country } from '@/constants/countryData';
 import InquiryModal from '@/components/InquiryModal';
+import RewardedAdModal from '@/components/RewardedAdModal';
 import Toast from '@/components/Toast';
 import ExitNotification from '@/components/ExitNotification';
 import { getHotIssues, type HotIssue } from '@/actions/getHotIssues';
@@ -66,6 +67,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [isAddArtistOpen, setIsAddArtistOpen] = useState(false);
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+  const [showAdModal, setShowAdModal] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
@@ -550,16 +552,30 @@ export default function Dashboard() {
 
             {/* Vote Quota Badge */}
             {voteQuota && (
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5"
-              >
-                <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[var(--neon-lime)]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
-                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
-                  {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
-                </span>
-              </motion.div>
+              <div className="flex items-center gap-2">
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5"
+                >
+                  <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[var(--neon-lime)]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
+                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
+                    {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
+                  </span>
+                </motion.div>
+
+                {/* 리워드 광고 모달 호출 버튼 */}
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  onClick={() => setShowAdModal(true)}
+                  className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-400 hover:text-amber-300 hover:scale-105 active:scale-95 transition-all overflow-hidden group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                  <Gift size={14} className="animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">+3V</span>
+                </motion.button>
+              </div>
             )}
           </div>
 
@@ -1838,6 +1854,15 @@ export default function Dashboard() {
 
       {/* ── Exit Notification ── */}
       <ExitNotification lang={lang} />
+
+      {showAdModal && (
+        <RewardedAdModal
+          isOpen={showAdModal}
+          onClose={() => setShowAdModal(false)}
+          onSuccess={refreshQuota}
+        />
+      )}
+
 
     </main>
   );
