@@ -26,10 +26,21 @@ export async function GET(request: Request) {
     const itunesData = await itunesRes.json();
     const tracks = itunesData.feed?.entry || [];
 
+    // 3. 기존 DB에서 이미 매핑된 곡들을 가져와 재사용 (유튜브 API 할당량 보호)
+    const { data: existingChart } = await supabase.from('kpop_charts').select('title, artist, youtube_id');
+    const existingMap = new Map();
+    if (existingChart) {
+      existingChart.forEach(track => {
+        if (track.youtube_id && track.youtube_id.trim() !== '') {
+          existingMap.set(`${track.title.toLowerCase()}_${track.artist.toLowerCase()}`, track.youtube_id);
+        }
+      });
+    }
+
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
     const chartData = [];
 
-    // 3. 각 트랙별 유튜브 매핑 및 데이터 준비
+    // 4. 각 트랙별 유튜브 매핑 및 데이터 준비
     for (let i = 0; i < tracks.length; i++) {
       const entry = tracks[i];
       const trackTitle = entry['im:name']?.label;
@@ -37,20 +48,29 @@ export async function GET(request: Request) {
       const albumArtRaw = entry['im:image']?.[2]?.label || entry['im:image']?.[0]?.label;
       const albumArt = albumArtRaw ? albumArtRaw.replace('170x170bb', '600x600bb') : null;
       
-      // iTunes 고유 ID
       const itunesId = entry.id?.attributes?.['im:id'] || `itunes_${i}`;
-
-      // 유튜브 비디오 ID 검색 (간단한 검색 쿼리 사용)
-      const searchQuery = `${artistName} ${trackTitle} official audio`;
+      const searchKey = `${trackTitle.toLowerCase()}_${artistName.toLowerCase()}`;
+      
       let youtubeId = '';
-      try {
-        const ytRes = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`
-        );
-        const ytData = await ytRes.json();
-        youtubeId = ytData.items?.[0]?.id?.videoId || '';
-      } catch (e) {
-        console.warn(`YT Fetch failed for ${trackTitle}`, e);
+      
+      // 이미 DB에 있는 곡이면 유튜브 검색을 건너뜀 (할당량 100포인트 절약)
+      if (existingMap.has(searchKey)) {
+        youtubeId = existingMap.get(searchKey);
+      } else {
+        // DB에 없는 새로운 곡만 검색
+        const searchQuery = `${artistName} ${trackTitle} official audio`;
+        try {
+          const ytRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`
+          );
+          const ytData = await ytRes.json();
+          youtubeId = ytData.items?.[0]?.id?.videoId || '';
+          
+          // API 할당량 보호를 위해 검색 시에만 약간의 지연 추가
+          await new Promise(res => setTimeout(res, 50));
+        } catch (e) {
+          console.warn(`YT Fetch failed for ${trackTitle}`, e);
+        }
       }
 
       chartData.push({
@@ -62,9 +82,6 @@ export async function GET(request: Request) {
         spotify_id: itunesId, // 컬럼명 재활용
         updated_at: new Date().toISOString()
       });
-
-      // API 할당량 보호를 위해 짧은 지연
-      await new Promise(res => setTimeout(res, 50));
     }
 
     // 4. 안전 검사: 데이터가 없으면 기존 데이터를 지우지 않고 중단
