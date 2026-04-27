@@ -113,7 +113,7 @@ const MusicChartPage = () => {
             <h1 className="text-[28px] sm:text-3xl md:text-5xl font-black italic tracking-tighter uppercase leading-none whitespace-nowrap">
               K-POP{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">
-                CHART 50
+                CHART 100
               </span>
             </h1>
             <button

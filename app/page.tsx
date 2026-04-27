@@ -512,11 +512,12 @@ export default function Dashboard() {
 
       {/* ── Operations Toolbar ── */}
       <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 pt-8 pb-4">
-        <div className="glassmorphism rounded-3xl p-2 sm:p-3 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-white/5 shadow-2xl">
+        <div className="glassmorphism rounded-3xl p-3 sm:p-4 flex flex-col gap-3 border-white/5 shadow-2xl">
 
-          {/* Left: Input Node (Country) */}
-          <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <div className="w-full sm:w-72 relative group">
+          {/* Row 1: Country + Status + Vote Quota */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Country Selector */}
+            <div className="w-full sm:w-72 relative group flex-shrink-0">
               <CountrySelector selected={userCountry} onSelect={setUserCountry} lang={lang} />
               {!userCountry && (
                 <div className="absolute -top-2 -right-2 bg-red-500 text-[9px] font-black px-2 py-0.5 rounded-full animate-bounce shadow-lg shadow-red-500/20 z-20">
@@ -525,65 +526,68 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Warning / Status Badge */}
-            {!userCountry ? (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5 group border-dashed hover:border-red-500/30 transition-colors"
-              >
-                <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_red]" />
-                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
-                  {t('connectNode')}
-                </span>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[var(--neon-lime)]/10 border border-[var(--neon-lime)]/30"
-              >
-                <div className="w-1.5 h-1.5 bg-[var(--neon-lime)] rounded-full shadow-[0_0_8px_var(--neon-lime)]" />
-                <span className="text-[10px] font-black text-[var(--neon-lime)] uppercase tracking-widest leading-none">
-                  {t('nodeStable')}
-                </span>
-              </motion.div>
-            )}
-
-            {/* Vote Quota Badge */}
-            {voteQuota && (
-              <div className="flex items-center gap-2">
+            {/* Status + Vote Quota (inline on mobile) */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Warning / Status Badge */}
+              {!userCountry ? (
                 <motion.div
-                  initial={{ opacity: 0, x: 10 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/5"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/5 border border-white/5 border-dashed hover:border-red-500/30 transition-colors"
                 >
-                  <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[var(--neon-lime)]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_red]" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
-                    {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
+                    {t('connectNode')}
                   </span>
                 </motion.div>
-
-                {/* 리워드 광고 모달 호출 버튼 */}
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  onClick={() => setShowAdModal(true)}
-                  className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-400 hover:text-amber-300 hover:scale-105 active:scale-95 transition-all overflow-hidden group"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[var(--neon-lime)]/10 border border-[var(--neon-lime)]/30"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                  <Gift size={14} className="animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">+3V</span>
-                </motion.button>
-              </div>
-            )}
+                  <div className="w-1.5 h-1.5 bg-[var(--neon-lime)] rounded-full shadow-[0_0_8px_var(--neon-lime)]" />
+                  <span className="text-[10px] font-black text-[var(--neon-lime)] uppercase tracking-widest leading-none">
+                    {t('nodeStable')}
+                  </span>
+                </motion.div>
+              )}
+
+              {/* Vote Quota Badge */}
+              {voteQuota && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/5 border border-white/5"
+                  >
+                    <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[var(--neon-lime)]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
+                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
+                      {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
+                    </span>
+                  </motion.div>
+
+                  {/* 리워드 광고 모달 호출 버튼 */}
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    onClick={() => setShowAdModal(true)}
+                    className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-400 hover:text-amber-300 hover:scale-105 active:scale-95 transition-all overflow-hidden group"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                    <Gift size={14} className="animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">+3V</span>
+                  </motion.button>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Right: Map preference & Music */}
-          <div className="flex items-center justify-between sm:justify-start gap-4 px-2 sm:px-0 bg-black/20 lg:bg-transparent rounded-2xl py-2 lg:py-0 border border-white/5 lg:border-none">
+          {/* Row 2: Music + Map Toggle */}
+          <div className="flex items-center gap-3 overflow-x-auto scrollbar-none">
             <Link
               href="/music"
-              className="relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest overflow-hidden group transition-all duration-300 hover:scale-105 active:scale-95"
+              className="relative flex items-center gap-2 px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest overflow-hidden group transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0"
               style={{
                 background: 'linear-gradient(135deg, rgba(55,197,97,0.12), rgba(55,197,97,0.04))',
                 border: '1px solid rgba(55,197,97,0.45)',
@@ -603,13 +607,16 @@ export default function Dashboard() {
               <span className="relative text-[8px] px-1.5 py-0.5 bg-[#37C561] text-black rounded-full font-black tracking-widest leading-none shrink-0">LIVE</span>
             </Link>
 
-            <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.2em] whitespace-nowrap">
+            {/* Divider */}
+            <div className="w-px h-6 bg-white/10 flex-shrink-0 hidden sm:block" />
+
+            <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.15em] whitespace-nowrap flex-shrink-0">
               {t('visMode')}
             </span>
-            <div className="flex bg-zinc-900/50 p-1 rounded-2xl border border-white/5">
+            <div className="flex bg-zinc-900/50 p-1 rounded-2xl border border-white/5 flex-shrink-0">
               <button
                 onClick={() => setMapView('globe')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'globe'
+                className={`flex items-center gap-1.5 px-3 sm:px-5 py-2 rounded-xl text-[11px] font-black transition-all ${mapView === 'globe'
                   ? 'bg-[var(--neon-lime)] text-black shadow-[0_0_20px_rgba(var(--neon-lime-rgb),0.3)]'
                   : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   }`}
@@ -619,7 +626,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => setMapView('flat')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black transition-all ${mapView === 'flat'
+                className={`flex items-center gap-1.5 px-3 sm:px-5 py-2 rounded-xl text-[11px] font-black transition-all ${mapView === 'flat'
                   ? 'bg-[var(--neon-lime)] text-black shadow-[0_0_20px_rgba(var(--neon-lime-rgb),0.3)]'
                   : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   }`}

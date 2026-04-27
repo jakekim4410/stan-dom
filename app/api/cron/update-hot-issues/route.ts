@@ -42,8 +42,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Database check failed' }, { status: 500 });
     }
 
-    if (existingData && existingData.length >= 2) {
-      console.log(`[CRON] Issues for ${todayKST} already generated. Skipping.`);
+    if (existingData && existingData.length >= 4) {
+      console.log(`[CRON] Issues for ${todayKST} already generated (${existingData.length} found). Skipping.`);
       return NextResponse.json({ message: 'Already generated for today' }, { status: 200 });
     }
 
@@ -147,7 +147,7 @@ Return JSON ONLY: { "category": { "EN":"", "KO":"", "ES":"" }, "headline": { "EN
 Headline: ${title}
 Source: ${sourceName}
       `;
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -198,33 +198,44 @@ Source: ${sourceName}
     };
 
 
-    // 7. 데이터 생성 및 Upsert (병렬 처리로 속도 2배 향상)
-    const processPromises = articlesToProcess.map(async (raw, i) => {
+    // 7. 데이터 생성 및 Upsert (개별 에러 핸들링으로 안정성 강화)
+    const uniqueTs = Date.now();
+    const inserts: any[] = [];
+
+    for (let i = 0; i < articlesToProcess.length; i++) {
+      const raw = articlesToProcess[i];
       const isSlot1 = (i === 0);
-      
-      console.log(`[CRON] Expanding: ${raw.title}`);
-      const expanded = await expandWithGemini(raw.title, raw.source?.name || 'News');
-      
-      const artist = artistNames.find(n => raw.title.toLowerCase().includes(n.toLowerCase()));
-      const videoId = await searchYouTube(raw.title, artist || '');
+      try {
+        console.log(`[CRON] Expanding: ${raw.title}`);
+        const expanded = await expandWithGemini(raw.title, raw.source?.name || 'News');
+        
+        const artist = artistNames.find(n => raw.title.toLowerCase().includes(n.toLowerCase()));
+        const videoId = await searchYouTube(raw.title, artist || '');
 
-      return {
-        id: `${todayIdPrefix}_0${i + 1}`,
-        published_at: `${todayKST}T${isSlot1 ? '00:00:00' : '09:00:00'}Z`,
-        slot: isSlot1 ? 'KST 09:00' : 'KST 18:00',
-        date: todayKST,
-        category: expanded.category,
-        headline: expanded.headline,
-        lead: expanded.lead,
-        body: expanded.body,
-        video_id: videoId,
-        accent: isSlot1 ? '#9333EA' : '#E11D48', 
-        tags: ['News', 'KPOP', raw.source?.name?.substring(0,6).replace(/\s+/g, '') || 'Hot'],
-        is_active: true
-      };
-    });
+        inserts.push({
+          id: `live_${uniqueTs}_${i + 1}`,
+          published_at: `${todayKST}T${isSlot1 ? '00:00:00' : '09:00:00'}Z`,
+          slot: isSlot1 ? 'KST 09:00' : 'KST 18:00',
+          date: todayKST,
+          category: expanded.category,
+          headline: expanded.headline,
+          lead: expanded.lead,
+          body: expanded.body,
+          video_id: videoId,
+          accent: isSlot1 ? '#9333EA' : '#E11D48', 
+          tags: ['News', 'KPOP', raw.source?.name?.substring(0,6).replace(/\s+/g, '') || 'Hot'],
+          is_active: true
+        });
+      } catch (articleError: any) {
+        console.error(`[CRON] Failed to process article "${raw.title}":`, articleError.message);
+        // 개별 기사 실패 시 나머지 계속 처리
+      }
+    }
 
-    const inserts = await Promise.all(processPromises);
+    if (inserts.length === 0) {
+      console.error('[CRON] All articles failed to process');
+      return NextResponse.json({ error: 'All articles failed to process' }, { status: 500 });
+    }
 
     const { error: upsertError } = await supabase
       .from('hot_issues')

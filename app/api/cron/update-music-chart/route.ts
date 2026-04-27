@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     );
 
     // 2. iTunes RSS Top K-Pop Songs (US, Genre 51 = K-Pop) 가져오기
-    const itunesRes = await fetch('https://itunes.apple.com/us/rss/topsongs/limit=50/genre=51/json');
+    const itunesRes = await fetch('https://itunes.apple.com/us/rss/topsongs/limit=100/genre=51/json');
     if (!itunesRes.ok) throw new Error('iTunes API failed');
     
     const itunesData = await itunesRes.json();

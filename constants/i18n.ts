@@ -234,8 +234,8 @@ export const i18n: Record<Language, Record<string, string>> = {
     exitLeave: 'Leave',
 
     // Music Chart Page
-    musicChartBtn: 'Weekly Hot 50',
-    musicChartTitle: 'K-POP CHART 50',
+    musicChartBtn: 'Weekly Hot 100',
+    musicChartTitle: 'K-POP CHART 100',
     musicChartSub: 'Based on global iTunes chart data & YouTube official audio. Experience the pulse of the world\'s standard in K-Pop popularity.',
     musicChartSync: 'Real-time Global Sync',
     musicChartRefresh: 'Refresh',
@@ -540,8 +540,8 @@ export const i18n: Record<Language, Record<string, string>> = {
     exitLeave: '나가기',
 
     // Music Chart Page
-    musicChartBtn: '주간 핫 50',
-    musicChartTitle: 'K-POP 차트 50',
+    musicChartBtn: '주간 핫 100',
+    musicChartTitle: 'K-POP 차트 100',
     musicChartSub: '글로벌 iTunes 차트 데이터와 YouTube 공식 오디오 기반. 전 세계 K-Pop 인기도의 기준을 확인하세요.',
     musicChartSync: '실시간 글로벌 동기화',
     musicChartRefresh: '새로고침',
@@ -846,8 +846,8 @@ export const i18n: Record<Language, Record<string, string>> = {
     exitLeave: 'Salir',
 
     // Music Chart Page
-    musicChartBtn: 'Top 50 Semanal',
-    musicChartTitle: 'K-POP CHART 50',
+    musicChartBtn: 'Top 100 Semanal',
+    musicChartTitle: 'K-POP CHART 100',
     musicChartSub: 'Basado en datos globales de iTunes y audio oficial de YouTube.',
     musicChartSync: 'Sincronización Global en Vivo',
     musicChartRefresh: 'Actualizar',
