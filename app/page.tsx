@@ -456,8 +456,8 @@ export default function Dashboard() {
       </div>
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-3xl border-b px-6 py-4 transition-colors duration-1000" style={{ borderColor: `${themeColor}20` }}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-3xl border-b px-4 sm:px-6 py-3 sm:py-4 transition-colors duration-1000" style={{ borderColor: `${themeColor}20` }}>
+        <div className="max-w-[1400px] w-full mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <a href="/" className="flex items-center hover:scale-105 transition-transform drop-shadow-md" style={{ filter: `drop-shadow(0 0 10px ${themeColor}60)` }}>
               <img src="/stan_dom_logo_transparent2.png" alt="STAN.DOM" className="h-6 object-contain" />

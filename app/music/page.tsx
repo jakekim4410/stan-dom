@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useMusic } from '@/app/contexts/MusicContext';
-import { Play, TrendingUp, RefreshCcw, ArrowLeft, Info, Search, ExternalLink } from 'lucide-react';
+import { Play, TrendingUp, RefreshCcw, ArrowLeft, Info, Search, ExternalLink, ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Language, getT } from '@/constants/i18n';
@@ -20,6 +20,7 @@ const MusicChartPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [lang, setLang] = useState<Language>('EN');
   const [showSourceInfo, setShowSourceInfo] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const { playTrack, setPlaylist, setActivePlaylist, currentTrack, togglePlay } = useMusic();
   const router = useRouter();
   const t = getT(lang);
@@ -70,6 +71,19 @@ const MusicChartPage = () => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, tracks]);
+
+  // 스크롤 이벤트 리스너 추가 (Top 버튼 용)
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handlePlay = (track: any) => {
     if (currentTrack?.id === track.id) {
@@ -351,6 +365,22 @@ const MusicChartPage = () => {
           </div>
         </motion.div>
       )}
+
+      {/* ── 스크롤 탑 버튼 ── */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            onClick={scrollToTop}
+            className="fixed bottom-[140px] right-6 z-50 p-3 rounded-full bg-[#37C561]/20 border border-[#37C561]/40 text-[#37C561] backdrop-blur-md shadow-[0_0_15px_rgba(55,197,97,0.2)] hover:bg-[#37C561]/30 transition-all hover:scale-110 active:scale-95"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp size={20} />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </main>
   );
 };
