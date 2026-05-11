@@ -64,29 +64,51 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'GNEWS API configuration missing' }, { status: 500 });
     }
 
-    // 아티스트 102명을 15명씩 묶어서 검색 (API 호출 최적화)
-    const chunks = [];
-    for (let i = 0; i < artistNames.length; i += 15) {
-      chunks.push(artistNames.slice(i, i + 15));
+    // 동적 청크: GNews 쿼리 길이(최대 200자)를 넘지 않도록 묶음
+    const queries: string[] = [];
+    let currentChunk: string[] = [];
+    const baseQuery = ` AND (kpop OR "k-pop")`;
+    
+    for (const name of artistNames) {
+      currentChunk.push(`"${name}"`);
+      const q = `(${currentChunk.join(' OR ')})${baseQuery}`;
+      if (q.length > 190) {
+        currentChunk.pop();
+        queries.push(`(${currentChunk.join(' OR ')})${baseQuery}`);
+        currentChunk = [`"${name}"`];
+      }
+    }
+    if (currentChunk.length > 0) {
+      queries.push(`(${currentChunk.join(' OR ')})${baseQuery}`);
     }
 
+    // Shuffle queries to ensure we check different artists every run
+    const shuffledQueries = queries.sort(() => Math.random() - 0.5);
+
     let allArticles: any[] = [];
-    // 데일리 크론은 무리를 주지 않기 위해 상위 5개 청크(약 75명)만 우선 검색
-    const fetchPromises = chunks.slice(0, 5).map(async (chunk) => {
-      const q = `(${chunk.map(name => `"${name}"`).join(' OR ')}) AND (kpop OR "k-pop")`;
+    // 데일리 크론: GNews API Rate Limit(1초당 1요청) 방지를 위해 순차 실행 및 대기
+    for (const q of shuffledQueries.slice(0, 6)) {
       const gnewsUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=en&sortby=publishedAt&max=10&apikey=${GNEWS_API_KEY}`;
       try {
         const res = await fetch(gnewsUrl);
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error(`[CRON] GNews API HTTP ${res.status}:`, errorData);
+          continue;
+        }
         const data = await res.json();
-        if (data.articles) return data.articles;
+        if (data.errors) {
+          console.error('[CRON] GNews API Error:', data.errors);
+        }
+        if (data.articles) {
+          allArticles.push(...data.articles);
+        }
       } catch (e) {
         console.error(`[CRON] Fetch for query ${q} failed:`, e);
       }
-      return [];
-    });
-
-    const results = await Promise.all(fetchPromises);
-    allArticles = results.flat();
+      // GNews API 제한을 준수하기 위한 대기
+      await new Promise(resolve => setTimeout(resolve, 1100));
+    }
 
     // JS 기반 검열 (정치, 요리, 경제 제외)
     const badWords = ["president", "first lady", "minister", "modi", "politics", "noodles", "food", "cuisine", "ramen"];
@@ -102,8 +124,12 @@ export async function GET(request: Request) {
       }
     }
 
-    // 5. 중복 방지 로직 (지난 2일간의 뉴스 제목과 비교)
-    const { data: pastIssues } = await supabase.from('hot_issues').select('headline').limit(10);
+    // 5. 중복 방지 로직 (최근 뉴스 제목과 비교)
+    const { data: pastIssues } = await supabase
+      .from('hot_issues')
+      .select('headline')
+      .order('published_at', { ascending: false })
+      .limit(20);
     const pastTitles = (pastIssues || []).map(pi => pi.headline?.EN).filter(t => t);
 
     const isDuplicate = (newTitle: string, existingTitles: string[]) => {
@@ -137,28 +163,56 @@ export async function GET(request: Request) {
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
-    const expandWithGemini = async (title: string, sourceName: string) => {
+    const expandWithGemini = async (title: string, sourceName: string, maxRetries = 3) => {
       if (!GEMINI_API_KEY) throw new Error("Missing GEMINI_API_KEY");
       const prompt = `
-You are an expert K-Pop music journalist. Write a professional 3-paragraph news article based on this headline.
-IMPORTANT: You MUST focus entirely on the K-Pop industry and K-Pop artists. If the headline is about a Western artist, try to find a K-Pop connection or focus on the K-Pop impact.
-MANDATORY: At the very end of the "body" for EVERY language (EN, KO, ES), you must add a new line: "Source: ${sourceName}" (translated to the respective language).
+You are an expert K-Pop music journalist. Write a comprehensive, high-quality, and professional news article based on this headline.
+The article MUST be substantial (at least 5-6 long paragraphs) and provide deep insights.
+Structure the article to include:
+1. A detailed introduction and overview of the news event.
+2. In-depth analysis of the significance for the artist's career and the K-Pop industry.
+3. Discussion of the potential impact on global fans, market trends, and future expectations.
+4. A professional journalistic tone with rich, descriptive vocabulary.
+
+IMPORTANT: You MUST focus entirely on the K-Pop industry and K-Pop artists. If the headline is about a Western artist, find a K-Pop connection or focus on the K-Pop impact.
+MANDATORY: For EVERY language (EN, KO, ES), provide the content in that specific language. Ensure natural and professional phrasing in each.
+MANDATORY: At the very end of the "body" for EVERY language, you must add a new line: "Source: ${sourceName}" (translated to the respective language).
+
 Return JSON ONLY: { "category": { "EN":"", "KO":"", "ES":"" }, "headline": { "EN":"", "KO":"", "ES":"" }, "lead": { "EN":"", "KO":"", "ES":"" }, "body": { "EN":"", "KO":"", "ES":"" } }
 Headline: ${title}
 Source: ${sourceName}
       `;
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { response_mime_type: "application/json" }
-        })
-      });
-      const data = await response.json();
-      if (data.error) throw new Error(`Gemini Error: ${data.error.message}`);
-      return JSON.parse(data.candidates[0].content.parts[0].text);
+
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { response_mime_type: "application/json" }
+            })
+          });
+          const data = await response.json();
+          if (data.error) {
+            if (data.error.message?.includes('high demand') || data.error.code === 503 || data.error.code === 429) {
+              console.warn(`[CRON] Gemini busy (attempt ${attempt}/${maxRetries}). Retrying in 2s...`);
+              await new Promise(r => setTimeout(r, 2000));
+              continue;
+            }
+            throw new Error(`Gemini Error: ${data.error.message}`);
+          }
+          if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            throw new Error('Gemini returned empty response');
+          }
+          return JSON.parse(data.candidates[0].content.parts[0].text);
+        } catch (e: any) {
+          if (attempt === maxRetries) throw e;
+          console.warn(`[CRON] Gemini attempt ${attempt} failed: ${e.message}. Retrying...`);
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+        }
+      }
     };
 
     const searchYouTube = async (query: string, artistName: string): Promise<string> => {
@@ -200,19 +254,24 @@ Source: ${sourceName}
 
     // 7. 데이터 생성 및 Upsert (개별 에러 핸들링으로 안정성 강화)
     const uniqueTs = Date.now();
-    const inserts: any[] = [];
-
-    for (let i = 0; i < articlesToProcess.length; i++) {
-      const raw = articlesToProcess[i];
+    
+    // Vercel 60s Timeout 방지를 위해 병렬 처리 (Promise.all)
+    const insertPromises = articlesToProcess.map(async (raw, i) => {
       const isSlot1 = (i === 0);
       try {
         console.log(`[CRON] Expanding: ${raw.title}`);
+        
+        // 약간의 지연을 주어 Gemini Rate Limit 에러 최소화 (첫 번째는 즉시, 두 번째는 1.5초 후 시작)
+        if (i > 0) {
+          await new Promise(resolve => setTimeout(resolve, i * 1500));
+        }
+
         const expanded = await expandWithGemini(raw.title, raw.source?.name || 'News');
         
         const artist = artistNames.find(n => raw.title.toLowerCase().includes(n.toLowerCase()));
         const videoId = await searchYouTube(raw.title, artist || '');
 
-        inserts.push({
+        return {
           id: `live_${uniqueTs}_${i + 1}`,
           published_at: `${todayKST}T${isSlot1 ? '00:00:00' : '09:00:00'}Z`,
           slot: isSlot1 ? 'KST 09:00' : 'KST 18:00',
@@ -225,12 +284,15 @@ Source: ${sourceName}
           accent: isSlot1 ? '#9333EA' : '#E11D48', 
           tags: ['News', 'KPOP', raw.source?.name?.substring(0,6).replace(/\s+/g, '') || 'Hot'],
           is_active: true
-        });
+        };
       } catch (articleError: any) {
         console.error(`[CRON] Failed to process article "${raw.title}":`, articleError.message);
-        // 개별 기사 실패 시 나머지 계속 처리
+        return null;
       }
-    }
+    });
+
+    const results = await Promise.all(insertPromises);
+    const inserts = results.filter(r => r !== null);
 
     if (inserts.length === 0) {
       console.error('[CRON] All articles failed to process');

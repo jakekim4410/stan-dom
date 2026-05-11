@@ -188,7 +188,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     
     // Battle Zone
     battleZoneTitle: 'MONTHLY BATTLE ZONE',
-    battleZoneSub: 'This Month: 5th Gen Rising Popcorn Battle (RIIZE vs BOYNEXTDOOR vs TWS)',
+    battleZoneSub: 'This Month: 5th Gen Global Visual Battle (ILLIT vs BABYMONSTER vs UNIS)',
     votingRuleNotice: 'Members: 10 votes/day, Non-members: 3 votes/day',
     pastBattles: 'View Past Battles',
     hidePastBattles: 'Hide',
@@ -494,7 +494,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Battle Zone
     // Battle Zone
     battleZoneTitle: 'MONTHLY BATTLE ZONE (월간 배틀존)',
-    battleZoneSub: '이달의 주제: 5세대 라이징 팝콘 배틀 (RIIZE vs BOYNEXTDOOR vs TWS)',
+    battleZoneSub: '이달의 주제: 5세대 글로벌 비주얼 퀸 배틀 (ILLIT vs BABYMONSTER vs UNIS)',
     votingRuleNotice: '회원가입 시 1일 10회, 비회원은 3회 투표 가능',
     pastBattles: '지난 배틀 보기',
     hidePastBattles: '접기',
@@ -800,7 +800,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Battle Zone
     // Battle Zone
     battleZoneTitle: 'ZONA DE BATALLA MENSUAL',
-    battleZoneSub: 'Este Mes: Batalla de la 5.ª Generación (RIIZE vs BOYNEXTDOOR vs TWS)',
+    battleZoneSub: 'Este Mes: Batalla Visual Global de la 5.ª Gen (ILLIT vs BABYMONSTER vs UNIS)',
     votingRuleNotice: 'Miembros: 10 votos/día, No miembros: 3 votos/día',
     pastBattles: 'Ver Batallas Anteriores',
     hidePastBattles: 'Ocultar',

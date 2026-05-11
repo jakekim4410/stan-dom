@@ -1320,7 +1320,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {['RIIZE', 'BOYNEXTDOOR', 'TWS'].map((name, i) => {
+                  {['ILLIT', 'BABYMONSTER', 'UNIS'].map((name, i) => {
                     const artist = artists.find(a => getLangName(a.name, 'EN').toUpperCase() === name);
                     const votes = artist?.total_votes || 0;
                     const isTop = i === 0;
@@ -1417,6 +1417,46 @@ export default function Dashboard() {
                     className="w-full overflow-hidden max-w-4xl max-h-[400px] overflow-y-auto custom-scrollbar"
                   >
                     <div className="border border-white/8 rounded-3xl overflow-hidden bg-white/[0.02] backdrop-blur-sm divide-y divide-white/5 mt-4">
+                      {/* Past Battle: 2026. 05 */}
+                      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 hover:bg-white/5 transition-colors group">
+                        <div className="flex flex-col items-center sm:items-start shrink-0 min-w-[120px]">
+                          <span className="px-3 py-1 rounded-full text-[10px] font-black text-[#A855F7] border border-[#A855F7]/30 bg-[#A855F7]/10 mb-2">2026. 05</span>
+                          <span className="text-sm font-black text-white">{lang === 'KO' ? '5세대 글로벌 루키' : lang === 'ES' ? 'Novatos Globales 5.ª Gen' : '5th Gen Global Rookie'}</span>
+                        </div>
+                        <div className="flex-1 flex flex-wrap gap-2 sm:gap-4 items-center justify-center sm:justify-start">
+                          <span className="text-[var(--neon-lime)] font-black tracking-widest text-sm flex items-center gap-1">
+                            <Trophy size={14} className="text-yellow-400" /> NCT WISH
+                          </span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">NEXZ</span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">ALL(H)OURS</span>
+                        </div>
+                        <div className="shrink-0 flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">{t('battleWinner')}: NCT WISH</span>
+                        </div>
+                      </div>
+
+                      {/* Past Battle: 2026. 04 */}
+                      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 hover:bg-white/5 transition-colors group">
+                        <div className="flex flex-col items-center sm:items-start shrink-0 min-w-[120px]">
+                          <span className="px-3 py-1 rounded-full text-[10px] font-black text-[#A855F7] border border-[#A855F7]/30 bg-[#A855F7]/10 mb-2">2026. 04</span>
+                          <span className="text-sm font-black text-white">{lang === 'KO' ? '5세대 라이징 팝콘' : lang === 'ES' ? 'Popcorn Emergente 5.ª Gen' : '5th Gen Rising Popcorn'}</span>
+                        </div>
+                        <div className="flex-1 flex flex-wrap gap-2 sm:gap-4 items-center justify-center sm:justify-start">
+                          <span className="text-[var(--neon-lime)] font-black tracking-widest text-sm flex items-center gap-1">
+                            <Trophy size={14} className="text-yellow-400" /> RIIZE
+                          </span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">BOYNEXTDOOR</span>
+                          <span className="text-zinc-700 text-xs font-black">VS</span>
+                          <span className="text-zinc-500 font-bold text-xs opacity-70 line-through">TWS</span>
+                        </div>
+                        <div className="shrink-0 flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">{t('battleWinner')}: RIIZE</span>
+                        </div>
+                      </div>
+
                       {/* Past Battle 1 */}
                       <div className="flex flex-col sm:flex-row items-center gap-6 p-6 hover:bg-white/5 transition-colors group">
                         <div className="flex flex-col items-center sm:items-start shrink-0 min-w-[120px]">
