@@ -1320,10 +1320,15 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {['ILLIT', 'BABYMONSTER', 'UNIS'].map((name, i) => {
-                    const artist = artists.find(a => getLangName(a.name, 'EN').toUpperCase() === name);
-                    const votes = artist?.total_votes || 0;
-                    const isTop = i === 0;
+                  {['ILLIT', 'BABYMONSTER', 'UNIS']
+                    .map(name => ({
+                      name,
+                      artist: artists.find(a => getLangName(a.name, 'EN').toUpperCase() === name)
+                    }))
+                    .sort((a, b) => (b.artist?.total_votes || 0) - (a.artist?.total_votes || 0))
+                    .map(({ name, artist }, i) => {
+                      const votes = artist?.total_votes || 0;
+                      const isTop = i === 0;
 
                     return (
                       <div key={name} className="glassmorphism p-6 rounded-3xl border-white/5 hover:border-[var(--neon-lime)]/40 transition-all flex flex-col gap-4">
