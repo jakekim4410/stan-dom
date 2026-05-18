@@ -82,6 +82,15 @@ const MusicPlayer = () => {
   const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
   const [syncOffset, setSyncOffset] = useState(0);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
+  
+  // ── 모바일 앱 환경 감지 ────────────────────────────────
+  const [isAppEnv, setIsAppEnv] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isApp = window.navigator.userAgent.includes('STAN_DOM_APP') || !!(window as any).ReactNativeWebView;
+      setIsAppEnv(isApp);
+    }
+  }, []);
 
   // ── ref 사본 (closure 안에서 최신값 읽기) ──────────────
   const isPlayingRef   = useRef(isPlaying);
@@ -331,7 +340,9 @@ const MusicPlayer = () => {
             animate={{ y: 0 }}
             exit={{ y: 120 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-            className="fixed bottom-0 left-0 right-0 z-[100] px-3 pb-3 pointer-events-none"
+            className={`fixed bottom-0 left-0 right-0 z-[100] px-3 pointer-events-none transition-all ${
+              isAppEnv ? 'pb-5 sm:pb-3' : 'pb-3'
+            }`}
           >
             <div className="max-w-4xl mx-auto pointer-events-auto">
 
@@ -374,7 +385,7 @@ const MusicPlayer = () => {
                 </div>
 
                 {/* ── 메인 컨트롤 영역 ── */}
-                <div className="flex items-center p-3 gap-3">
+                <div className="flex items-center p-2 sm:p-3 gap-2 sm:gap-3">
 
                   {/* 앨범아트 */}
                   <div className="relative h-10 w-10 flex-shrink-0">
@@ -423,21 +434,21 @@ const MusicPlayer = () => {
                   </div>
 
                   {/* 재생 컨트롤 */}
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <button onClick={prevTrack} className="p-2 text-zinc-500 hover:text-white transition-colors" title="이전 곡">
-                      <SkipBack size={17} fill="currentColor" />
+                  <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+                    <button onClick={prevTrack} className="p-1.5 sm:p-2 text-zinc-500 hover:text-white transition-colors" title="이전 곡">
+                      <SkipBack size={15} className="sm:w-[17px] sm:h-[17px]" fill="currentColor" />
                     </button>
                     <button
                       onClick={togglePlay}
-                      className="p-2.5 bg-white text-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
+                      className="p-2 sm:p-2.5 bg-white text-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
                     >
                       {isPlaying
-                        ? <Pause size={17} fill="currentColor" />
-                        : <Play  size={17} fill="currentColor" className="ml-0.5" />
+                        ? <Pause size={15} className="sm:w-[17px] sm:h-[17px]" fill="currentColor" />
+                        : <Play  size={15} className="sm:w-[17px] sm:h-[17px] ml-0.5" fill="currentColor" />
                       }
                     </button>
-                    <button onClick={nextTrack} className="p-2 text-zinc-500 hover:text-white transition-colors" title="다음 곡">
-                      <SkipForward size={17} fill="currentColor" />
+                    <button onClick={nextTrack} className="p-1.5 sm:p-2 text-zinc-500 hover:text-white transition-colors" title="다음 곡">
+                      <SkipForward size={15} className="sm:w-[17px] sm:h-[17px]" fill="currentColor" />
                     </button>
                   </div>
 
@@ -469,10 +480,10 @@ const MusicPlayer = () => {
                   {/* 가사 토글 버튼 */}
                   <button
                     onClick={() => setShowLyrics(!showLyrics)}
-                    className={`flex p-2 flex-shrink-0 transition-colors ${showLyrics ? 'text-[var(--neon-lime)] drop-shadow-[0_0_8px_var(--neon-lime)]' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex p-1.5 sm:p-2 flex-shrink-0 transition-colors ${showLyrics ? 'text-[var(--neon-lime)] drop-shadow-[0_0_8px_var(--neon-lime)]' : 'text-zinc-500 hover:text-white'}`}
                     title="가사/응원법 보기"
                   >
-                    <Mic2 size={16} />
+                    <Mic2 size={15} className="sm:w-[16px] sm:h-[16px]" />
                   </button>
 
                   {/* 닫기 */}
