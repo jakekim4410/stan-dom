@@ -50,7 +50,8 @@ export default function GlobeMap({
 }: GlobeMapProps) {
   const globeRef = useRef<any>(null);
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [dimensions, setDimensions] = useState({ width: 320, height: 300 });
+  const [isMounted, setIsMounted] = useState(false);
   const [ringsData, setRingsData] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
   const [isPaused, setIsPaused] = useState(false);
@@ -143,6 +144,7 @@ export default function GlobeMap({
   }, [lastVoteCountry, triggerPause]);
 
   useEffect(() => {
+    setIsMounted(true);
     const updateSize = () => {
       const width = window.innerWidth;
       setDimensions({ width: Math.min(width, 1400), height: width < 768 ? 400 : 600 });
@@ -168,6 +170,14 @@ export default function GlobeMap({
         </li>`;
     }).join('');
   }, [detailedVotes, artists, lang, t]);
+
+  if (!isMounted) {
+    return (
+      <div className="h-[400px] w-full flex items-center justify-center text-zinc-500 font-bold uppercase tracking-widest animate-pulse">
+        {t('loadingGlobe')}
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex flex-col items-center justify-center overflow-visible py-4">

@@ -431,7 +431,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="flex-1 bg-[#020205] text-white relative flex flex-col">
+    <main className="flex-1 bg-[#020205] text-white relative flex flex-col overflow-x-hidden">
       {/* Background glows + Takeover */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-[#020205] transition-colors duration-1000">
         <div 
