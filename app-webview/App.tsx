@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
         <StatusBar style="light" backgroundColor="#000000" />
         <WebView
           ref={webviewRef}
@@ -99,9 +99,16 @@ export default function App() {
           bounces={false}
           javaScriptEnabled={true}
           domStorageEnabled={true}
+          mediaPlaybackRequiresUserAction={false}
+          allowsInlineMediaPlayback={true}
           backgroundColor="#000000"
+          onConsoleMessage={(event) => {
+            console.log('[Web Console]', event.nativeEvent.message);
+          }}
           // User-Agent 뒤에 'STAN_DOM_APP'을 붙여 웹에서 앱 환경인지 인식할 수 있게 함
-          userAgent={Platform.OS === 'android' ? 'Chrome/18.0.1025.133 Mobile Safari/535.19 STAN_DOM_APP_ANDROID' : 'AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 STAN_DOM_APP_IOS'}
+          userAgent={Platform.OS === 'android' 
+            ? 'Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36 STAN_DOM_APP_ANDROID' 
+            : 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 STAN_DOM_APP_IOS'}
         />
       </SafeAreaView>
     </SafeAreaProvider>
