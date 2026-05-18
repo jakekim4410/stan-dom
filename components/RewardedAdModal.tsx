@@ -2,72 +2,52 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, PlayCircle, Loader2, Gift } from 'lucide-react';
+import { X, Smartphone, Download, Gift, Sparkles } from 'lucide-react';
 import { claimAdReward } from '@/actions/claimAdReward';
 
 interface RewardedAdModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void; // 추후 앱 환경에서 사용될 수 있으므로 남겨둡니다.
 }
 
 export default function RewardedAdModal({ isOpen, onClose, onSuccess }: RewardedAdModalProps) {
-  const [timeLeft, setTimeLeft] = useState(15);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isAppEnv, setIsAppEnv] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [rewardClaimed, setRewardClaimed] = useState(false);
 
-  // 리셋
   useEffect(() => {
-    if (isOpen) {
-      setTimeLeft(15);
-      setIsPlaying(false);
-      setIsProcessing(false);
-      setRewardClaimed(false);
-    }
-  }, [isOpen]);
+    // 앱 환경(WebView)인지 확인
+    if (typeof window !== 'undefined') {
+      const isApp = window.navigator.userAgent.includes('STAN_DOM_APP') || !!(window as any).ReactNativeWebView;
+      setIsAppEnv(isApp);
 
-  // 타이머 로직
-  useEffect(() => {
-    if (!isPlaying || timeLeft <= 0 || rewardClaimed) return;
+      // 네이티브 앱에서 보내는 '광고 시청 완료' 이벤트 수신
+      const handleAdEarned = async () => {
+        setIsProcessing(true);
+        const res = await claimAdReward();
+        setIsProcessing(false);
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleAdComplete();
-          return 0;
+        if (res.success) {
+          alert('광고 시청 완료! +3 볼티지가 지급되었습니다 ⚡');
+          if (onSuccess) onSuccess();
+          onClose();
+        } else {
+          alert(res.error || '보상 지급에 실패했습니다. 다시 시도해주세요.');
         }
-        return prev - 1;
-      });
-    }, 1000);
+      };
 
-    return () => clearInterval(timer);
-  }, [isPlaying, timeLeft, rewardClaimed]);
+      window.addEventListener('adRewardEarned', handleAdEarned);
+      return () => window.removeEventListener('adRewardEarned', handleAdEarned);
+    }
+  }, [onClose, onSuccess]);
 
-  const handleAdComplete = async () => {
-    setIsProcessing(true);
-    const res = await claimAdReward();
-    setIsProcessing(false);
-
-    if (res.success) {
-      setRewardClaimed(true);
-      setTimeout(() => {
-        onSuccess();
-        onClose();
-      }, 2000);
+  const handleWatchAd = () => {
+    if (isAppEnv) {
+      // 네이티브 앱(Expo)으로 광고 띄워달라고 메시지 전송
+      (window as any).ReactNativeWebView.postMessage('SHOW_REWARDED_AD');
     } else {
-      alert(res.error || 'Failed to claim reward. Please try again later.');
-      onClose();
+      alert('광고 시청은 스탠덤 모바일 앱에서만 가능합니다!');
     }
-  };
-
-  const handleCloseAttempt = () => {
-    if (isPlaying && !rewardClaimed) {
-      const confirmClose = window.confirm("If you close now, you won't get the reward. Are you sure?");
-      if (!confirmClose) return;
-    }
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -80,91 +60,98 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess }: Rewarded
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 bg-black/90 backdrop-blur-md"
-          onClick={handleCloseAttempt}
+          onClick={onClose}
         />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
+          className="relative w-full max-w-sm bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-white/5">
-            <h3 className="text-white font-bold flex items-center gap-2">
-              <Gift className="text-[var(--neon-lime)]" size={18} />
-              Sponsored Ad
-            </h3>
+          <div className="absolute top-4 right-4 z-10">
             <button
-              onClick={handleCloseAttempt}
-              className="text-zinc-500 hover:text-white transition-colors p-1"
+              onClick={onClose}
+              className="p-2 bg-black/50 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"
             >
               <X size={20} />
             </button>
           </div>
 
-          {/* Ad Content */}
-          <div className="relative aspect-video bg-black flex flex-col items-center justify-center p-6 text-center">
-            {rewardClaimed ? (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="flex flex-col items-center gap-4"
-              >
-                <div className="w-16 h-16 rounded-full bg-[var(--neon-lime)]/20 flex items-center justify-center">
-                  <Gift size={32} className="text-[var(--neon-lime)]" />
-                </div>
-                <div>
-                  <h4 className="text-white font-bold text-xl mb-1">Reward Claimed!</h4>
-                  <p className="text-[var(--neon-lime)] font-black text-lg">+3 Voltage</p>
-                </div>
-              </motion.div>
-            ) : isPlaying ? (
-              <div className="flex flex-col items-center gap-6">
-                <div className="relative w-20 h-20">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
-                    <circle
-                      cx="50" cy="50" r="45"
-                      fill="none"
-                      stroke="var(--neon-lime)"
-                      strokeWidth="4"
-                      strokeDasharray="283"
-                      strokeDashoffset={283 - (283 * (15 - timeLeft)) / 15}
-                      className="transition-all duration-1000 ease-linear"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-black text-white">{timeLeft}</span>
-                  </div>
-                </div>
-                <p className="text-zinc-400 text-sm font-medium">Please wait while the ad plays...</p>
-                
-                {isProcessing && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-[var(--neon-lime)] animate-spin" />
-                  </div>
-                )}
+          {/* Hero Section */}
+          <div className="relative pt-12 pb-8 px-6 text-center bg-gradient-to-b from-[var(--neon-lime)]/10 to-transparent">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+            
+            <motion.div 
+              animate={{ y: [0, -5, 0] }} 
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="relative w-20 h-20 mx-auto mb-4 bg-zinc-800 rounded-2xl border border-white/10 shadow-xl flex items-center justify-center overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--neon-lime)]/20 to-transparent"></div>
+              <Smartphone size={40} className="text-[var(--neon-lime)]" />
+              <div className="absolute -top-1 -right-1">
+                <span className="relative flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--neon-lime)] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-[var(--neon-lime)]"></span>
+                </span>
               </div>
-            ) : (
-              <div className="flex flex-col items-center gap-4">
-                <p className="text-zinc-300 font-medium">Watch a short video to earn <br/><span className="text-[var(--neon-lime)] font-black">+3 Voltage</span></p>
-                <button
-                  onClick={() => setIsPlaying(true)}
-                  className="flex items-center gap-2 px-6 py-3 bg-[var(--neon-lime)] text-black rounded-xl font-black hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(var(--neon-lime-rgb),0.3)]"
-                >
-                  <PlayCircle size={20} />
-                  Watch Ad Now
-                </button>
-              </div>
-            )}
-          </div>
-          
-          {/* Ad Footer (mock) */}
-          <div className="p-3 bg-white/5 text-center">
-            <p className="text-[10px] text-zinc-500">Google AdSense placeholder</p>
+            </motion.div>
+
+            <h3 className="text-2xl font-black text-white mb-2 tracking-tight">
+              Get Free Voltage!
+            </h3>
+            <p className="text-zinc-400 text-sm leading-relaxed">
+              Want to vote more for your bias? <br/>
+              Watch ads and earn <span className="text-[var(--neon-lime)] font-bold">+3 Voltage</span> <br/>
+              exclusive to our mobile app.
+            </p>
           </div>
 
+          {/* Action Section */}
+          <div className="p-6 pt-0 flex flex-col gap-3">
+            <button
+              onClick={handleWatchAd}
+              disabled={isProcessing}
+              className="w-full relative group overflow-hidden rounded-xl bg-white text-black p-4 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+              {isProcessing ? (
+                <span className="font-bold">보상 지급 중...</span>
+              ) : isAppEnv ? (
+                <>
+                  <Gift size={20} className="font-bold text-[var(--neon-lime)]" />
+                  <span className="font-black text-lg">광고 보고 볼티지 받기</span>
+                </>
+              ) : (
+                <>
+                  <Download size={20} className="font-bold" />
+                  <div className="flex flex-col items-start leading-tight">
+                    <span className="text-[10px] font-bold text-black/60 uppercase">Download on the</span>
+                    <span className="font-black text-lg">App Store</span>
+                  </div>
+                </>
+              )}
+            </button>
+
+            {!isAppEnv && (
+              <button
+                onClick={() => alert('플레이스토어 출시 준비 중입니다!')}
+                className="w-full relative group overflow-hidden rounded-xl bg-[#000000] border border-white/10 text-white p-4 flex items-center justify-center gap-3 hover:bg-zinc-800 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                <Download size={20} />
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="text-[10px] font-bold text-white/60 uppercase">GET IT ON</span>
+                  <span className="font-black text-lg">Google Play</span>
+                </div>
+              </button>
+            )}
+            
+            <div className="mt-4 flex items-center justify-center gap-2 text-xs font-medium text-zinc-500">
+              <Sparkles size={14} className="text-[var(--neon-lime)]/70" />
+              <span>Coming soon to mobile stores</span>
+            </div>
+          </div>
         </motion.div>
       </div>
     </AnimatePresence>
