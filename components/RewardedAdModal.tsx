@@ -57,7 +57,11 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
   useEffect(() => {
     // 앱 환경(WebView)인지 확인
     if (typeof window !== 'undefined') {
-      const isApp = window.navigator.userAgent.includes('STAN_DOM_APP') || !!(window as any).ReactNativeWebView;
+      const isApp = 
+        window.navigator.userAgent.includes('STAN_DOM_APP') || 
+        !!(window as any).ReactNativeWebView || 
+        !!(window as any).isAppEnv || 
+        !!(window as any).STAN_DOM_APP;
       setIsAppEnv(isApp);
 
       // 네이티브 앱에서 보내는 '광고 시청 완료' 이벤트 수신

@@ -105,10 +105,12 @@ export default function App() {
           onConsoleMessage={(event) => {
             console.log('[Web Console]', event.nativeEvent.message);
           }}
-          // User-Agent 뒤에 'STAN_DOM_APP'을 붙여 웹에서 앱 환경인지 인식할 수 있게 함
-          userAgent={Platform.OS === 'android' 
-            ? 'Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36 STAN_DOM_APP_ANDROID' 
-            : 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 STAN_DOM_APP_IOS'}
+          // 깨끗한 기본 User-Agent를 사용하고, window 전역에 앱 환경 플래그를 사전에 주입하여 YouTube 임베드 재생 및 구글 로그인 오류를 원천 방지합니다.
+          injectedJavaScriptBeforeContentLoaded={`
+            window.isAppEnv = true;
+            window.STAN_DOM_APP = true;
+            true;
+          `}
         />
       </SafeAreaView>
     </SafeAreaProvider>

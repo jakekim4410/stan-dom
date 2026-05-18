@@ -87,7 +87,11 @@ const MusicPlayer = () => {
   const [isAppEnv, setIsAppEnv] = useState(false);
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const isApp = window.navigator.userAgent.includes('STAN_DOM_APP') || !!(window as any).ReactNativeWebView;
+      const isApp = 
+        window.navigator.userAgent.includes('STAN_DOM_APP') || 
+        !!(window as any).ReactNativeWebView || 
+        !!(window as any).isAppEnv || 
+        !!(window as any).STAN_DOM_APP;
       setIsAppEnv(isApp);
     }
   }, []);
