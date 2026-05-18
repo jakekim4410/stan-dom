@@ -38,6 +38,7 @@
   ],
   "exclude": [
     "node_modules",
-    "scratch"
-  ] // 👈 이 부분이 수정되었습니다!
+    "scratch",
+    "app-webview"
+  ]
 }

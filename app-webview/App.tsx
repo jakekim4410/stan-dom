@@ -38,7 +38,7 @@ export default function App() {
       },
     );
 
-    const unsubscribeClosed = rewarded.addAdEventListener(RewardedAdEventType.CLOSED, () => {
+    const unsubscribeClosed = rewarded.addAdEventListener('closed', () => {
       // 사용자가 창을 닫으면 다음 번을 위해 새 광고 미리 로드
       setAdLoaded(false);
       rewarded.load();
