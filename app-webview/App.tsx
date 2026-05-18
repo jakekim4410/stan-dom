@@ -5,8 +5,8 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useRef, useEffect, useState } from 'react';
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
-// 실제 출시 전까지는 구글이 제공하는 테스트 광고 ID를 사용해야 정지를 당하지 않습니다.
-const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/xxxxxxx';
+// 개발 환경에서는 테스트 광고, 프로덕션에서는 실제 애드몹 광고를 노출합니다.
+const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-7904032658716092/1586676306';
 
 const rewarded = RewardedAd.createForAdRequest(adUnitId, {
   keywords: ['music', 'kpop', 'entertainment'],
