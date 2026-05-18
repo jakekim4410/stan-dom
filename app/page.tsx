@@ -1914,6 +1914,7 @@ export default function Dashboard() {
           isOpen={showAdModal}
           onClose={() => setShowAdModal(false)}
           onSuccess={refreshQuota}
+          lang={lang}
         />
       )}
 
