@@ -1592,16 +1592,16 @@ export default function Dashboard() {
               style={{ boxShadow: `0 0 50px -10px ${selectedIssue.accent}50` }}
             >
               {/* Header */}
-              <div className="flex justify-between items-center p-6 border-b border-white/10">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 rounded-lg text-xs font-black border tracking-widest uppercase bg-white/5" style={{ color: selectedIssue.accent, borderColor: `${selectedIssue.accent}50` }}>
+              <div className="flex justify-between items-center p-4 sm:p-6 border-b border-white/10 gap-3">
+                <div className="flex items-center gap-3 min-w-0 flex-1 mr-2">
+                  <span className="px-3 py-1 rounded-lg text-xs font-black border tracking-widest uppercase bg-white/5 shrink-0" style={{ color: selectedIssue.accent, borderColor: `${selectedIssue.accent}50` }}>
                     {selectedIssue.slot}
                   </span>
-                  <span className="text-zinc-500 text-xs font-mono">{selectedIssue.id}</span>
+                  <span className="text-zinc-500 text-xs font-mono truncate">{selectedIssue.id}</span>
                 </div>
                 <button
                   onClick={() => setSelectedIssue(null)}
-                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all"
+                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all shrink-0"
                 >
                   <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><path d="M18 6L6 18M6 6l12 12" /></svg>
                 </button>

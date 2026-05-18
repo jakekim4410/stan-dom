@@ -96,7 +96,7 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
           </div>
 
           {/* Content */}
-          <div className="p-8 min-h-[400px]">
+          <div className="p-8 max-h-[50vh] md:max-h-[450px] overflow-y-auto custom-scrollbar">
             {step === 1 ? (
               <div className="space-y-6">
                 <div className="flex gap-2">
@@ -140,55 +140,55 @@ export default function OnboardingModal({ isOpen, onClose, lang, onComplete }: O
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="p-6 rounded-3xl bg-emerald-500/5 border border-emerald-500/20 flex items-start gap-5">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center shrink-0">
-                      <UserPlus size={24} className="text-emerald-400" />
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-emerald-500/5 border border-emerald-500/20 flex items-start gap-4">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0">
+                      <UserPlus size={22} className="text-emerald-400" />
                     </div>
                     <div>
-                      <h4 className="font-black text-white text-lg tracking-tight mb-1">{t('ruleMember')}</h4>
-                      <p className="text-zinc-500 text-xs font-medium leading-relaxed">
+                      <h4 className="font-black text-white text-base sm:text-lg tracking-tight mb-1">{t('ruleMember')}</h4>
+                      <p className="text-zinc-500 text-[11px] sm:text-xs font-medium leading-relaxed">
                         {t('ruleMemberSub')}
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-6 rounded-3xl bg-zinc-900/50 border border-white/5 flex items-start gap-5">
-                    <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center shrink-0">
-                      <User size={24} className="text-zinc-500" />
+                  <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-zinc-900/50 border border-white/5 flex items-start gap-4">
+                    <div className="w-11 h-11 rounded-xl bg-zinc-800 flex items-center justify-center shrink-0">
+                      <User size={22} className="text-zinc-500" />
                     </div>
                     <div>
-                      <h4 className="font-black text-zinc-300 text-lg tracking-tight mb-1">{t('ruleGuest')}</h4>
-                      <p className="text-zinc-600 text-xs font-medium leading-relaxed">
+                      <h4 className="font-black text-zinc-300 text-base sm:text-lg tracking-tight mb-1">{t('ruleGuest')}</h4>
+                      <p className="text-zinc-600 text-[11px] sm:text-xs font-medium leading-relaxed">
                         {t('ruleGuestSub')}
                       </p>
                     </div>
                   </div>
                   
-                  <div className="p-6 rounded-3xl bg-white/5 border border-white/10 flex items-start gap-5">
-                    <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center shrink-0">
-                      <Zap size={24} className="text-yellow-400" />
+                  <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/5 border border-white/10 flex items-start gap-4">
+                    <div className="w-11 h-11 rounded-xl bg-zinc-800 flex items-center justify-center shrink-0">
+                      <Zap size={22} className="text-yellow-400" />
                     </div>
                     <div>
-                        <h4 className="font-black text-white text-lg tracking-tight mb-1">{t('voltage')}</h4>
-                        <p className="text-zinc-500 text-xs font-medium leading-relaxed">
+                        <h4 className="font-black text-white text-base sm:text-lg tracking-tight mb-1">{t('voltage')}</h4>
+                        <p className="text-zinc-500 text-[11px] sm:text-xs font-medium leading-relaxed">
                             {t('voltageSub')}
                         </p>
                     </div>
                   </div>
 
                   {/* Double Voltage Bonus Card */}
-                  <div className="p-6 rounded-3xl bg-neon-magenta/10 border border-neon-magenta/30 flex items-start gap-5 relative overflow-hidden">
+                  <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-neon-magenta/10 border border-neon-magenta/30 flex items-start gap-4 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-neon-magenta/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="w-12 h-12 rounded-2xl bg-neon-magenta flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,0,255,0.3)]">
-                      <Cake size={24} className="text-white" />
+                    <div className="w-11 h-11 rounded-xl bg-neon-magenta flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,0,255,0.3)]">
+                      <Cake size={22} className="text-white" />
                     </div>
                     <div>
-                        <h4 className="font-black text-white text-lg tracking-tight mb-1">
+                        <h4 className="font-black text-white text-base sm:text-lg tracking-tight mb-1">
                           {t('birthdayBonusTitle')}
                         </h4>
-                        <p className="text-neon-magenta/80 text-xs font-bold leading-relaxed uppercase tracking-tight">
+                        <p className="text-neon-magenta/80 text-[11px] sm:text-xs font-bold leading-relaxed uppercase tracking-tight">
                             {t('birthdayBonusSub')}
                         </p>
                     </div>
