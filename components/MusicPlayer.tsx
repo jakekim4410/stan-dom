@@ -310,9 +310,14 @@ const MusicPlayer = () => {
       <div
         aria-hidden="true"
         style={{
-          position: 'fixed', top: 0, left: 0,
-          width: '1px', height: '1px', overflow: 'hidden',
-          opacity: 0, pointerEvents: 'none', zIndex: -999,
+          position: 'fixed',
+          left: '-9999px',
+          top: '-9999px',
+          width: '356px',
+          height: '200px',
+          overflow: 'hidden',
+          pointerEvents: 'none',
+          zIndex: -999,
         }}
       >
         <div id="yt-hidden-player" />
