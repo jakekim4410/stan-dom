@@ -446,7 +446,7 @@ export default function Dashboard() {
         particleCount: 150,
         spread: 80,
         origin: { y: 0.7 },
-        colors: [themeColor, '#ffffff', '#FFD700', '#FF00FF'],
+        colors: [themeColor || '#37C561', '#ffffff', '#FFD700', '#FF00FF'],
         disableForReducedMotion: true
       });
 
@@ -1786,8 +1786,7 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-black/90 backdrop-blur-md"
-            onClick={() => setShowHologramCard(null)}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-black/96"
           >
             {/* Floating Top Close Button to bypass bottom-aligned overlapping toast blocker */}
             <button
@@ -1910,8 +1909,7 @@ export default function Dashboard() {
         {showInstaGuide && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl"
-            onClick={() => setShowInstaGuide(false)}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/98"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
@@ -1979,8 +1977,7 @@ export default function Dashboard() {
         {generatedImage && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl"
-            onClick={() => setGeneratedImage(null)}
+            className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/98"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
