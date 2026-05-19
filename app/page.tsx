@@ -404,12 +404,6 @@ export default function Dashboard() {
       const votedArtist = artists.find(a => a.id === id);
       const rank = artists.findIndex(a => a.id === id) + 1;
 
-      // Show Success Toast
-      setToast({
-        isVisible: true,
-        message: t('voteTransmitted'),
-        subMessage: result.isBirthdayBonus ? '🎉 BIRTHDAY BONUS! +2 VOLTAGE APPLIED!' : t('voltageIncreased')
-      });
       refreshQuota();
 
       if (votedArtist) {
