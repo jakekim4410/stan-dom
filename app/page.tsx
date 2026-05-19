@@ -10,7 +10,7 @@ import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { getTodayBirthdays } from '@/actions/getTodayBirthdays';
 import { getLangName } from '@/utils/localization';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2, Music2, Gift } from 'lucide-react';
+import { Trophy, Vote, Search, PlusCircle, Sparkles, Globe as GlobeIcon, Map, Mail, Cake, CheckCircle2, Music2, Gift, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Language, getT } from '@/constants/i18n';
@@ -84,6 +84,7 @@ export default function Dashboard() {
   const [toast, setToast] = useState({ isVisible: false, message: '', subMessage: '' });
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const [birthdayArtistIds, setBirthdayArtistIds] = useState<Set<string>>(new Set());
+  const [refreshLoading, setRefreshLoading] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
   const hologramCardRef = useRef<HTMLDivElement>(null);
@@ -454,6 +455,7 @@ export default function Dashboard() {
       const rank = artists.findIndex(a => a.id === id) + 1;
 
       refreshQuota();
+      fetchArtists(); // Dynamically sync the new DB votes count immediately!
 
       if (votedArtist) {
         setTimeout(() => setShowHologramCard({ artist: votedArtist, rank }), 800);
@@ -602,6 +604,22 @@ export default function Dashboard() {
             )}
           </div>
           <div className="flex flex-1 items-center justify-end gap-3">
+            <button
+              onClick={async () => {
+                setRefreshLoading(true);
+                try {
+                  await Promise.all([fetchArtists(), refreshQuota()]);
+                } catch (e) {
+                  console.error(e);
+                } finally {
+                  setTimeout(() => setRefreshLoading(false), 500);
+                }
+              }}
+              className="p-2 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-full transition-all border border-white/10 flex items-center justify-center"
+              aria-label="Refresh Data"
+            >
+              <RefreshCw size={14} className={refreshLoading ? 'animate-spin' : ''} />
+            </button>
             <LanguageSwitcher
               lang={lang}
               onSelect={(l) => {
