@@ -49,15 +49,29 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
       throw scanError;
     }
 
-    if (existingVotes && existingVotes.length >= limit) {
-      console.log(`[Vote Action] Quota exceeded. Used: ${existingVotes.length}/${limit}`);
+    // 추가 보상된 투표권(광고 시청) 계산
+    const { count: adCount, error: adError } = await supabase
+      .from('rewarded_ads')
+      .select('*', { count: 'exact', head: true })
+      .eq(identifierType, identifierValue)
+      .gt('created_at', resetBoundary.toISOString());
+
+    if (adError) {
+      console.error('[Vote Action] Ad count error (ignoring):', adError);
+    }
+
+    const rewardedVotes = (adCount || 0) * 3; // 광고 1편당 3표
+    const finalLimit = limit + rewardedVotes;
+
+    if (existingVotes && existingVotes.length >= finalLimit) {
+      console.log(`[Vote Action] Quota exceeded. Used: ${existingVotes.length}/${finalLimit}`);
       // Next reset = next UTC midnight (= next KST 09:00)
       const nextResetUtc = new Date(resetBoundary.getTime() + 24 * 60 * 60 * 1000);
       return { 
         success: false, 
         error: 'COOLDOWN_ACTIVE', 
         nextVoteAt: nextResetUtc.toISOString(),
-        limit
+        limit: finalLimit
       };
     }
 
