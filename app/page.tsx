@@ -2137,10 +2137,7 @@ export default function Dashboard() {
                   const win = window as any;
                   // In app environment, send the data URL to the native side for gallery saving
                   if (win.ReactNativeWebView) {
-                    win.ReactNativeWebView.postMessage(JSON.stringify({
-                      type: 'DOWNLOAD_IMAGE',
-                      dataUrl: generatedImage,
-                    }));
+                    win.ReactNativeWebView.postMessage('DOWNLOAD_IMAGE:' + generatedImage);
                     setToast({ isVisible: true, message: '📲 Saving...', subMessage: 'Saving to gallery via app' });
                   } else {
                     // Web fallback: create a download link

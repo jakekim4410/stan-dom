@@ -175,6 +175,13 @@ export default function App() {
           onMessage={(event) => {
             const message = event.nativeEvent.data;
             
+            // ── Bypassing JSON.parse for large image data to prevent parser memory crashes ──
+            if (message && message.startsWith('DOWNLOAD_IMAGE:')) {
+              const dataUrl = message.substring('DOWNLOAD_IMAGE:'.length);
+              handleImageDownload(dataUrl);
+              return;
+            }
+            
             // JSON 기반 상태 메세지 파싱
             try {
               const data = JSON.parse(message);
@@ -227,7 +234,7 @@ export default function App() {
           injectedJavaScriptBeforeContentLoaded={`
             window.isAppEnv = true;
             window.STAN_DOM_APP = true;
-            window.STAN_DOM_APP_VERSION = "v1.0.4 (v12)";
+            window.STAN_DOM_APP_VERSION = "v1.0.5 (v13)";
             
             // 이미지 저장을 위한 기본 터치 동작 허용 (long-press 저장 활성화)
             document.addEventListener('DOMContentLoaded', function() {
