@@ -8,9 +8,13 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const secret = searchParams.get('secret');
+    const authHeader = request.headers.get('authorization');
+
+    const isValidSecret = secret === process.env.CRON_SECRET;
+    const isValidAuth = authHeader === `Bearer ${process.env.CRON_SECRET}`;
 
     // 1. 보안 인가
-    if (secret !== process.env.CRON_SECRET) {
+    if (!isValidSecret && !isValidAuth) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
