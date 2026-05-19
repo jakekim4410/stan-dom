@@ -11,7 +11,7 @@ export async function getAdminStats() {
     
     // We can allow public access in development, but secure it in production
     const isDevelopment = process.env.NODE_ENV === 'development';
-    const allowedAdminEmails = ['jakekim4410@gmail.com', 'jakekim4410@naver.com', 'richg98@naver.com'];
+    const allowedAdminEmails = ['jh_kim@openhrd.com', 'admin@openhrd.com', 'jake.kim4410@gmail.com'];
     
     if (!isDevelopment && (!user || !user.email || !allowedAdminEmails.includes(user.email))) {
       return { success: false, error: 'UNAUTHORIZED' };
