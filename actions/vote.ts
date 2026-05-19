@@ -112,8 +112,16 @@ export async function voteForArtist(artistId: string, countryCode: string = 'UN'
     
     const voteValue = isBirthdayBonus ? 2 : 1;
 
+    // RLS (Row Level Security) prevents standard users from directly updating the artists table.
+    // We use a privileged service-role client on the server to safely increment the total_votes.
+    const { createClient: createAdminClient } = require('@supabase/supabase-js');
+    const supabaseAdmin = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     console.log(`[Vote Action] Updating artist ${artistId} votes to ${(artistData.total_votes || 0) + voteValue} (Bonus: ${isBirthdayBonus})...`);
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('artists')
       .update({ total_votes: (artistData.total_votes || 0) + voteValue })
       .eq('id', artistId);
