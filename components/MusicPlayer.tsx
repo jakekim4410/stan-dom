@@ -196,7 +196,7 @@ const MusicPlayer = () => {
           playerVars: {
             autoplay: 1, controls: 0, disablekb: 1, fs: 0,
             rel: 0, modestbranding: 1, enablejsapi: 1, playsinline: 1,
-            origin: window.location.origin,
+            origin: 'https://standom.online',
           },
           events: {
             onReady: (e: any) => {
@@ -328,12 +328,17 @@ const MusicPlayer = () => {
           left: '0px',
           width: '200px',
           height: '200px',
-          opacity: 0.05,
+          opacity: 1,
           pointerEvents: 'none',
-          zIndex: 9999,
+          zIndex: -10,
         }}
       >
-        <div id="yt-hidden-player" />
+        <iframe
+          id="yt-hidden-player"
+          title="Hidden YouTube Player"
+          allow="autoplay; encrypted-media"
+          style={{ width: '100%', height: '100%', border: '0' }}
+        />
       </div>
       {/* ── 플레이어 UI ── */}
       <AnimatePresence>
