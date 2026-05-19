@@ -95,6 +95,81 @@ export default function Dashboard() {
     setIssueVideoActive(false);
   }, [selectedIssue]);
 
+  // Auto-close Toast after 2.5 seconds to prevent blocking UI
+  useEffect(() => {
+    if (toast.isVisible) {
+      const timer = setTimeout(() => {
+        setToast(prev => ({ ...prev, isVisible: false }));
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.isVisible]);
+
+  const closeAllModals = useCallback(() => {
+    let closedAny = false;
+    if (selectedIssue) { setSelectedIssue(null); closedAny = true; }
+    if (showHologramCard) { setShowHologramCard(null); closedAny = true; }
+    if (isAddArtistOpen) { setIsAddArtistOpen(false); closedAny = true; }
+    if (isInquiryModalOpen) { setIsInquiryModalOpen(false); closedAny = true; }
+    if (showAdModal) { setShowAdModal(false); closedAny = true; }
+    if (isOnboardingOpen) { setIsOnboardingOpen(false); closedAny = true; }
+    if (showInstaGuide) { setShowInstaGuide(false); closedAny = true; }
+    return closedAny;
+  }, [selectedIssue, showHologramCard, isAddArtistOpen, isInquiryModalOpen, showAdModal, isOnboardingOpen, showInstaGuide]);
+
+  // Handle Backspace/Escape keyboard inputs to act exactly like the X close button
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      if (activeEl && (
+        activeEl.tagName === 'INPUT' || 
+        activeEl.tagName === 'TEXTAREA' || 
+        activeEl.getAttribute('contenteditable') === 'true'
+      )) {
+        return; // Allow normal deletion in text inputs
+      }
+      if (e.key === 'Backspace' || e.key === 'Escape') {
+        const closed = closeAllModals();
+        if (closed) {
+          e.preventDefault();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [closeAllModals]);
+
+  const modalOpenRef = useRef(false);
+  const isAnyModalOpen = !!(selectedIssue || showHologramCard || isAddArtistOpen || isInquiryModalOpen || showAdModal || isOnboardingOpen || showInstaGuide);
+
+  // Sync modal state with browser history for Android Back Button & Swipe Back support
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      if (!modalOpenRef.current) {
+        window.history.pushState({ modalOpen: true }, '');
+        modalOpenRef.current = true;
+      }
+    } else {
+      if (modalOpenRef.current) {
+        modalOpenRef.current = false;
+        if (typeof window !== 'undefined' && window.history.state?.modalOpen) {
+          window.history.back();
+        }
+      }
+    }
+  }, [isAnyModalOpen]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (modalOpenRef.current) {
+        closeAllModals();
+        modalOpenRef.current = false;
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [closeAllModals]);
+
   useEffect(() => {
     // Initialize language from localStorage
     const savedLang = localStorage.getItem('stan_lang') as Language;

@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -195,6 +195,70 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
       }
     };
   }, [artistId]);
+
+  const closeAllModals = useCallback(() => {
+    let closedAny = false;
+    if (isEditModalOpen) { setIsEditModalOpen(false); closedAny = true; }
+    if (isReportModalOpen) { setIsReportModalOpen(false); closedAny = true; }
+    if (isInquiryModalOpen) { setIsInquiryModalOpen(false); closedAny = true; }
+    if (isOnboardingOpen) { setIsOnboardingOpen(false); closedAny = true; }
+    if (isMemberChatOpen) { setIsMemberChatOpen(false); closedAny = true; }
+    if (editingMember) { setEditingMember(null); closedAny = true; }
+    return closedAny;
+  }, [isEditModalOpen, isReportModalOpen, isInquiryModalOpen, isOnboardingOpen, isMemberChatOpen, editingMember]);
+
+  // Handle Backspace/Escape keyboard inputs to act exactly like the X close button
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      if (activeEl && (
+        activeEl.tagName === 'INPUT' || 
+        activeEl.tagName === 'TEXTAREA' || 
+        activeEl.getAttribute('contenteditable') === 'true'
+      )) {
+        return; // Allow normal deletion in text inputs
+      }
+      if (e.key === 'Backspace' || e.key === 'Escape') {
+        const closed = closeAllModals();
+        if (closed) {
+          e.preventDefault();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [closeAllModals]);
+
+  const modalOpenRef = useRef(false);
+  const isAnyModalOpen = !!(isEditModalOpen || isReportModalOpen || isInquiryModalOpen || isOnboardingOpen || isMemberChatOpen || editingMember);
+
+  // Sync modal state with browser history for Android Back Button & Swipe Back support
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      if (!modalOpenRef.current) {
+        window.history.pushState({ modalOpen: true }, '');
+        modalOpenRef.current = true;
+      }
+    } else {
+      if (modalOpenRef.current) {
+        modalOpenRef.current = false;
+        if (typeof window !== 'undefined' && window.history.state?.modalOpen) {
+          window.history.back();
+        }
+      }
+    }
+  }, [isAnyModalOpen]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (modalOpenRef.current) {
+        closeAllModals();
+        modalOpenRef.current = false;
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [closeAllModals]);
 
   useEffect(() => {
     async function loadMembers() {
