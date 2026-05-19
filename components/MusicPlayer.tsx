@@ -107,13 +107,33 @@ const MusicPlayer = () => {
   // ── 1. YouTube IFrame API 로드 ──────────────────────────
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (window.YT?.Player) { setIsApiReady(true); return; }
+
+    const checkApi = () => {
+      if (window.YT && window.YT.Player) {
+        setIsApiReady(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (checkApi()) return;
+
     window.onYouTubeIframeAPIReady = () => setIsApiReady(true);
+
     if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
       const s = document.createElement('script');
       s.src = 'https://www.youtube.com/iframe_api';
       document.head.appendChild(s);
     }
+
+    // Polling fallback to ensure we detect YT loaded
+    const timer = setInterval(() => {
+      if (checkApi()) {
+        clearInterval(timer);
+      }
+    }, 500);
+
+    return () => clearInterval(timer);
   }, []);
 
   // ── 2. 타이머 (1초마다 현재 시간 폴링) ─────────────────
@@ -196,7 +216,7 @@ const MusicPlayer = () => {
           playerVars: {
             autoplay: 1, controls: 0, disablekb: 1, fs: 0,
             rel: 0, modestbranding: 1, enablejsapi: 1, playsinline: 1,
-            origin: 'https://standom.online',
+            origin: typeof window !== 'undefined' ? window.location.origin : 'https://standom.online',
           },
           events: {
             onReady: (e: any) => {

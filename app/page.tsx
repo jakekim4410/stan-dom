@@ -1622,9 +1622,14 @@ export default function Dashboard() {
         </div>
 
         {/* 3. 저작권 표시 */}
-        <p className="text-zinc-600 text-[10px] font-black tracking-[0.3em] uppercase opacity-50">
-          © 2026 STANDOM GLOBAL NETWORK
-        </p>
+        <div className="flex flex-col items-center gap-1.5 opacity-50">
+          <p className="text-zinc-600 text-[10px] font-black tracking-[0.3em] uppercase">
+            © 2026 STANDOM GLOBAL NETWORK
+          </p>
+          <span className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest bg-white/5 border border-white/5 px-2 py-0.5 rounded">
+            Build: 2026-05-19 11:47 (Ver 1.0.3-Web-9)
+          </span>
+        </div>
       </footer>
 
       <AddArtistModal
