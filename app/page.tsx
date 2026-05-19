@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { domToJpeg } from 'modern-screenshot';
-import { toPng, toBlob } from 'html-to-image';
+import { toJpeg, toBlob } from 'html-to-image';
 import { createClient } from '@/utils/supabase/client';
 import { voteForArtist } from '@/actions/vote';
 import { getRemainingVotes } from '@/actions/getRemainingVotes';
@@ -348,15 +348,15 @@ export default function Dashboard() {
 
       let dataUrl: string;
       try {
-        dataUrl = await toPng(staticHologramCardRef.current, {
-          quality: 0.9,
+        dataUrl = await toJpeg(staticHologramCardRef.current, {
+          quality: 0.8,
           backgroundColor: '#020205',
           pixelRatio: 2,
           skipAutoScale: true,
           cacheBust: true,
         });
       } catch (pngErr) {
-        console.warn('[Download] toPng failed, trying domToJpeg fallback:', pngErr);
+        console.warn('[Download] toJpeg failed, trying domToJpeg fallback:', pngErr);
         dataUrl = await domToJpeg(staticHologramCardRef.current, {
           scale: 1.5,
           quality: 0.8,

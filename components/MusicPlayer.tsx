@@ -375,18 +375,17 @@ const MusicPlayer = () => {
     <>
       <style dangerouslySetInnerHTML={{ __html: VOL_STYLE }} />
 
-      {/* 항상 DOM에 존재하는 숨겨진 플레이어 */}
+      {/* 항상 DOM에 존재하는 숨겨진 플레이어 (웹뷰 백그라운드 재생 및 1x1 픽셀 차단 우회용 오프스크린 렌더링) */}
       <div
         aria-hidden="true"
         style={{
           position: 'fixed',
-          bottom: '0px',
+          bottom: '-300px',
           left: '0px',
-          width: '1px',
-          height: '1px',
-          opacity: 0.01,
+          width: '356px',
+          height: '200px',
           pointerEvents: 'none',
-          zIndex: 99999,
+          zIndex: -99999,
         }}
       >
         <div id="yt-hidden-player" />
