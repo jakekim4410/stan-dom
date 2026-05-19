@@ -93,6 +93,8 @@ export default function App() {
                 Alert.alert('안내', '아직 광고가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
                 rewarded.load(); // 재요청
               }
+            } else if (message === 'EXIT_APP') {
+              BackHandler.exitApp();
             }
           }}
           allowsBackForwardNavigationGestures={true}
@@ -111,6 +113,10 @@ export default function App() {
             window.STAN_DOM_APP = true;
             true;
           `}
+          // 유튜브의 악랄한 WebView 차단 로직(0:00 멈춤)을 우회하기 위해 순수 모바일 브라우저로 위장합니다. (구글 로그인 오류 방지를 위해 뒤에 커스텀 텍스트는 빼고 순정 텍스트만 넣습니다.)
+          userAgent={Platform.OS === 'android' 
+            ? 'Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36' 
+            : 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
         />
       </SafeAreaView>
     </SafeAreaProvider>

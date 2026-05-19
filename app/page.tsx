@@ -90,9 +90,13 @@ export default function Dashboard() {
 
   const t = getT(lang);
 
-  // 뉴스 모달이 바뀌면 영상 재생 상태 리셋
+  // 뉴스 모달이 열리면 바로 영상이 재생되도록 상태 수정
   useEffect(() => {
-    setIssueVideoActive(false);
+    if (selectedIssue) {
+      setIssueVideoActive(true);
+    } else {
+      setIssueVideoActive(false);
+    }
   }, [selectedIssue]);
 
   // Auto-close Toast after 2.5 seconds to prevent blocking UI
@@ -132,6 +136,10 @@ export default function Dashboard() {
         const closed = closeAllModals();
         if (closed) {
           e.preventDefault();
+        } else if (e.key === 'Backspace') {
+          // If no modals were open and backspace was pressed, it's the root exit trigger!
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('request-app-exit'));
         }
       }
     };
@@ -159,16 +167,27 @@ export default function Dashboard() {
     }
   }, [isAnyModalOpen]);
 
+  // Trap root back button/popstate to trigger exit confirmation
   useEffect(() => {
+    // Push an initial base state so that canGoBack is true and we can trap the next back press
+    if (typeof window !== 'undefined' && !window.history.state?.rootBase) {
+      window.history.pushState({ rootBase: true }, '');
+    }
+
     const handlePopState = (e: PopStateEvent) => {
       if (modalOpenRef.current) {
         closeAllModals();
         modalOpenRef.current = false;
+      } else if (!isAnyModalOpen) {
+        // Root back action triggered! Intercept and show exit confirmation modal.
+        window.dispatchEvent(new CustomEvent('request-app-exit'));
+        // Push the base state back to trap it again
+        window.history.pushState({ rootBase: true }, '');
       }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [closeAllModals]);
+  }, [closeAllModals, isAnyModalOpen]);
 
   useEffect(() => {
     // Initialize language from localStorage

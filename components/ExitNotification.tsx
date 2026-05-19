@@ -43,8 +43,15 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
     return () => document.removeEventListener('click', handleClick, true);
   }, []);
 
-  // === 뒤로가기 감지 (History API Trap) 제거 ===
-  // Next.js 라우터와 충돌하여 백스페이스/뒤로가기 시 오류를 발생시키므로 웹 환경에서는 제거합니다.
+  // Listen to custom exit request event for root back button navigation
+  useEffect(() => {
+    const handleExitRequest = () => {
+      isBackActionRef.current = true;
+      setShowModal(true);
+    };
+    window.addEventListener('request-app-exit', handleExitRequest);
+    return () => window.removeEventListener('request-app-exit', handleExitRequest);
+  }, []);
 
   const handleStay = useCallback(() => {
     setPendingHref(null);
@@ -57,6 +64,17 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
     if (pendingHref) {
       window.open(pendingHref, '_blank', 'noopener,noreferrer');
       setPendingHref(null);
+    } else {
+      // Exit WebView/App
+      if (typeof window !== 'undefined') {
+        const win = window as any;
+        if (win.ReactNativeWebView) {
+          win.ReactNativeWebView.postMessage('EXIT_APP');
+        } else {
+          // Standard browser fallback
+          window.close();
+        }
+      }
     }
   }, [pendingHref]);
 

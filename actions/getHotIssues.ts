@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export type HotIssue = {
   id: string;
@@ -31,6 +32,7 @@ export type HotIssue = {
  * - Maps snake_case DB fields to camelCase for JSX compatibility
  */
 export async function getHotIssues(): Promise<HotIssue[]> {
+  noStore();
   try {
     const supabase = await createClient();
     const nowMs = Date.now();

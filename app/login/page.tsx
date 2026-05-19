@@ -21,19 +21,36 @@ export default function LoginPage() {
 
   const router = useRouter();
 
-  // Initialize lang from localStorage and handle bfcache 
+  // Initialize lang from localStorage, handle bfcache and redirect if already logged in
   useEffect(() => {
     const savedLang = localStorage.getItem('stan_lang') as Language;
     if (savedLang && ['EN', 'KO', 'ES'].includes(savedLang)) {
       setLang(savedLang);
     }
     
+    // Redirect if already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        window.location.replace('/');
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        window.location.replace('/');
+      }
+    });
+
     // Check if we just came back from an aborted OAuth flow (bfcache or standard back navigation)
     if (sessionStorage.getItem('oauth_in_progress') === 'true') {
       sessionStorage.removeItem('oauth_in_progress');
       // A hard location replace clears Next.js corrupted state and forces a clean initial load
       window.location.replace('/login');
     }
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const t = getT(lang);
@@ -82,7 +99,7 @@ export default function LoginPage() {
         }
         throw error;
       }
-      window.location.href = '/';
+      window.location.replace('/');
     } catch (error: any) {
       alert(error.message);
     } finally {
