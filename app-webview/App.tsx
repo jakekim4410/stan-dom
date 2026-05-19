@@ -124,7 +124,7 @@ export default function App() {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      const asset = await MediaLibrary.createAssetAsync(fileUri);
+      await MediaLibrary.saveToLibraryAsync(fileUri);
       
       // 알림 및 성공 신호를 웹뷰로 전달
       if (webviewRef.current) {
@@ -187,7 +187,7 @@ export default function App() {
               BackHandler.exitApp();
             }
           }}
-          allowsBackForwardNavigationGestures={true}
+          allowsBackForwardNavigationGestures={Platform.OS === 'ios'}
           bounces={false}
           javaScriptEnabled={true}
           domStorageEnabled={true}

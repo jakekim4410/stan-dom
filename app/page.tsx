@@ -188,6 +188,8 @@ export default function Dashboard() {
   useEffect(() => {
     // Push an initial base state so that canGoBack is true and we can trap the next back press
     if (typeof window !== 'undefined' && !window.history.state?.rootBase) {
+      // Push twice so the back button is definitively trapped
+      window.history.pushState({ rootBase: true }, '');
       window.history.pushState({ rootBase: true }, '');
     }
 
@@ -198,9 +200,9 @@ export default function Dashboard() {
       } else if (!isAnyModalOpen) {
         // Root back action triggered! Intercept and show exit confirmation modal.
         window.dispatchEvent(new CustomEvent('request-app-exit'));
-        // Push the base state back to trap it again
-        window.history.pushState({ rootBase: true }, '');
       }
+      // ALWAYS push the base state back to trap it again and prevent navigating to external oauth screens
+      window.history.pushState({ rootBase: true }, '');
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -1774,7 +1776,7 @@ export default function Dashboard() {
                           <iframe
                             width="100%"
                             height="100%"
-                            src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1`}
+                            src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1&enablejsapi=1&origin=https://standom.online`}
                             title="YouTube video player"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1878,12 +1880,12 @@ export default function Dashboard() {
             >
               {/* Card Inner */}
               <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-[#09090b] flex flex-col items-center">
-                {/* Artist Background (Converted from CSS bg for capture reliability) */}
-                <div className="absolute inset-0 opacity-40 mix-blend-screen scale-110">
+                {/* Artist Background (Simplified for reliable capture without white flashes) */}
+                <div className="absolute inset-0 opacity-20 scale-110">
                   <img 
                     src={showHologramCard.artist.image_url || ''} 
                     alt="" 
-                    className="w-full h-full object-cover filter blur-[10px] saturate-[1.5]"
+                    className="w-full h-full object-cover filter blur-lg"
                     crossOrigin="anonymous"
                   />
                 </div>
