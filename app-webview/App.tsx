@@ -104,10 +104,12 @@ export default function App() {
   // 3. 이미지 다운로드 핸들러 (data URL을 파일로 저장)
   const handleImageDownload = async (dataUrl: string) => {
     try {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
+      let { status, canAskAgain } = await MediaLibrary.getPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('권한 필요', '사진을 저장하려면 갤러리 접근 권한이 필요합니다.');
-        return;
+        if (canAskAgain) {
+          const request = await MediaLibrary.requestPermissionsAsync(true); // writeOnly
+          status = request.status;
+        }
       }
       
       // data:image/png;base64,... → base64 데이터 추출
@@ -117,14 +119,33 @@ export default function App() {
         return;
       }
 
-      const fileName = `standom_card_${Date.now()}.png`;
+      // Detect correct file extension based on dataURL header
+      const extension = dataUrl.includes('jpeg') || dataUrl.includes('jpg') ? 'jpg' : 'png';
+      const fileName = `standom_card_${Date.now()}.${extension}`;
       const fileUri = FileSystem.documentDirectory + fileName;
       
       await FileSystem.writeAsStringAsync(fileUri, base64Data, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      await MediaLibrary.saveToLibraryAsync(fileUri);
+      if (status === 'granted') {
+        try {
+          await MediaLibrary.saveToLibraryAsync(fileUri);
+          Alert.alert('저장 완료! ✅', '이미지가 갤러리에 저장되었습니다.');
+        } catch (saveErr) {
+          console.warn('saveToLibraryAsync failed, falling back to Share sheet:', saveErr);
+          await Share.share({
+            url: fileUri,
+            title: 'STAN.DOM Card',
+          });
+        }
+      } else {
+        // Permission denied: show Share sheet directly as fallback so they can still save it
+        await Share.share({
+          url: fileUri,
+          title: 'STAN.DOM Card',
+        });
+      }
       
       // 알림 및 성공 신호를 웹뷰로 전달
       if (webviewRef.current) {
@@ -133,8 +154,6 @@ export default function App() {
           true;
         `);
       }
-      
-      Alert.alert('저장 완료! ✅', '이미지가 갤러리에 저장되었습니다.');
     } catch (error) {
       console.error('Image download error:', error);
       Alert.alert('저장 실패', '이미지 저장 중 문제가 발생했습니다.');

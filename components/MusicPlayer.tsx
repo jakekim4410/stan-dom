@@ -400,7 +400,7 @@ const MusicPlayer = () => {
             exit={{ y: 120 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28 }}
             className={`fixed bottom-0 left-0 right-0 z-[100] px-3 pointer-events-none transition-all ${
-              isAppEnv ? 'pb-12 sm:pb-8' : 'pb-3'
+              isAppEnv ? 'pb-4' : 'pb-3'
             }`}
           >
             <div className="max-w-4xl mx-auto pointer-events-auto">

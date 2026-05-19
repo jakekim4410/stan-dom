@@ -218,6 +218,15 @@ export default function Dashboard() {
     return () => window.removeEventListener('close-all-modals', handleCloseAll);
   }, [closeAllModals]);
 
+  // Listen to image-saved-success event from React Native WebView
+  useEffect(() => {
+    const handleSuccess = () => {
+      setToast({ isVisible: true, message: '✅ Saved!', subMessage: 'Card saved to your device' });
+    };
+    window.addEventListener('image-saved-success', handleSuccess);
+    return () => window.removeEventListener('image-saved-success', handleSuccess);
+  }, []);
+
   // Sync isRoot and isAnyModalOpen state with React Native WebView
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -485,14 +494,16 @@ export default function Dashboard() {
       setActiveVotes(prev => ({ ...prev, [id]: 'success' }));
       handleIncomingVote(userCountry.code, id);
 
-      // Confetti celebration with theme color and birthday flair
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.7 },
-        colors: [themeColor || '#37C561', '#ffffff', '#FFD700', '#FF00FF'],
-        disableForReducedMotion: true
-      });
+      // Confetti celebration with theme color and birthday flair (only on web to prevent WebView GPU crashes)
+      if (!isAppEnv) {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.7 },
+          colors: [themeColor || '#37C561', '#ffffff', '#FFD700', '#FF00FF'],
+          disableForReducedMotion: true
+        });
+      }
 
       const votedArtist = artists.find(a => a.id === id);
       const rank = artists.findIndex(a => a.id === id) + 1;
@@ -647,22 +658,7 @@ export default function Dashboard() {
             )}
           </div>
           <div className="flex flex-1 items-center justify-end gap-3">
-            <button
-              onClick={async () => {
-                setRefreshLoading(true);
-                try {
-                  await Promise.all([fetchArtists(), refreshQuota()]);
-                } catch (e) {
-                  console.error(e);
-                } finally {
-                  setTimeout(() => setRefreshLoading(false), 500);
-                }
-              }}
-              className="p-2 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-full transition-all border border-white/10 flex items-center justify-center"
-              aria-label="Refresh Data"
-            >
-              <RefreshCw size={14} className={refreshLoading ? 'animate-spin' : ''} />
-            </button>
+
             <LanguageSwitcher
               lang={lang}
               onSelect={(l) => {
