@@ -88,8 +88,14 @@ const MusicChartPage = () => {
   const handlePlay = (track: any) => {
     if (currentTrack?.id === track.id) {
       togglePlay();
+      if (typeof window !== 'undefined' && (window as any).toggleYouTubePlay) {
+        (window as any).toggleYouTubePlay();
+      }
     } else {
       playTrack(track);
+      if (typeof window !== 'undefined' && (window as any).playYouTubeTrack) {
+        (window as any).playYouTubeTrack(track.youtube_id);
+      }
     }
   };
 

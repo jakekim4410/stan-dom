@@ -263,6 +263,60 @@ const MusicPlayer = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying]);
 
+  // ── 5.1 글로벌 동기 재생 트리거 (모바일 웹뷰 터치 제스처 우회) ──
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    (window as any).playYouTubeTrack = (videoId: string) => {
+      console.info('[MusicPlayer] Global playYouTubeTrack:', videoId);
+      if (playerRef.current && readyRef.current) {
+        try {
+          playerRef.current.loadVideoById({ videoId, startSeconds: 0 });
+          playerRef.current.unMute();
+          playerRef.current.setVolume(isMuted ? 0 : volume);
+          playerRef.current.playVideo();
+        } catch (e) {
+          console.warn('[MusicPlayer] Global play error:', e);
+        }
+      }
+    };
+
+    (window as any).toggleYouTubePlay = () => {
+      console.info('[MusicPlayer] Global toggleYouTubePlay');
+      if (playerRef.current && readyRef.current) {
+        try {
+          const state = playerRef.current.getPlayerState();
+          if (state === 1) { // 재생중
+            playerRef.current.pauseVideo();
+          } else {
+            playerRef.current.playVideo();
+          }
+        } catch (e) {
+          console.warn('[MusicPlayer] Global toggle error:', e);
+        }
+      }
+    };
+
+    return () => {
+      delete (window as any).playYouTubeTrack;
+      delete (window as any).toggleYouTubePlay;
+    };
+  }, [isMuted, volume]);
+
+  const handleTogglePlaySync = () => {
+    togglePlay();
+    if (playerRef.current && readyRef.current) {
+      try {
+        const state = playerRef.current.getPlayerState();
+        if (state === 1) {
+          playerRef.current.pauseVideo();
+        } else {
+          playerRef.current.playVideo();
+        }
+      } catch (_) {}
+    }
+  };
+
   // ── 6. 볼륨 슬라이더 ────────────────────────────────────
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = Number(e.target.value);
@@ -445,7 +499,7 @@ const MusicPlayer = () => {
                       <SkipBack size={15} className="sm:w-[17px] sm:h-[17px]" fill="currentColor" />
                     </button>
                     <button
-                      onClick={togglePlay}
+                      onClick={handleTogglePlaySync}
                       className="p-2 sm:p-2.5 bg-white text-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
                     >
                       {isPlaying
