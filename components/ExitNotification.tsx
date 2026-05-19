@@ -50,7 +50,11 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
       setShowModal(true);
     };
     window.addEventListener('request-app-exit', handleExitRequest);
-    return () => window.removeEventListener('request-app-exit', handleExitRequest);
+    window.addEventListener('show-exit-modal', handleExitRequest);
+    return () => {
+      window.removeEventListener('request-app-exit', handleExitRequest);
+      window.removeEventListener('show-exit-modal', handleExitRequest);
+    };
   }, []);
 
   // Listen to close-all-modals event to close this exit modal
@@ -59,7 +63,11 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
       setShowModal(false);
     };
     window.addEventListener('close-all-modals', handleCloseAll);
-    return () => window.removeEventListener('close-all-modals', handleCloseAll);
+    window.addEventListener('close-exit-modal', handleCloseAll);
+    return () => {
+      window.removeEventListener('close-all-modals', handleCloseAll);
+      window.removeEventListener('close-exit-modal', handleCloseAll);
+    };
   }, []);
 
   // Sync this modal's open state with React Native WebView

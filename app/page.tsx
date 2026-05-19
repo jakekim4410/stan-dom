@@ -1966,17 +1966,18 @@ export default function Dashboard() {
         )}
       </AnimatePresence>
 
-      {/* ── Off-screen static card for capture ── */}
+      {/* ── Hidden static card for capture (Inside viewport to ensure painting in WebView) ── */}
       {showHologramCard && (
         <div
           ref={staticHologramCardRef}
           style={{
             position: 'fixed',
-            left: '-9999px',
-            top: '-9999px',
+            left: '0px',
+            top: '0px',
             width: '320px',
             height: '480px',
-            zIndex: -9999,
+            zIndex: 10,
+            pointerEvents: 'none',
           }}
           className="rounded-[24px] overflow-hidden p-1 bg-gradient-to-br from-white/40 via-white/10 to-black/80"
         >
