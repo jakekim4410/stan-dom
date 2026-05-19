@@ -90,6 +90,13 @@ export default function Dashboard() {
 
   const t = getT(lang);
 
+  // Helper to detect generic placeholder or missing videos
+  const isPlaceholderVideo = useCallback((vidId: string | null | undefined) => {
+    if (!vidId) return true;
+    const placeholders = ['gdZLi9oWNZg', 'ArmDp-zijuc', 'fE2h3lGlOsk', 'Zp804HSY03A', 'k6a7Zon-p64', 'd9IxdwEFk1c', 'wkZpBWkhbck', 'invalid', ''];
+    return placeholders.includes(vidId);
+  }, []);
+
   // 뉴스 모달이 열리면 바로 영상이 재생되도록 상태 수정
   useEffect(() => {
     if (selectedIssue) {
@@ -878,6 +885,8 @@ export default function Dashboard() {
                 const headline = (issue.headline as Record<string,string>)[lang] ?? issue.headline['EN'];
                 const lead = (issue.lead as Record<string,string>)[lang] ?? issue.lead['EN'];
                 const category = (issue.category as Record<string,string>)[lang] ?? issue.category['EN'];
+                const hasNoRealVideo = isPlaceholderVideo(issue.videoId);
+
                 return (
                   <motion.div
                     key={issue.id}
@@ -886,28 +895,32 @@ export default function Dashboard() {
                     className="group relative glassmorphism rounded-3xl overflow-hidden border border-white/5 flex flex-col hover:border-white/15 transition-all duration-500"
                     whileHover={{ boxShadow: `0 0 40px -10px ${issue.accent}40` }}
                   >
-                    {/* YouTube Thumbnail – click to watch details immediately */}
+                    {/* Thumbnail area – click to watch details immediately */}
                     <div
                       onClick={() => setSelectedIssue(issue)}
                       className="relative w-full aspect-video overflow-hidden bg-zinc-900 block cursor-pointer"
                     >
                       <img
-                        src={issue.videoId
-                          ? `https://img.youtube.com/vi/${issue.videoId}/hqdefault.jpg`
-                          : `https://img.youtube.com/vi/gdZLi9oWNZg/hqdefault.jpg`
+                        src={hasNoRealVideo
+                          ? "/kpop-news-fallback.jpg"
+                          : `https://img.youtube.com/vi/${issue.videoId}/hqdefault.jpg`
                         }
                         alt={headline}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85 group-hover:opacity-100"
                       />
-                      {/* Play button */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div
-                          className="w-14 h-14 rounded-full flex items-center justify-center bg-black/60 border-2 backdrop-blur-sm group-hover:scale-110 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-                          style={{ borderColor: `${issue.accent}80` }}
-                        >
-                          <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                      
+                      {/* Play button overlay – only show if it has a real video */}
+                      {!hasNoRealVideo && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div
+                            className="w-14 h-14 rounded-full flex items-center justify-center bg-black/60 border-2 backdrop-blur-sm group-hover:scale-110 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                            style={{ borderColor: `${issue.accent}80` }}
+                          >
+                            <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                          </div>
                         </div>
-                      </div>
+                      )}
+
                       {/* Date top-left */}
                       <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-sm border border-white/10 pointer-events-none">
                         <span className="text-[9px] font-black text-zinc-300 tracking-widest">{issue.date}</span>
@@ -931,34 +944,11 @@ export default function Dashboard() {
                         style={{ color: issue.accent, borderColor: `${issue.accent}40`, backgroundColor: `${issue.accent}15` }}
                       >{category}</span>
                       <h3 className="text-sm font-black tracking-tight leading-snug line-clamp-2 overflow-hidden text-ellipsis">{headline}</h3>
-                      <p className="text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3 overflow-hidden text-ellipsis mb-auto">{lead}</p>
-                      <div className="mt-auto pt-4 flex gap-2 w-full">
-                        {issue.videoId ? (
-                          <a
-                            href={`https://www.youtube.com/watch?v=${issue.videoId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-bypass-exit="true"
-                            className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
-                            style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
-                          >
-                            ▶ YouTube
-                          </a>
-                        ) : (
-                          <a
-                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-bypass-exit="true"
-                            className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
-                            style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
-                          >
-                            🔍 YouTube Search
-                          </a>
-                        )}
+                      <p className="text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3 overflow-hidden text-ellipsis mb-auto font-medium">{lead}</p>
+                      <div className="mt-auto pt-4 w-full">
                         <button 
                           onClick={() => setSelectedIssue(issue)}
-                          className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition-all text-white"
+                          className="w-full py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition-all text-white hover:border-white/20"
                         >
                           {t('viewDetails')}
                         </button>
@@ -1009,6 +999,8 @@ export default function Dashboard() {
                                 const headline = (issue.headline as Record<string,string>)[lang] ?? issue.headline['EN'];
                                 const lead = (issue.lead as Record<string,string>)[lang] ?? issue.lead['EN'];
                                 const category = (issue.category as Record<string,string>)[lang] ?? issue.category['EN'];
+                                const hasNoRealVideo = isPlaceholderVideo(issue.videoId);
+
                                 return (
                                   <motion.div
                                     key={issue.id}
@@ -1023,18 +1015,20 @@ export default function Dashboard() {
                                       className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900 block cursor-pointer"
                                     >
                                       <img
-                                        src={issue.videoId
-                                          ? `https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`
-                                          : `https://img.youtube.com/vi/gdZLi9oWNZg/mqdefault.jpg`
+                                        src={hasNoRealVideo
+                                          ? "/kpop-news-fallback.jpg"
+                                          : `https://img.youtube.com/vi/${issue.videoId}/mqdefault.jpg`
                                         }
                                         alt={headline}
                                         className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
                                       />
-                                      <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-8 h-8 rounded-full bg-black/60 border flex items-center justify-center" style={{ borderColor: `${issue.accent}60` }}>
-                                          <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white ml-0.5" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                                      {!hasNoRealVideo && (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                          <div className="w-8 h-8 rounded-full bg-black/60 border flex items-center justify-center" style={{ borderColor: `${issue.accent}60` }}>
+                                            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white ml-0.5" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                                          </div>
                                         </div>
-                                      </div>
+                                      )}
                                     </div>
                                     {/* Text content */}
                                     <div className="flex flex-col gap-2 flex-1 min-w-0">
@@ -1048,23 +1042,10 @@ export default function Dashboard() {
                                       <p className="text-sm font-black text-white w-full sm:w-auto" style={{ wordBreak: 'keep-all' }}>{headline}</p>
                                       <p className="text-[11px] text-zinc-400 w-full sm:w-auto line-clamp-2 overflow-hidden text-ellipsis leading-relaxed font-medium">{lead}</p>
                                     </div>
-                                    <div className="shrink-0 flex flex-col gap-1.5">
-                                      <a
-                                        href={issue.videoId
-                                          ? `https://www.youtube.com/watch?v=${issue.videoId}`
-                                          : `https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`
-                                        }
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        data-bypass-exit="true"
-                                        className="text-[10px] font-black uppercase text-center px-4 py-2 rounded-lg whitespace-nowrap block hover:brightness-110 transition-all"
-                                        style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
-                                      >
-                                        {issue.videoId ? '▶ YouTube' : '🔍 Search'}
-                                      </a>
+                                    <div className="shrink-0 flex items-center justify-end">
                                       <button
                                         onClick={() => setSelectedIssue(issue)}
-                                        className="text-[10px] font-black uppercase text-zinc-500 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-lg border border-white/10 whitespace-nowrap"
+                                        className="text-[11px] font-black uppercase text-white hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded-lg border border-white/10 hover:border-white/20 whitespace-nowrap"
                                       >
                                         {t('details')}
                                       </button>
@@ -1713,76 +1694,80 @@ export default function Dashboard() {
 
               {/* Scrollable Content */}
               <div className="overflow-y-auto custom-scrollbar flex-1">
-                <div className="w-full aspect-video bg-black relative overflow-hidden">
-                  {issueVideoActive ? (
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1`}
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full"
-                    ></iframe>
-                  ) : (
-                    <button
-                      onClick={() => setIssueVideoActive(true)}
-                      className="relative w-full h-full group cursor-pointer block"
-                    >
-                      <img
-                        src={`https://img.youtube.com/vi/${selectedIssue.videoId}/maxresdefault.jpg`}
-                        onError={(e) => { (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${selectedIssue.videoId}/hqdefault.jpg`; }}
-                        alt="thumbnail"
-                        className="w-full h-full object-cover brightness-75 group-hover:brightness-90 transition-all duration-300"
-                      />
-                      {/* 클릭하여 재생 오버레이 */}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                        <div className="w-20 h-20 rounded-full bg-red-600/90 flex items-center justify-center shadow-2xl shadow-red-600/40 group-hover:scale-110 transition-transform duration-200 border-2 border-white/20">
-                          <svg viewBox="0 0 24 24" className="w-9 h-9 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
-                        </div>
-                        <span className="text-white text-xs font-black uppercase tracking-widest bg-black/60 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/10">
-                          클릭하여 재생
-                        </span>
+                {(() => {
+                  const isDetailPlaceholder = isPlaceholderVideo(selectedIssue.videoId);
+                  return (
+                    <>
+                      <div className="w-full aspect-video bg-black relative overflow-hidden">
+                        {isDetailPlaceholder ? (
+                          <img
+                            src="/kpop-news-fallback.jpg"
+                            alt="news cover"
+                            className="w-full h-full object-cover opacity-90"
+                          />
+                        ) : issueVideoActive ? (
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            src={`https://www.youtube.com/embed/${selectedIssue.videoId}?autoplay=1`}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="absolute inset-0 w-full h-full"
+                          ></iframe>
+                        ) : (
+                          <button
+                            onClick={() => setIssueVideoActive(true)}
+                            className="relative w-full h-full group cursor-pointer block"
+                          >
+                            <img
+                              src={`https://img.youtube.com/vi/${selectedIssue.videoId}/maxresdefault.jpg`}
+                              onError={(e) => { (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${selectedIssue.videoId}/hqdefault.jpg`; }}
+                              alt="thumbnail"
+                              className="w-full h-full object-cover brightness-75 group-hover:brightness-90 transition-all duration-300"
+                            />
+                            {/* 클릭하여 재생 오버레이 */}
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                              <div className="w-20 h-20 rounded-full bg-red-600/90 flex items-center justify-center shadow-2xl shadow-red-600/40 group-hover:scale-110 transition-transform duration-200 border-2 border-white/20">
+                                <svg viewBox="0 0 24 24" className="w-9 h-9 fill-white ml-1" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
+                              </div>
+                              <span className="text-white text-xs font-black uppercase tracking-widest bg-black/60 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/10">
+                                클릭하여 재생
+                              </span>
+                            </div>
+                          </button>
+                        )}
                       </div>
-                    </button>
-                  )}
-                </div>
-                <div className="p-8 space-y-6">
-                  <div>
-                    <h2 className="text-2xl sm:text-3xl font-black text-white leading-snug mb-3">
-                      {(selectedIssue.headline as Record<string,string>)[lang] ?? selectedIssue.headline['EN']}
-                    </h2>
-                    <p className="text-lg text-zinc-400 font-medium leading-relaxed">
-                      {(selectedIssue.lead as Record<string,string>)[lang] ?? selectedIssue.lead['EN']}
-                    </p>
-                  </div>
-                  
-                  <div className="w-full h-px bg-white/10" />
+                      <div className="p-8 space-y-6">
+                        <div>
+                          <h2 className="text-2xl sm:text-3xl font-black text-white leading-snug mb-3">
+                            {(selectedIssue.headline as Record<string,string>)[lang] ?? selectedIssue.headline['EN']}
+                          </h2>
+                          <p className="text-lg text-zinc-400 font-medium leading-relaxed">
+                            {(selectedIssue.lead as Record<string,string>)[lang] ?? selectedIssue.lead['EN']}
+                          </p>
+                        </div>
+                        
+                        <div className="w-full h-px bg-white/10" />
 
-                  <div className="text-sm text-zinc-300 leading-loose whitespace-pre-wrap font-medium">
-                    {selectedIssue.body ? ((selectedIssue.body as Record<string,string>)[lang] ?? selectedIssue.body['EN']) : t('loadingArticle')}
-                  </div>
+                        <div className="text-sm text-zinc-300 leading-loose whitespace-pre-wrap font-medium">
+                          {selectedIssue.body ? ((selectedIssue.body as Record<string,string>)[lang] ?? selectedIssue.body['EN']) : t('loadingArticle')}
+                        </div>
 
-                  <div className="flex flex-wrap gap-3 pt-4 items-center justify-between">
-                    <div className="flex flex-wrap gap-2">
-                      {selectedIssue.tags.map((tag: string) => (
-                        <span key={tag} className="text-xs text-zinc-500 font-bold tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                    <a
-                      href={`https://www.youtube.com/watch?v=${selectedIssue.videoId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black shrink-0 transition-all hover:brightness-110"
-                      style={{ background: `${selectedIssue.accent}20`, color: selectedIssue.accent, border: `1px solid ${selectedIssue.accent}50` }}
-                    >
-                      ▶ Watch on YouTube
-                    </a>
-                  </div>
-                </div>
+                        <div className="flex flex-wrap gap-3 pt-4 items-center justify-between">
+                          <div className="flex flex-wrap gap-2">
+                            {selectedIssue.tags.map((tag: string) => (
+                              <span key={tag} className="text-xs text-zinc-500 font-bold tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </motion.div>
           </motion.div>

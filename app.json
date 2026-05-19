@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "71a03ff0-5377-48f1-b161-94d32f07762f"
+      }
+    },
+    "android": {
+      "package": "com.jakekim4410.standom"
+    }
+  }
+}
