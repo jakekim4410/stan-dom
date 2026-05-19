@@ -671,19 +671,33 @@ export default function Dashboard() {
               }}
             />
             {user ? (
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-full text-xs font-black uppercase tracking-tighter hover:bg-[var(--neon-lime)] hover:text-black transition-colors"
-              >
-                {t('logout')}
-              </button>
+              <div className="flex flex-col items-end">
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-full text-xs font-black uppercase tracking-tighter hover:bg-[var(--neon-lime)] hover:text-black transition-colors"
+                >
+                  {t('logout')}
+                </button>
+                {isAppEnv && (
+                  <span className="text-[8px] text-zinc-500 font-black mt-1 tracking-wider">
+                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP ? 'APP: v1.0.3 (v11) ✅' : 'APP: v1.0.0 (Old) ❌'}
+                  </span>
+                )}
+              </div>
             ) : (
-              <Link
-                href="/login"
-                className="px-4 py-2 bg-white text-black rounded-full text-xs font-black uppercase tracking-tighter hover:bg-[var(--neon-lime)] transition-colors"
-              >
-                {t('login')}
-              </Link>
+              <div className="flex flex-col items-end">
+                <Link
+                  href="/login"
+                  className="px-4 py-2 bg-white text-black rounded-full text-xs font-black uppercase tracking-tighter hover:bg-[var(--neon-lime)] transition-colors"
+                >
+                  {t('login')}
+                </Link>
+                {isAppEnv && (
+                  <span className="text-[8px] text-zinc-500 font-black mt-1 tracking-wider">
+                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP ? 'APP: v1.0.3 (v11) ✅' : 'APP: v1.0.0 (Old) ❌'}
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>
