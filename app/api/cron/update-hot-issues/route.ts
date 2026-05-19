@@ -185,8 +185,9 @@ export async function GET(request: Request) {
 The article MUST be substantial (at least 6 long, detailed paragraphs) and provide deep insights, industry analysis, and potential global impact. 
 MANDATORY: For EVERY language (EN, KO, ES), provide natural and professional content in that specific language.
 At the very end of the "body" for EVERY language, add a new line: "Source: ${sourceName}" (translated to the respective language).
+ALSO: Provide a highly relevant, official K-Pop YouTube video search query (e.g. "BLACKPINK Jisoo Flower MV", "BTS Dynamite MV") that perfectly matches the main K-Pop artist or song mentioned in the headline, under the key "youtubeQuery". Keep it concise (3-5 words) and optimized for searching the official music video or stage performance.
 
-Return JSON ONLY: { "category": { "EN":"", "KO":"", "ES":"" }, "headline": { "EN":"", "KO":"", "ES":"" }, "lead": { "EN":"", "KO":"", "ES":"" }, "body": { "EN":"", "KO":"", "ES":"" } }`;
+Return JSON ONLY: { "category": { "EN":"", "KO":"", "ES":"" }, "headline": { "EN":"", "KO":"", "ES":"" }, "lead": { "EN":"", "KO":"", "ES":"" }, "body": { "EN":"", "KO":"", "ES":"" }, "youtubeQuery": "" }`;
 
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
@@ -248,18 +249,22 @@ Return JSON ONLY: { "category": { "EN":"", "KO":"", "ES":"" }, "headline": { "EN
         return null;
       };
 
-      // Try 1: Keywords from title (First 5 words) + K-POP
-      const shortQuery = query.split(' ').slice(0, 5).join(' ') + ' K-POP';
-      let vid = await attemptSearch(shortQuery);
+      // Try 1: Search using the exact query passed in (which is Gemini's custom query!)
+      let vid = await attemptSearch(query);
       if (vid) return vid;
 
-      // Try 2: Artist Name + Official MV
+      // Try 2: Keywords from title (First 5 words) + K-POP (Fallback)
+      const shortQuery = query.split(' ').slice(0, 5).join(' ') + ' K-POP';
+      vid = await attemptSearch(shortQuery);
+      if (vid) return vid;
+
+      // Try 3: Artist Name + Official MV
       if (artistName) {
         vid = await attemptSearch(`${artistName} Official MV`);
         if (vid) return vid;
       }
 
-      // Try 3: Random popular K-pop fallback
+      // Try 4: Random popular K-pop fallback
       return getRandomFallback();
     };
 
@@ -281,7 +286,10 @@ Return JSON ONLY: { "category": { "EN":"", "KO":"", "ES":"" }, "headline": { "EN
         const expanded = await expandWithGemini(raw.title, raw.source?.name || 'News');
         
         const artist = artistNames.find(n => raw.title.toLowerCase().includes(n.toLowerCase()));
-        const videoId = await searchYouTube(raw.title, artist || '');
+        
+        // Use Gemini's highly specific query, fallback to artist or title
+        const searchQuery = expanded.youtubeQuery || artist || raw.title;
+        const videoId = await searchYouTube(searchQuery, artist || '');
 
         return {
           id: `live_${uniqueTs}_${i + 1}`,
