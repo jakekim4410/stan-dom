@@ -676,7 +676,9 @@ export default function Dashboard() {
                 </button>
                 {isAppEnv && (
                   <span className="text-[8px] text-zinc-500 font-black mt-1 tracking-wider">
-                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP ? 'APP: v1.0.3 (v11) ✅' : 'APP: v1.0.0 (Old) ❌'}
+                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP 
+                      ? `APP: ${(window as any).STAN_DOM_APP_VERSION || 'v1.0.3 (v11)'} ✅` 
+                      : 'APP: v1.0.0 (Old) ❌'}
                   </span>
                 )}
               </div>
@@ -690,7 +692,9 @@ export default function Dashboard() {
                 </Link>
                 {isAppEnv && (
                   <span className="text-[8px] text-zinc-500 font-black mt-1 tracking-wider">
-                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP ? 'APP: v1.0.3 (v11) ✅' : 'APP: v1.0.0 (Old) ❌'}
+                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP 
+                      ? `APP: ${(window as any).STAN_DOM_APP_VERSION || 'v1.0.3 (v11)'} ✅` 
+                      : 'APP: v1.0.0 (Old) ❌'}
                   </span>
                 )}
               </div>

@@ -227,6 +227,7 @@ export default function App() {
           injectedJavaScriptBeforeContentLoaded={`
             window.isAppEnv = true;
             window.STAN_DOM_APP = true;
+            window.STAN_DOM_APP_VERSION = "v1.0.4 (v12)";
             
             // 이미지 저장을 위한 기본 터치 동작 허용 (long-press 저장 활성화)
             document.addEventListener('DOMContentLoaded', function() {
