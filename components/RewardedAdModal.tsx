@@ -16,35 +16,35 @@ interface RewardedAdModalProps {
 const localizedText: Record<Language, Record<string, string>> = {
   EN: {
     title: 'Get Free Voltage!',
-    description: 'Want to vote more for your bias? Watch ads and earn +3 Voltage exclusive to our mobile app.',
+    description: 'Free Voltage charging is exclusively available on the STAN.DOM Android mobile app! Download the app and watch ads to earn +3 Voltage for free.',
     processing: 'Processing reward...',
     watchAd: 'Watch Ad & Get Voltage',
     alertAdEarned: 'Ad completed! +3 Voltage added ⚡',
     alertAdFailed: 'Failed to reward. Please try again.',
     alertAppOnly: 'Watching ads is only available in the mobile app!',
-    alertPlayStoreSoon: 'Play Store version is preparing for release!',
+    alertPlayStoreSoon: 'The app is currently preparing for official release! (Only available to testers at the moment)',
     comingSoon: 'Coming soon to mobile stores',
   },
   KO: {
     title: '무료 볼티지 충전!',
-    description: '최애 아티스트에게 더 많이 투표하고 싶으신가요? 모바일 앱에서 광고를 보고 +3 볼티지를 무료로 충전하세요!',
+    description: '무료 볼티지 충전은 스탠덤 안드로이드 모바일 앱에서만 가능합니다! 앱을 다운로드하고 광고를 시청하여 +3 볼티지를 무료로 충전하세요!',
     processing: '보상 지급 중...',
     watchAd: '광고 보고 볼티지 받기',
     alertAdEarned: '광고 시청 완료! +3 볼티지가 지급되었습니다 ⚡',
     alertAdFailed: '보상 지급에 실패했습니다. 다시 시도해주세요.',
-    alertAppOnly: '광고 시청은 스탠덤 모바일 앱에서만 가능합니다!',
-    alertPlayStoreSoon: '플레이스토어 출시 준비 중입니다!',
+    alertAppOnly: '광고 시청은 스탠덤 안드로이드 앱에서만 가능합니다!',
+    alertPlayStoreSoon: '구글 플레이 스토어 심사 중으로, 정식 출시 예정입니다! (현재는 등록된 테스터만 다운로드 가능합니다.)',
     comingSoon: '모바일 스토어 출시 예정',
   },
   ES: {
     title: '¡Carga Voltaje Gratis!',
-    description: '¿Quieres votar más por tu favorito? Mira anuncios y gana +3 Voltaje exclusivo en nuestra app móvil.',
+    description: '¡La carga de Voltaje gratis solo está disponible en la app móvil de Android de STAN.DOM! Descarga la app y mira anuncios para ganar +3 Voltaje gratis.',
     processing: 'Procesando recompensa...',
     watchAd: 'Ver anuncio para obtener Voltaje',
     alertAdEarned: '¡Anuncio completado! +3 Voltajes añadidos ⚡',
     alertAdFailed: 'Error al otorgar recompensa. Inténtalo de nuevo.',
     alertAppOnly: '¡Ver anuncios solo está disponible en la app móvil!',
-    alertPlayStoreSoon: '¡La versión de Play Store se está preparando para el lanzamiento!',
+    alertPlayStoreSoon: '¡La aplicación se está preparando para su lanzamiento oficial! (Actualmente solo disponible para evaluadores)',
     comingSoon: 'Próximamente en tiendas móviles',
   }
 };
@@ -147,20 +147,18 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
             <p className="text-zinc-400 text-sm leading-relaxed px-4">
               {lang === 'KO' ? (
                 <>
-                  최애 아티스트에게 더 많이 투표하고 싶으신가요? <br/>
-                  모바일 앱에서 광고를 보고 <span className="text-[var(--neon-lime)] font-bold">+3 볼티지</span>를 무료로 충전하세요!
+                  무료 볼티지 충전은 <span className="text-[var(--neon-lime)] font-bold">안드로이드 모바일 앱</span>에서만 가능합니다! <br/>
+                  앱을 다운로드하고 광고를 시청하여 <span className="text-[var(--neon-lime)] font-bold">+3 볼티지</span>를 무료로 충전하세요!
                 </>
               ) : lang === 'ES' ? (
                 <>
-                  ¿Quieres votar más por tu favorito? <br/>
-                  Mira anuncios y gana <span className="text-[var(--neon-lime)] font-bold">+3 Voltaje</span> <br/>
-                  exclusivo en nuestra app móvil.
+                  ¡La carga de Voltaje gratis solo está disponible en la <span className="text-[var(--neon-lime)] font-bold">app de Android</span>! <br/>
+                  Descarga la app y mira anuncios para ganar <span className="text-[var(--neon-lime)] font-bold">+3 Voltaje</span> gratis.
                 </>
               ) : (
                 <>
-                  Want to vote more for your bias? <br/>
-                  Watch ads and earn <span className="text-[var(--neon-lime)] font-bold">+3 Voltage</span> <br/>
-                  exclusive to our mobile app.
+                  Free Voltage charging is exclusively available on the <span className="text-[var(--neon-lime)] font-bold">Android app</span>! <br/>
+                  Download the app and watch ads to earn <span className="text-[var(--neon-lime)] font-bold">+3 Voltage</span> for free.
                 </>
               )}
             </p>
@@ -168,47 +166,39 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
 
           {/* Action Section */}
           <div className="p-6 pt-0 flex flex-col gap-3">
-            <button
-              onClick={handleWatchAd}
-              disabled={isProcessing}
-              className="w-full relative group overflow-hidden rounded-xl bg-white text-black p-4 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
-              {isProcessing ? (
-                <span className="font-bold">{text.processing}</span>
-              ) : isAppEnv ? (
-                <>
-                  <Gift size={20} className="font-bold text-[var(--neon-lime)] animate-bounce" />
-                  <span className="font-black text-base md:text-lg">{text.watchAd}</span>
-                </>
-              ) : (
-                <>
-                  <Download size={20} className="font-bold animate-bounce" />
-                  <div className="flex flex-col items-start leading-tight">
-                    <span className="text-[10px] font-bold text-black/60 uppercase">Download on the</span>
-                    <span className="font-black text-lg">App Store</span>
-                  </div>
-                </>
-              )}
-            </button>
-
-            {!isAppEnv && (
+            {isAppEnv ? (
               <button
-                onClick={() => alert(text.alertPlayStoreSoon)}
-                className="w-full relative group overflow-hidden rounded-xl bg-[#000000] border border-white/10 text-white p-4 flex items-center justify-center gap-3 hover:bg-zinc-800 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                onClick={handleWatchAd}
+                disabled={isProcessing}
+                className="w-full relative group overflow-hidden rounded-xl bg-white text-black p-4 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
               >
-                <Download size={20} className="animate-bounce" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+                {isProcessing ? (
+                  <span className="font-bold">{text.processing}</span>
+                ) : (
+                  <>
+                    <Gift size={20} className="font-bold text-[var(--neon-lime)] animate-bounce" />
+                    <span className="font-black text-base md:text-lg">{text.watchAd}</span>
+                  </>
+                )}
+              </button>
+            ) : (
+              <a
+                href="https://play.google.com/store/apps/details?id=com.stan.dom"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  alert(text.alertPlayStoreSoon);
+                }}
+                className="w-full relative group overflow-hidden rounded-xl bg-[#000000] border border-white/10 text-white p-4 flex items-center justify-center gap-3 hover:bg-zinc-800 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+              >
+                <Download size={24} className="animate-bounce" />
                 <div className="flex flex-col items-start leading-tight">
                   <span className="text-[10px] font-bold text-white/60 uppercase">GET IT ON</span>
-                  <span className="font-black text-lg">Google Play</span>
+                  <span className="font-black text-xl tracking-tight">Google Play</span>
                 </div>
-              </button>
+              </a>
             )}
-            
-            <div className="mt-4 flex items-center justify-center gap-2 text-xs font-medium text-zinc-500">
-              <Sparkles size={14} className="text-[var(--neon-lime)]/70 animate-pulse" />
-              <span>{text.comingSoon}</span>
-            </div>
           </div>
         </motion.div>
       </div>
