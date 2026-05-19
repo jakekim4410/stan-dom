@@ -324,11 +324,11 @@ const MusicPlayer = () => {
         aria-hidden="true"
         style={{
           position: 'fixed',
-          left: '-9999px',
-          top: '-9999px',
-          width: '356px',
+          bottom: '0px',
+          left: '0px',
+          width: '200px',
           height: '200px',
-          overflow: 'hidden',
+          opacity: 0.01,
           pointerEvents: 'none',
           zIndex: -999,
         }}
