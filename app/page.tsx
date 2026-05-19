@@ -358,26 +358,45 @@ export default function Dashboard() {
   };
 
   const fetchArtists = async () => {
-    const { data, error } = await supabase
+    // 1. Fetch all artists
+    const { data: artistsData, error: artError } = await supabase
         .from('artists')
-        .select('*')
-        .order('total_votes', { ascending: false });
-      if (error) throw error;
-      
-      // Pre-parse names to handle localized objects directly
-      const parsedData = (data || []).map(a => {
-        let nameObj = a.name;
-        if (typeof a.name === 'string' && (a.name.startsWith('{') || a.name.startsWith('['))) {
-          try {
-            nameObj = JSON.parse(a.name);
-          } catch (e) {
-            console.warn('Failed to parse artist name JSON', a.id);
-          }
-        }
-        return { ...a, name: nameObj };
-      });
+        .select('*');
+    if (artError) throw artError;
 
-      setArtists(parsedData);
+    // 2. Fetch the true vote counts by aggregating votes table rows
+    const { data: votesData, error: votesError } = await supabase
+        .from('votes')
+        .select('artist_id');
+    
+    let trueVoteCounts: Record<string, number> = {};
+    if (!votesError && votesData) {
+      votesData.forEach(v => {
+        if (v.artist_id) {
+          trueVoteCounts[v.artist_id] = (trueVoteCounts[v.artist_id] || 0) + 1;
+        }
+      });
+    }
+
+    // Pre-parse names and set the REAL aggregated total_votes
+    const parsedData = (artistsData || []).map(a => {
+      let nameObj = a.name;
+      if (typeof a.name === 'string' && (a.name.startsWith('{') || a.name.startsWith('['))) {
+        try {
+          nameObj = JSON.parse(a.name);
+        } catch (e) {
+          console.warn('Failed to parse artist name JSON', a.id);
+        }
+      }
+      // Use the actual votes count from votes table if available, fallback to total_votes
+      const realVotes = trueVoteCounts[a.id] !== undefined ? trueVoteCounts[a.id] : (a.total_votes || 0);
+      return { ...a, name: nameObj, total_votes: realVotes };
+    });
+
+    // Sort by the true, updated total_votes descending
+    parsedData.sort((a, b) => (b.total_votes || 0) - (a.total_votes || 0));
+
+    setArtists(parsedData);
   };
 
   const fetchCountryStats = async () => {
