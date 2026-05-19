@@ -23,7 +23,12 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "versionCode": 9
+      "versionCode": 10,
+      "permissions": [
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +39,14 @@
         {
           "androidAppId": "ca-app-pub-7904032658716092~4595983023",
           "iosAppId": "ca-app-pub-3940256099942544~1458002511"
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow STAN.DOM to save vote cards to your gallery.",
+          "savePhotosPermission": "Allow STAN.DOM to save vote cards to your gallery.",
+          "isAccessMediaLocationEnabled": true
         }
       ]
     ],

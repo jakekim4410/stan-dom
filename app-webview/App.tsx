@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, BackHandler, Platform, Alert } from 'react-native';
+import { StyleSheet, BackHandler, Platform, Alert, Linking, Share } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useRef, useEffect, useState } from 'react';
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
 
 // 개발 환경에서는 테스트 광고, 프로덕션에서는 실제 애드몹 광고를 노출합니다.
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-7904032658716092/1586676306';
@@ -99,6 +101,46 @@ export default function App() {
     return () => backHandler.remove();
   }, [canGoBack, isRoot, isAnyModalOpen, isExitModalOpen]);
 
+  // 3. 이미지 다운로드 핸들러 (data URL을 파일로 저장)
+  const handleImageDownload = async (dataUrl: string) => {
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('권한 필요', '사진을 저장하려면 갤러리 접근 권한이 필요합니다.');
+        return;
+      }
+      
+      // data:image/png;base64,... → base64 데이터 추출
+      const base64Data = dataUrl.split(',')[1];
+      if (!base64Data) {
+        Alert.alert('오류', '이미지 데이터를 처리할 수 없습니다.');
+        return;
+      }
+
+      const fileName = `standom_card_${Date.now()}.png`;
+      const fileUri = FileSystem.documentDirectory + fileName;
+      
+      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const asset = await MediaLibrary.createAssetAsync(fileUri);
+      
+      // 알림 및 성공 신호를 웹뷰로 전달
+      if (webviewRef.current) {
+        webviewRef.current.injectJavaScript(`
+          window.dispatchEvent(new CustomEvent('image-saved-success'));
+          true;
+        `);
+      }
+      
+      Alert.alert('저장 완료! ✅', '이미지가 갤러리에 저장되었습니다.');
+    } catch (error) {
+      console.error('Image download error:', error);
+      Alert.alert('저장 실패', '이미지 저장 중 문제가 발생했습니다.');
+    }
+  };
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
@@ -126,6 +168,10 @@ export default function App() {
                 setIsExitModalOpen(data.isOpen);
                 return;
               }
+              if (data.type === 'DOWNLOAD_IMAGE' && data.dataUrl) {
+                handleImageDownload(data.dataUrl);
+                return;
+              }
             } catch (e) {
               // 일반 텍스트 메세지 처리
             }
@@ -147,7 +193,14 @@ export default function App() {
           domStorageEnabled={true}
           mediaPlaybackRequiresUserAction={false}
           allowsInlineMediaPlayback={true}
+          // ── 음악 재생 및 혼합 콘텐츠 허용 (YouTube iframe 등) ──
+          mixedContentMode="always"
+          allowFileAccess={true}
+          allowsFullscreenVideo={true}
+          // ── 흰색 깜빡임 방지를 위한 배경색 고정 ──
           backgroundColor="#000000"
+          // 안드로이드에서 하드웨어 가속 활성화 (영상/음악 재생 안정화)
+          androidLayerType="hardware"
           onConsoleMessage={(event) => {
             console.log('[Web Console]', event.nativeEvent.message);
           }}
@@ -155,12 +208,37 @@ export default function App() {
           injectedJavaScriptBeforeContentLoaded={`
             window.isAppEnv = true;
             window.STAN_DOM_APP = true;
+            
+            // 이미지 저장을 위한 기본 터치 동작 허용 (long-press 저장 활성화)
+            document.addEventListener('DOMContentLoaded', function() {
+              var style = document.createElement('style');
+              style.textContent = 'img { -webkit-touch-callout: default !important; -webkit-user-select: auto !important; user-select: auto !important; }';
+              document.head.appendChild(style);
+            });
             true;
           `}
           // 유튜브의 악랄한 WebView 차단 로직(0:00 멈춤)을 우회하기 위해 순수 모바일 브라우저로 위장합니다. (구글 로그인 오류 방지를 위해 뒤에 커스텀 텍스트는 빼고 순정 텍스트만 넣습니다.)
           userAgent={Platform.OS === 'android' 
-            ? 'Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36' 
+            ? 'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.113 Mobile Safari/537.36' 
             : 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
+          // 외부 링크 (트위터, 인스타 등)를 시스템 브라우저에서 열기
+          onShouldStartLoadWithRequest={(request) => {
+            const url = request.url;
+            // standom.online 내부 링크는 WebView에서 처리
+            if (url.includes('standom.online') || url.includes('youtube.com') || url.includes('ytimg.com') || url.includes('supabase.co') || url.includes('accounts.google.com') || url.startsWith('about:blank')) {
+              return true;
+            }
+            // 외부 링크는 시스템 브라우저로 열기
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+              Linking.openURL(url);
+              return false;
+            }
+            // blob: / data: URL은 허용
+            if (url.startsWith('blob:') || url.startsWith('data:')) {
+              return true;
+            }
+            return true;
+          }}
         />
       </SafeAreaView>
     </SafeAreaProvider>

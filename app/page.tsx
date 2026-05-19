@@ -85,9 +85,18 @@ export default function Dashboard() {
   const [voteQuota, setVoteQuota] = useState<{ remaining: number; limit: number } | null>(null);
   const [birthdayArtistIds, setBirthdayArtistIds] = useState<Set<string>>(new Set());
   const [refreshLoading, setRefreshLoading] = useState(false);
+  const [isAppEnv, setIsAppEnv] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
   const hologramCardRef = useRef<HTMLDivElement>(null);
+
+  // Detect if running inside React Native WebView (mobile app)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isApp = !!(window as any).ReactNativeWebView || !!(window as any).isAppEnv || !!(window as any).STAN_DOM_APP;
+      setIsAppEnv(isApp);
+    }
+  }, []);
 
   const t = getT(lang);
 
@@ -334,11 +343,25 @@ export default function Dashboard() {
       // Delay to ensure shimmer is hidden
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      const dataUrl = await domToJpeg(hologramCardRef.current, {
-        scale: 1.5, // Reduced for much better social media compatibility
-        quality: 0.8, // Optimized quality/size balance
-        backgroundColor: '#020205',
-      });
+      // In app environment (WebView), domToJpeg causes white-flash crashes.
+      // Use toPng as primary with domToJpeg fallback for web.
+      let dataUrl: string;
+      try {
+        dataUrl = await toPng(hologramCardRef.current, {
+          quality: 0.9,
+          backgroundColor: '#020205',
+          pixelRatio: 2,
+          skipAutoScale: true,
+          cacheBust: true,
+        });
+      } catch (pngErr) {
+        console.warn('[Download] toPng failed, trying domToJpeg fallback:', pngErr);
+        dataUrl = await domToJpeg(hologramCardRef.current, {
+          scale: 1.5,
+          quality: 0.8,
+          backgroundColor: '#020205',
+        });
+      }
       
       setGeneratedImage(dataUrl);
       setIsCapturing(false);
@@ -2032,10 +2055,40 @@ export default function Dashboard() {
                 <img 
                   src={generatedImage} 
                   alt="Support Card" 
-                  className="w-full h-full object-contain pointer-events-auto"
+                  className="w-full h-full object-contain pointer-events-auto select-auto"
+                  style={{ WebkitUserSelect: 'auto', userSelect: 'auto', WebkitTouchCallout: 'default' } as any}
                   onContextMenu={(e) => e.stopPropagation()} // Allow context menu
                 />
               </div>
+
+              {/* Direct download button - uses native bridge in app, <a download> on web */}
+              <button
+                onClick={() => {
+                  if (!generatedImage) return;
+                  const win = window as any;
+                  // In app environment, send the data URL to the native side for gallery saving
+                  if (win.ReactNativeWebView) {
+                    win.ReactNativeWebView.postMessage(JSON.stringify({
+                      type: 'DOWNLOAD_IMAGE',
+                      dataUrl: generatedImage,
+                    }));
+                    setToast({ isVisible: true, message: '📲 Saving...', subMessage: 'Saving to gallery via app' });
+                  } else {
+                    // Web fallback: create a download link
+                    const link = document.createElement('a');
+                    link.download = `standom_card_${Date.now()}.png`;
+                    link.href = generatedImage;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setToast({ isVisible: true, message: '✅ Saved!', subMessage: 'Card saved to your device' });
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-2 mt-4 px-4 py-3 rounded-xl bg-[var(--neon-lime)] text-black font-black text-[10px] tracking-widest uppercase hover:scale-105 transition-all shadow-xl shadow-[var(--neon-lime)]/20"
+              >
+                <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                SAVE TO DEVICE
+              </button>
 
               <button
                 onClick={() => setGeneratedImage(null)}
