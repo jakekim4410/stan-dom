@@ -24,10 +24,11 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
       const href = target.getAttribute('href');
       if (!href) return;
 
-      // 내부 링크, 앵커, 핸들러가 없는 경우 무시
+      // 내부 링크, 앵커, 혹은 data-bypass-exit 속성이 있는 경우 무시
       const isExternal =
         href.startsWith('http') &&
-        !href.includes(window.location.hostname);
+        !href.includes(window.location.hostname) &&
+        !target.hasAttribute('data-bypass-exit');
 
       if (isExternal) {
         e.preventDefault();
@@ -42,28 +43,8 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
     return () => document.removeEventListener('click', handleClick, true);
   }, []);
 
-  // === 뒤로가기 감지 (History API Trap) ===
-  useEffect(() => {
-    // 초기에 빈 상태를 하나 푸시하여 사용자가 뒤로가기를 누를 공간을 확보
-    window.history.pushState({ trap: true }, '', window.location.href);
-
-    const handlePopState = (e: PopStateEvent) => {
-      if (allowBackRef.current) return;
-
-      // 뒤로가기 클릭 시 커스텀 모달 띄우기
-      isBackActionRef.current = true;
-      setPendingHref(null);
-      setShowModal(true);
-
-      // 다시 state를 push해서 현재 페이지에 머물게 함
-      window.history.pushState({ trap: true }, '', window.location.href);
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, []);
+  // === 뒤로가기 감지 (History API Trap) 제거 ===
+  // Next.js 라우터와 충돌하여 백스페이스/뒤로가기 시 오류를 발생시키므로 웹 환경에서는 제거합니다.
 
   const handleStay = useCallback(() => {
     setPendingHref(null);
@@ -76,10 +57,6 @@ export default function ExitNotification({ lang }: ExitNotificationProps) {
     if (pendingHref) {
       window.open(pendingHref, '_blank', 'noopener,noreferrer');
       setPendingHref(null);
-    } else if (isBackActionRef.current) {
-      // 뒤로가기 허용 플래그를 켜고, 스택에 쌓인 트랩 2개를 건너뛰어 진짜 이전 페이지로 이동
-      allowBackRef.current = true;
-      window.history.go(-2);
     }
   }, [pendingHref]);
 

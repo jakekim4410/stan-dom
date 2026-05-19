@@ -187,8 +187,11 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
                 href="https://play.google.com/store/apps/details?id=com.stan.dom"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-bypass-exit="true"
                 onClick={(e) => {
+                  e.preventDefault();
                   alert(text.alertPlayStoreSoon);
+                  window.open("https://play.google.com/store/apps/details?id=com.stan.dom", "_blank");
                 }}
                 className="w-full relative group overflow-hidden rounded-xl bg-[#000000] border border-white/10 text-white p-4 flex items-center justify-center gap-3 hover:bg-zinc-800 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)]"
               >
