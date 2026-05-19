@@ -107,33 +107,13 @@ const MusicPlayer = () => {
   // ── 1. YouTube IFrame API 로드 ──────────────────────────
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
-    const checkApi = () => {
-      if (window.YT && window.YT.Player) {
-        setIsApiReady(true);
-        return true;
-      }
-      return false;
-    };
-
-    if (checkApi()) return;
-
+    if (window.YT?.Player) { setIsApiReady(true); return; }
     window.onYouTubeIframeAPIReady = () => setIsApiReady(true);
-
     if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
       const s = document.createElement('script');
       s.src = 'https://www.youtube.com/iframe_api';
       document.head.appendChild(s);
     }
-
-    // Polling fallback to ensure we detect YT loaded
-    const timer = setInterval(() => {
-      if (checkApi()) {
-        clearInterval(timer);
-      }
-    }, 500);
-
-    return () => clearInterval(timer);
   }, []);
 
   // ── 2. 타이머 (1초마다 현재 시간 폴링) ─────────────────
@@ -315,7 +295,9 @@ const MusicPlayer = () => {
   };
 
   // ── 8. 언마운트 정리 ────────────────────────────────────
-  useEffect(() => () => stopTick(), [stopTick]);
+  useEffect(() => {
+    return () => stopTick();
+  }, [stopTick]);
 
   // ── 가사 스크롤 동기화 ─────────────────────────────────
   const adjustedElapsed = elapsed - syncOffset;
@@ -346,19 +328,14 @@ const MusicPlayer = () => {
           position: 'fixed',
           bottom: '0px',
           left: '0px',
-          width: '200px',
-          height: '200px',
-          opacity: 1,
+          width: '1px',
+          height: '1px',
+          opacity: 0.01,
           pointerEvents: 'none',
-          zIndex: -10,
+          zIndex: 99999,
         }}
       >
-        <iframe
-          id="yt-hidden-player"
-          title="Hidden YouTube Player"
-          allow="autoplay; encrypted-media"
-          style={{ width: '100%', height: '100%', border: '0' }}
-        />
+        <div id="yt-hidden-player" />
       </div>
       {/* ── 플레이어 UI ── */}
       <AnimatePresence>
