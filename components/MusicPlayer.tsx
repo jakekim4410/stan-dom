@@ -328,9 +328,9 @@ const MusicPlayer = () => {
           left: '0px',
           width: '200px',
           height: '200px',
-          opacity: 0.01,
+          opacity: 0.05,
           pointerEvents: 'none',
-          zIndex: -999,
+          zIndex: 9999,
         }}
       >
         <div id="yt-hidden-player" />
