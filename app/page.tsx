@@ -89,6 +89,7 @@ export default function Dashboard() {
   const bannerRef = useRef<HTMLDivElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
   const hologramCardRef = useRef<HTMLDivElement>(null);
+  const staticHologramCardRef = useRef<HTMLDivElement>(null);
 
   // Detect if running inside React Native WebView (mobile app)
   useEffect(() => {
@@ -337,7 +338,7 @@ export default function Dashboard() {
   };
 
   const handleDownloadCard = async () => {
-    if (hologramCardRef.current === null) return;
+    if (staticHologramCardRef.current === null) return;
     try {
       setToast({ isVisible: true, message: 'Generating Image...', subMessage: 'Please wait a moment' });
       setIsCapturing(true); // Disable shimmer for clean capture
@@ -345,11 +346,9 @@ export default function Dashboard() {
       // Delay to ensure shimmer is hidden
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      // In app environment (WebView), domToJpeg causes white-flash crashes.
-      // Use toPng as primary with domToJpeg fallback for web.
       let dataUrl: string;
       try {
-        dataUrl = await toPng(hologramCardRef.current, {
+        dataUrl = await toPng(staticHologramCardRef.current, {
           quality: 0.9,
           backgroundColor: '#020205',
           pixelRatio: 2,
@@ -358,7 +357,7 @@ export default function Dashboard() {
         });
       } catch (pngErr) {
         console.warn('[Download] toPng failed, trying domToJpeg fallback:', pngErr);
-        dataUrl = await domToJpeg(hologramCardRef.current, {
+        dataUrl = await domToJpeg(staticHologramCardRef.current, {
           scale: 1.5,
           quality: 0.8,
           backgroundColor: '#020205',
@@ -1966,6 +1965,59 @@ export default function Dashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Off-screen static card for capture ── */}
+      {showHologramCard && (
+        <div
+          ref={staticHologramCardRef}
+          style={{
+            position: 'fixed',
+            left: '-9999px',
+            top: '-9999px',
+            width: '320px',
+            height: '480px',
+            zIndex: -9999,
+          }}
+          className="rounded-[24px] overflow-hidden p-1 bg-gradient-to-br from-white/40 via-white/10 to-black/80"
+        >
+          {/* Card Inner */}
+          <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-[#09090b] flex flex-col items-center">
+            {/* Background */}
+            <div className="absolute inset-0 opacity-20 scale-110">
+              <img 
+                src={showHologramCard.artist.image_url || ''} 
+                alt="" 
+                className="w-full h-full object-cover filter blur-lg"
+                crossOrigin="anonymous"
+              />
+            </div>
+            
+            <div className="relative z-10 w-full h-1/2 p-4 pt-8 flex flex-col items-center justify-center">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/50 shadow-2xl mb-4 bg-black">
+                <img 
+                  src={showHologramCard.artist.image_url || ''} 
+                  alt={getLangName(showHologramCard.artist.name, lang)} 
+                  className="w-full h-full object-cover" 
+                  crossOrigin="anonymous"
+                />
+              </div>
+              <h3 className="text-2xl font-black tracking-tighter text-white drop-shadow-md text-center leading-tight">
+                {getLangName(showHologramCard.artist.name, lang)}
+              </h3>
+              <div className="mt-2 px-3 py-1 rounded-full bg-white/10 border border-white/20" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
+                <span className="text-[10px] font-black tracking-widest text-[#37C561] uppercase whitespace-nowrap" style={{ color: '#37C561' }}>{t('hologramRank')} #{showHologramCard.rank}</span>
+              </div>
+            </div>
+
+            <div className="relative z-10 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center justify-end p-6 text-center pb-8">
+              <p className="text-xs font-medium text-[#d4d4d8] leading-relaxed mb-4">
+                {t('fueledMsg')}
+              </p>
+              <img src="/stan_dom_logo_transparent2.png" className="h-4 opacity-50 mx-auto" alt="LOGO" />
+            </div>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence>
         {showInstaGuide && (
