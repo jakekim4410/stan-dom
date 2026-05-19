@@ -286,7 +286,8 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
           console.warn('Failed to parse artist name', artistId);
         }
       }
-      const parsedArtist = { ...artistRes.data, name: nameObj };
+      const trueVoteCount = votesRes.data ? votesRes.data.length : (artistRes.data.total_votes || 0);
+      const parsedArtist = { ...artistRes.data, name: nameObj, total_votes: trueVoteCount };
       setArtist(parsedArtist);
       
       const enName = getLangName(nameObj, 'EN');
