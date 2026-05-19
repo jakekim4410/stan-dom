@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 
 import { MusicProvider } from "@/app/contexts/MusicContext";
 import MusicPlayer from "@/components/MusicPlayer";
+import WebViewStateSync from "@/components/WebViewStateSync";
 
 export default function RootLayout({
   children,
@@ -63,6 +64,7 @@ export default function RootLayout({
         <MusicProvider>
           {children}
           <MusicPlayer />
+          <WebViewStateSync />
         </MusicProvider>
       </body>
     </html>

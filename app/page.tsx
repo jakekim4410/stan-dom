@@ -189,6 +189,29 @@ export default function Dashboard() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [closeAllModals, isAnyModalOpen]);
 
+  // Listen to close-all-modals event from React Native WebView
+  useEffect(() => {
+    const handleCloseAll = () => {
+      closeAllModals();
+    };
+    window.addEventListener('close-all-modals', handleCloseAll);
+    return () => window.removeEventListener('close-all-modals', handleCloseAll);
+  }, [closeAllModals]);
+
+  // Sync isRoot and isAnyModalOpen state with React Native WebView
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const win = window as any;
+      if (win.ReactNativeWebView) {
+        win.ReactNativeWebView.postMessage(JSON.stringify({
+          type: 'APP_STATE',
+          isRoot: true,
+          isAnyModalOpen
+        }));
+      }
+    }
+  }, [isAnyModalOpen]);
+
   useEffect(() => {
     // Initialize language from localStorage
     const savedLang = localStorage.getItem('stan_lang') as Language;
@@ -863,15 +886,10 @@ export default function Dashboard() {
                     className="group relative glassmorphism rounded-3xl overflow-hidden border border-white/5 flex flex-col hover:border-white/15 transition-all duration-500"
                     whileHover={{ boxShadow: `0 0 40px -10px ${issue.accent}40` }}
                   >
-                    {/* YouTube Thumbnail – click to watch */}
-                    <a
-                      href={issue.videoId
-                        ? `https://www.youtube.com/watch?v=${issue.videoId}`
-                        : `https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="relative w-full aspect-video overflow-hidden bg-zinc-900 block"
+                    {/* YouTube Thumbnail – click to watch details immediately */}
+                    <div
+                      onClick={() => setSelectedIssue(issue)}
+                      className="relative w-full aspect-video overflow-hidden bg-zinc-900 block cursor-pointer"
                     >
                       <img
                         src={issue.videoId
@@ -905,7 +923,7 @@ export default function Dashboard() {
                           {t('newTag')}
                         </div>
                       )}
-                    </a>
+                    </div>
                     {/* Card Body */}
                     <div className="flex flex-col flex-1 p-5 gap-3">
                       <span
@@ -920,6 +938,7 @@ export default function Dashboard() {
                             href={`https://www.youtube.com/watch?v=${issue.videoId}`}
                             target="_blank"
                             rel="noopener noreferrer"
+                            data-bypass-exit="true"
                             className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
                             style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
                           >
@@ -930,6 +949,7 @@ export default function Dashboard() {
                             href={`https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`}
                             target="_blank"
                             rel="noopener noreferrer"
+                            data-bypass-exit="true"
                             className="flex-1 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:brightness-110"
                             style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
                           >
@@ -998,14 +1018,9 @@ export default function Dashboard() {
                                     className="flex flex-col sm:flex-row items-center gap-4 p-5 hover:bg-white/5 transition-colors group"
                                   >
                                     {/* Thumbnail small */}
-                                    <a
-                                      href={issue.videoId
-                                        ? `https://www.youtube.com/watch?v=${issue.videoId}`
-                                        : `https://www.youtube.com/results?search_query=${encodeURIComponent(headline)}`
-                                      }
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900 block"
+                                    <div
+                                      onClick={() => setSelectedIssue(issue)}
+                                      className="relative w-full sm:w-40 shrink-0 aspect-video rounded-xl overflow-hidden bg-zinc-900 block cursor-pointer"
                                     >
                                       <img
                                         src={issue.videoId
@@ -1020,7 +1035,7 @@ export default function Dashboard() {
                                           <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white ml-0.5" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" /></svg>
                                         </div>
                                       </div>
-                                    </a>
+                                    </div>
                                     {/* Text content */}
                                     <div className="flex flex-col gap-2 flex-1 min-w-0">
                                       <div className="flex flex-wrap items-center gap-2">
@@ -1031,7 +1046,7 @@ export default function Dashboard() {
                                         <span className="text-[9px] font-mono text-zinc-600">{issue.date}</span>
                                       </div>
                                       <p className="text-sm font-black text-white w-full sm:w-auto" style={{ wordBreak: 'keep-all' }}>{headline}</p>
-                                      <p className="text-xs text-zinc-400 w-full sm:w-auto line-clamp-2 overflow-hidden text-ellipsis">{lead}</p>
+                                      <p className="text-[11px] text-zinc-400 w-full sm:w-auto line-clamp-2 overflow-hidden text-ellipsis leading-relaxed font-medium">{lead}</p>
                                     </div>
                                     <div className="shrink-0 flex flex-col gap-1.5">
                                       <a
@@ -1041,6 +1056,7 @@ export default function Dashboard() {
                                         }
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        data-bypass-exit="true"
                                         className="text-[10px] font-black uppercase text-center px-4 py-2 rounded-lg whitespace-nowrap block hover:brightness-110 transition-all"
                                         style={{ background: `${issue.accent}15`, color: issue.accent, border: `1px solid ${issue.accent}40` }}
                                       >

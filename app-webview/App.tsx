@@ -16,6 +16,11 @@ export default function App() {
   const webviewRef = useRef<WebView>(null);
   const [canGoBack, setCanGoBack] = useState(false);
   const [adLoaded, setAdLoaded] = useState(false);
+  
+  // 하이브리드 앱 네비게이션 및 모달 동기화 상태
+  const [isRoot, setIsRoot] = useState(true);
+  const [isAnyModalOpen, setIsAnyModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   // 1. 애드몹 보상형 광고 설정
   useEffect(() => {
@@ -54,14 +59,36 @@ export default function App() {
     };
   }, []);
 
-  // 2. 안드로이드 뒤로가기 버튼 처리
+  // 2. 안드로이드 뒤로가기 버튼 처리 (하이브리드 네비게이션 통합)
   useEffect(() => {
     const backAction = () => {
-      if (canGoBack && webviewRef.current) {
+      // 1. 종료 확인 모달이 켜져있거나 다른 모달이 켜져있다면, 웹(Next.js)에 모달 닫기 이벤트 전송
+      if (isExitModalOpen || isAnyModalOpen) {
+        if (webviewRef.current) {
+          webviewRef.current.injectJavaScript(`
+            window.dispatchEvent(new CustomEvent('close-all-modals'));
+            true;
+          `);
+        }
+        return true; // 앱 종료 방지
+      }
+
+      // 2. 만약 루트 페이지가 아니라면 (예: 아티스트 상세페이지 등), 뒤로 가기
+      if (!isRoot && canGoBack && webviewRef.current) {
         webviewRef.current.goBack();
         return true; // 앱 종료 방지
       }
-      return false; // 첫 화면이면 앱 종료
+
+      // 3. 루트 페이지이고 모달도 안 켜져있다면, 웹에 종료 확인 모달 띄우기 요청
+      if (isRoot && webviewRef.current) {
+        webviewRef.current.injectJavaScript(`
+          window.dispatchEvent(new CustomEvent('request-app-exit'));
+          true;
+        `);
+        return true; // 앱 종료 방지 (모달의 '나가기' 버튼을 눌러야 EXIT_APP 메시지로 종료됨)
+      }
+
+      return false; // 기본 앱 종료
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -70,7 +97,7 @@ export default function App() {
     );
 
     return () => backHandler.remove();
-  }, [canGoBack]);
+  }, [canGoBack, isRoot, isAnyModalOpen, isExitModalOpen]);
 
   return (
     <SafeAreaProvider>
@@ -86,6 +113,23 @@ export default function App() {
           // 웹(Next.js)에서 보내는 메시지 수신 (브릿지 역할)
           onMessage={(event) => {
             const message = event.nativeEvent.data;
+            
+            // JSON 기반 상태 메세지 파싱
+            try {
+              const data = JSON.parse(message);
+              if (data.type === 'APP_STATE') {
+                setIsRoot(data.isRoot);
+                setIsAnyModalOpen(data.isAnyModalOpen);
+                return;
+              }
+              if (data.type === 'EXIT_MODAL_STATE') {
+                setIsExitModalOpen(data.isOpen);
+                return;
+              }
+            } catch (e) {
+              // 일반 텍스트 메세지 처리
+            }
+
             if (message === 'SHOW_REWARDED_AD') {
               if (adLoaded) {
                 rewarded.show();
