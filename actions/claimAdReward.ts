@@ -3,7 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { headers } from 'next/headers';
 
-const MAX_ADS_PER_DAY = 5; // 하루 최대 5번 광고 시청 가능 (총 15표 추가)
+const MAX_ADS_PER_DAY = 10; // 하루 최대 10번 광고 시청 가능 (총 30표 추가)
 
 export async function claimAdReward() {
   try {

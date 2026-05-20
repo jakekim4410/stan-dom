@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Smartphone, Download, Gift, Sparkles } from 'lucide-react';
 import { claimAdReward } from '@/actions/claimAdReward';
+import { getRemainingVotes } from '@/actions/getRemainingVotes';
 import { Language } from '@/constants/i18n';
 
 interface RewardedAdModalProps {
@@ -24,6 +25,8 @@ const localizedText: Record<Language, Record<string, string>> = {
     alertAppOnly: 'Watching ads is only available in the mobile app!',
     alertPlayStoreSoon: 'The app is currently preparing for official release! (Only available to testers at the moment)',
     comingSoon: 'Coming soon to mobile stores',
+    limitReached: 'Daily Limit Reached (10/10)',
+    adViewsCount: 'Today\'s Ads: {count} / 10',
   },
   KO: {
     title: '무료 볼티지 충전!',
@@ -35,6 +38,8 @@ const localizedText: Record<Language, Record<string, string>> = {
     alertAppOnly: '광고 시청은 스탠덤 안드로이드 앱에서만 가능합니다!',
     alertPlayStoreSoon: '구글 플레이 스토어 심사 중으로, 정식 출시 예정입니다! (현재는 등록된 테스터만 다운로드 가능합니다.)',
     comingSoon: '모바일 스토어 출시 예정',
+    limitReached: '오늘의 광고 한도 완료 (10/10)',
+    adViewsCount: '오늘의 참여 횟수: {count} / 10',
   },
   ES: {
     title: '¡Carga Voltaje Gratis!',
@@ -46,13 +51,37 @@ const localizedText: Record<Language, Record<string, string>> = {
     alertAppOnly: '¡Ver anuncios solo está disponible en la app móvil!',
     alertPlayStoreSoon: '¡La aplicación se está preparando para su lanzamiento oficial! (Actualmente solo disponible para evaluadores)',
     comingSoon: 'Próximamente en tiendas móviles',
+    limitReached: 'Límite diario alcanzado (10/10)',
+    adViewsCount: 'Anuncios de hoy: {count} / 10',
   }
 };
 
 export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO' }: RewardedAdModalProps) {
   const [isAppEnv, setIsAppEnv] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [adViewsToday, setAdViewsToday] = useState<number>(0);
+  const [isLoadingViews, setIsLoadingViews] = useState(true);
   const text = localizedText[lang] || localizedText.KO;
+
+  // 1. 광고 제한 횟수 가져오기
+  useEffect(() => {
+    if (isOpen) {
+      const fetchViews = async () => {
+        setIsLoadingViews(true);
+        try {
+          const res = await getRemainingVotes();
+          if (res.success) {
+            setAdViewsToday(res.adViewsToday || 0);
+          }
+        } catch (e) {
+          console.error('Error fetching ad views:', e);
+        } finally {
+          setIsLoadingViews(false);
+        }
+      };
+      fetchViews();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     // 앱 환경(WebView)인지 확인
@@ -72,6 +101,7 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
 
         if (res.success) {
           alert(text.alertAdEarned);
+          setAdViewsToday(prev => prev + 1);
           if (onSuccess) onSuccess();
           onClose();
         } else {
@@ -86,6 +116,10 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
 
   const handleWatchAd = () => {
     if (isAppEnv) {
+      if (adViewsToday >= 10) {
+        alert(text.limitReached);
+        return;
+      }
       // 네이티브 앱(Expo)으로 광고 띄워달라고 메시지 전송
       (window as any).ReactNativeWebView.postMessage('SHOW_REWARDED_AD');
     } else {
@@ -162,6 +196,16 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
                 </>
               )}
             </p>
+
+            {/* Ad Views Counter (Only if in app environment and count is loaded) */}
+            {isAppEnv && !isLoadingViews && (
+              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-zinc-400">
+                <Sparkles size={12} className="text-[var(--neon-lime)]" />
+                <span>
+                  {text.adViewsCount.replace('{count}', String(adViewsToday))}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Action Section */}
@@ -169,12 +213,22 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
             {isAppEnv ? (
               <button
                 onClick={handleWatchAd}
-                disabled={isProcessing}
-                className="w-full relative group overflow-hidden rounded-xl bg-white text-black p-4 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                disabled={isProcessing || isLoadingViews || adViewsToday >= 10}
+                className={`w-full relative group overflow-hidden rounded-xl p-4 flex items-center justify-center gap-3 transition-all ${
+                  adViewsToday >= 10
+                    ? 'bg-zinc-800 text-zinc-500 border border-white/5 cursor-not-allowed'
+                    : 'bg-white text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(255,255,255,0.2)]'
+                }`}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+                {adViewsToday < 10 && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+                )}
                 {isProcessing ? (
                   <span className="font-bold">{text.processing}</span>
+                ) : isLoadingViews ? (
+                  <span className="font-bold">Checking limit...</span>
+                ) : adViewsToday >= 10 ? (
+                  <span className="font-black text-base md:text-lg">{text.limitReached}</span>
                 ) : (
                   <>
                     <Gift size={20} className="font-bold text-[var(--neon-lime)] animate-bounce" />
