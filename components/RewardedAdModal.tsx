@@ -94,9 +94,17 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
   // 2. 모달이 열리고 앱 환경일 때 광고 프리로드 요청
   useEffect(() => {
     if (isOpen && isAppEnv && adViewsToday < 10) {
-      setIsAdLoading(true);
-      setAdReady(false);
-      (window as any).ReactNativeWebView?.postMessage('PRELOAD_AD');
+      const isModernApp = typeof window !== 'undefined' && !!(window as any).STAN_DOM_APP;
+      if (isModernApp) {
+        setIsAdLoading(true);
+        setAdReady(false);
+        (window as any).ReactNativeWebView?.postMessage('PRELOAD_AD');
+      } else {
+        // 구버전 앱(v1.0.0 등)은 PRELOAD_AD 및 adLoadedStatus 수신을 지원하지 않으므로,
+        // 로딩바 없이 즉시 광고 보기 버튼을 활성화합니다.
+        setIsAdLoading(false);
+        setAdReady(true);
+      }
     }
   }, [isOpen, isAppEnv, adViewsToday]);
 
@@ -149,6 +157,14 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
         alert(text.limitReached);
         return;
       }
+
+      const isModernApp = typeof window !== 'undefined' && !!(window as any).STAN_DOM_APP;
+      if (!isModernApp) {
+        // 구버전 앱은 광고 호출 메시지를 즉시 전송
+        (window as any).ReactNativeWebView?.postMessage('SHOW_REWARDED_AD');
+        return;
+      }
+
       if (adReady) {
         // 광고가 이미 로드된 상태이므로 바로 송출 요청
         (window as any).ReactNativeWebView.postMessage('SHOW_REWARDED_AD');
