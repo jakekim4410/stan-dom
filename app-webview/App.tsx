@@ -3,7 +3,7 @@ import { StyleSheet, BackHandler, Platform, Alert, Linking, Share } from 'react-
 import { WebView } from 'react-native-webview';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useRef, useEffect, useState } from 'react';
-import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
+import { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 
@@ -29,6 +29,12 @@ export default function App() {
     const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
       console.log('광고 로드 완료!');
       setAdLoaded(true);
+      if (webviewRef.current) {
+        webviewRef.current.injectJavaScript(`
+          window.dispatchEvent(new CustomEvent('adLoadedStatus', { detail: { loaded: true } }));
+          true;
+        `);
+      }
     });
     
     const unsubscribeEarned = rewarded.addAdEventListener(
@@ -45,19 +51,35 @@ export default function App() {
       },
     );
 
-    const unsubscribeClosed = rewarded.addAdEventListener('closed', () => {
-      // 사용자가 창을 닫으면 다음 번을 위해 새 광고 미리 로드
+    const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+      // 사용자가 창을 닫으면 상태 리셋 (여기서 다음 광고를 강제로 load()하지 않고, 다음 모달 진입 시에 load함)
       setAdLoaded(false);
-      rewarded.load();
+      if (webviewRef.current) {
+        webviewRef.current.injectJavaScript(`
+          window.dispatchEvent(new CustomEvent('adLoadedStatus', { detail: { loaded: false } }));
+          true;
+        `);
+      }
     });
 
-    // 첫 광고 로드 시작
-    rewarded.load();
+    const unsubscribeError = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
+      console.log('광고 로드 실패:', error);
+      setAdLoaded(false);
+      if (webviewRef.current) {
+        webviewRef.current.injectJavaScript(`
+          window.dispatchEvent(new CustomEvent('adLoadedStatus', { detail: { loaded: false, error: "${error?.message || 'Unknown error'}" } }));
+          true;
+        `);
+      }
+    });
+
+    // 앱 진입 시 자동 로드를 비활성화하여 불필요한 요청수 증가를 막습니다. (유저가 모달에 진입했을 때 PRELOAD_AD를 받으면 로드)
 
     return () => {
       unsubscribeLoaded();
       unsubscribeEarned();
       unsubscribeClosed();
+      unsubscribeError();
     };
   }, []);
 
@@ -202,7 +224,20 @@ export default function App() {
               // 일반 텍스트 메세지 처리
             }
 
-            if (message === 'SHOW_REWARDED_AD') {
+            if (message === 'PRELOAD_AD') {
+              if (!adLoaded) {
+                console.log('광고 프리로드 시작...');
+                rewarded.load();
+              } else {
+                console.log('광고가 이미 로드되어 있습니다. 웹에 재전송합니다.');
+                if (webviewRef.current) {
+                  webviewRef.current.injectJavaScript(`
+                    window.dispatchEvent(new CustomEvent('adLoadedStatus', { detail: { loaded: true } }));
+                    true;
+                  `);
+                }
+              }
+            } else if (message === 'SHOW_REWARDED_AD') {
               if (adLoaded) {
                 rewarded.show();
               } else {

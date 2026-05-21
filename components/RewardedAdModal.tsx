@@ -27,6 +27,8 @@ const localizedText: Record<Language, Record<string, string>> = {
     comingSoon: 'Coming soon to mobile stores',
     limitReached: 'Daily Limit Reached (10/10)',
     adViewsCount: 'Today\'s Ads: {count} / 10',
+    loadingAd: 'Loading ad...',
+    retryAd: 'Retry loading ad',
   },
   KO: {
     title: '무료 볼티지 충전!',
@@ -40,6 +42,8 @@ const localizedText: Record<Language, Record<string, string>> = {
     comingSoon: '모바일 스토어 출시 예정',
     limitReached: '오늘의 광고 한도 완료 (10/10)',
     adViewsCount: '오늘의 참여 횟수: {count} / 10',
+    loadingAd: '광고 불러오는 중...',
+    retryAd: '광고 다시 불러오기',
   },
   ES: {
     title: '¡Carga Voltaje Gratis!',
@@ -53,6 +57,8 @@ const localizedText: Record<Language, Record<string, string>> = {
     comingSoon: 'Próximamente en tiendas móviles',
     limitReached: 'Límite diario alcanzado (10/10)',
     adViewsCount: 'Anuncios de hoy: {count} / 10',
+    loadingAd: 'Cargando anuncio...',
+    retryAd: 'Reintentar cargar anuncio',
   }
 };
 
@@ -61,6 +67,8 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
   const [isProcessing, setIsProcessing] = useState(false);
   const [adViewsToday, setAdViewsToday] = useState<number>(0);
   const [isLoadingViews, setIsLoadingViews] = useState(true);
+  const [adReady, setAdReady] = useState(false);
+  const [isAdLoading, setIsAdLoading] = useState(false);
   const text = localizedText[lang] || localizedText.KO;
 
   // 1. 광고 제한 횟수 가져오기
@@ -83,6 +91,15 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
     }
   }, [isOpen]);
 
+  // 2. 모달이 열리고 앱 환경일 때 광고 프리로드 요청
+  useEffect(() => {
+    if (isOpen && isAppEnv && adViewsToday < 10) {
+      setIsAdLoading(true);
+      setAdReady(false);
+      (window as any).ReactNativeWebView?.postMessage('PRELOAD_AD');
+    }
+  }, [isOpen, isAppEnv, adViewsToday]);
+
   useEffect(() => {
     // 앱 환경(WebView)인지 확인
     if (typeof window !== 'undefined') {
@@ -102,6 +119,7 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
         if (res.success) {
           alert(text.alertAdEarned);
           setAdViewsToday(prev => prev + 1);
+          setAdReady(false); // 보상 완료 후 상태 초기화
           if (onSuccess) onSuccess();
           onClose();
         } else {
@@ -109,8 +127,19 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
         }
       };
 
+      // 네이티브 앱에서 보내는 광고 로딩 상태 수신
+      const handleAdStatus = (e: any) => {
+        const loaded = e.detail?.loaded;
+        setAdReady(loaded);
+        setIsAdLoading(false);
+      };
+
       window.addEventListener('adRewardEarned', handleAdEarned);
-      return () => window.removeEventListener('adRewardEarned', handleAdEarned);
+      window.addEventListener('adLoadedStatus', handleAdStatus);
+      return () => {
+        window.removeEventListener('adRewardEarned', handleAdEarned);
+        window.removeEventListener('adLoadedStatus', handleAdStatus);
+      };
     }
   }, [onClose, onSuccess, text]);
 
@@ -120,8 +149,14 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
         alert(text.limitReached);
         return;
       }
-      // 네이티브 앱(Expo)으로 광고 띄워달라고 메시지 전송
-      (window as any).ReactNativeWebView.postMessage('SHOW_REWARDED_AD');
+      if (adReady) {
+        // 광고가 이미 로드된 상태이므로 바로 송출 요청
+        (window as any).ReactNativeWebView.postMessage('SHOW_REWARDED_AD');
+      } else if (!isAdLoading) {
+        // 광고 로드에 실패했거나 아직 완료되지 않은 상태라면 다시 로드 시도
+        setIsAdLoading(true);
+        (window as any).ReactNativeWebView.postMessage('PRELOAD_AD');
+      }
     } else {
       alert(text.alertAppOnly);
     }
@@ -213,14 +248,20 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
             {isAppEnv ? (
               <button
                 onClick={handleWatchAd}
-                disabled={isProcessing || isLoadingViews || adViewsToday >= 10}
+                disabled={isProcessing || isLoadingViews || adViewsToday >= 10 || isAdLoading}
                 className={`w-full relative group overflow-hidden rounded-xl p-4 flex items-center justify-center gap-3 transition-all ${
                   adViewsToday >= 10
                     ? 'bg-zinc-800 text-zinc-500 border border-white/5 cursor-not-allowed'
-                    : 'bg-white text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(255,255,255,0.2)]'
+                    : isProcessing || isLoadingViews
+                      ? 'bg-zinc-800 text-zinc-400 border border-white/5 cursor-not-allowed'
+                      : isAdLoading
+                        ? 'bg-zinc-800 text-zinc-400 border border-white/5 cursor-not-allowed animate-pulse'
+                        : !adReady
+                          ? 'bg-zinc-800 text-white border border-white/10 hover:bg-zinc-700 active:scale-[0.98]'
+                          : 'bg-white text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(255,255,255,0.2)]'
                 }`}
               >
-                {adViewsToday < 10 && (
+                {adViewsToday < 10 && adReady && (
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                 )}
                 {isProcessing ? (
@@ -229,6 +270,13 @@ export default function RewardedAdModal({ isOpen, onClose, onSuccess, lang = 'KO
                   <span className="font-bold">Checking limit...</span>
                 ) : adViewsToday >= 10 ? (
                   <span className="font-black text-base md:text-lg">{text.limitReached}</span>
+                ) : isAdLoading ? (
+                  <>
+                    <span className="animate-spin inline-block w-4 h-4 border-2 border-t-transparent border-zinc-400 rounded-full"></span>
+                    <span className="font-bold">{text.loadingAd}</span>
+                  </>
+                ) : !adReady ? (
+                  <span className="font-black text-base md:text-lg">{text.retryAd}</span>
                 ) : (
                   <>
                     <Gift size={20} className="font-bold text-[var(--neon-lime)] animate-bounce" />
