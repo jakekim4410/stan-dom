@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { createClient as createAdminClient } from '@supabase/supabase-js';
 
 export async function updateMemberPhoto(memberId: string, artistId: string, imageUrl: string) {
   const supabase = await createClient();
@@ -14,8 +15,14 @@ export async function updateMemberPhoto(memberId: string, artistId: string, imag
       return { success: false, error: 'LOG_IN_REQUIRED' };
     }
 
+    // Use admin client for reads too (to bypass RLS on members table)
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseAdmin = serviceRoleKey
+      ? createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceRoleKey)
+      : supabase;
+
     // Check if the member currently has an image
-    const { data: memberData } = await supabase
+    const { data: memberData } = await supabaseAdmin
       .from('members')
       .select('image_url')
       .eq('id', memberId)
@@ -46,8 +53,8 @@ export async function updateMemberPhoto(memberId: string, artistId: string, imag
       }
     }
 
-    // Perform the update
-    const { error } = await supabase
+    // Perform the update using Admin Client to bypass RLS
+    const { error } = await supabaseAdmin
       .from('members')
       .update({ image_url: imageUrl })
       .eq('id', memberId);
