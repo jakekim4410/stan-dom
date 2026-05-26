@@ -1361,6 +1361,7 @@ export default function ArtistPage({ params }: { params: Promise<{ id: string }>
         currentImageUrl={artist?.image_url || null}
         lang={lang}
         onSuccess={(url) => {
+          setArtist(prev => prev ? { ...prev, image_url: url } : null);
           setToast({
             isVisible: true,
             message: t('photoUpdateSuccess'),

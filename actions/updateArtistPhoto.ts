@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { createClient as createAdminClient } from '@supabase/supabase-js';
 
 export async function updateArtistPhoto(artistId: string, imageUrl: string) {
   const supabase = await createClient();
@@ -16,10 +17,7 @@ export async function updateArtistPhoto(artistId: string, imageUrl: string) {
     }
 
     // 2. Reputation Gating (10+ votes for this artist)
-    // admin (local dev) bypass
-
     if (!isLocalAdmin) {
-      // ✅ [추가된 부분] 타입스크립트를 안심시키기 위한 안전장치
       if (!user) {
         return { success: false, error: 'LOG_IN_REQUIRED' };
       }
@@ -27,7 +25,7 @@ export async function updateArtistPhoto(artistId: string, imageUrl: string) {
       const { count, error: countErr } = await supabase
         .from('votes')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id) // 이제 타입스크립트가 user.id를 안전하게 인식합니다!
+        .eq('user_id', user.id)
         .eq('artist_id', artistId);
 
       if (countErr) throw countErr;
@@ -43,8 +41,16 @@ export async function updateArtistPhoto(artistId: string, imageUrl: string) {
       }
     }
 
-    // 3. Perform the update
-    const { error } = await supabase
+    // 3. Perform the update using Admin Client to bypass RLS
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceRoleKey) {
+      console.warn('SUPABASE_SERVICE_ROLE_KEY is missing. Update may fail due to RLS.');
+    }
+    const supabaseAdmin = serviceRoleKey 
+      ? createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceRoleKey)
+      : supabase;
+
+    const { error } = await supabaseAdmin
       .from('artists')
       .update({ image_url: imageUrl })
       .eq('id', artistId);
