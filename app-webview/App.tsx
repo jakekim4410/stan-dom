@@ -126,59 +126,92 @@ export default function App() {
   // 3. 이미지 다운로드 핸들러 (data URL을 파일로 저장)
   const handleImageDownload = async (dataUrl: string) => {
     try {
-      let { status, canAskAgain } = await MediaLibrary.getPermissionsAsync();
-      if (status !== 'granted') {
-        if (canAskAgain) {
-          const request = await MediaLibrary.requestPermissionsAsync(true); // writeOnly
-          status = request.status;
-        }
-      }
-      
-      // data:image/png;base64,... → base64 데이터 추출
-      const base64Data = dataUrl.split(',')[1];
-      if (!base64Data) {
+      console.log('[ImageSave] Starting download, dataUrl length:', dataUrl?.length);
+
+      // 1. data:image/xxx;base64,... → base64 데이터 추출
+      const commaIndex = dataUrl.indexOf(',');
+      if (commaIndex === -1) {
+        console.error('[ImageSave] Invalid dataUrl: no comma separator found');
         Alert.alert('오류', '이미지 데이터를 처리할 수 없습니다.');
         return;
       }
+      const base64Data = dataUrl.substring(commaIndex + 1);
+      if (!base64Data || base64Data.length < 100) {
+        console.error('[ImageSave] Invalid base64 data, length:', base64Data?.length);
+        Alert.alert('오류', '이미지 데이터가 손상되었습니다. 다시 시도해주세요.');
+        return;
+      }
+      console.log('[ImageSave] Base64 data extracted, length:', base64Data.length);
 
-      // Detect correct file extension based on dataURL header
-      const extension = dataUrl.includes('jpeg') || dataUrl.includes('jpg') ? 'jpg' : 'png';
+      // 2. 파일 확장자 감지 및 임시 파일 저장
+      const header = dataUrl.substring(0, commaIndex);
+      const extension = header.includes('jpeg') || header.includes('jpg') ? 'jpg' : 'png';
       const fileName = `standom_card_${Date.now()}.${extension}`;
-      const fileUri = FileSystem.documentDirectory + fileName;
-      
+      const fileUri = FileSystem.cacheDirectory + fileName;
+      console.log('[ImageSave] Saving to:', fileUri);
+
       await FileSystem.writeAsStringAsync(fileUri, base64Data, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
+      // 파일이 정상적으로 저장되었는지 확인
+      const fileInfo = await FileSystem.getInfoAsync(fileUri);
+      console.log('[ImageSave] File written:', JSON.stringify(fileInfo));
+
+      if (!fileInfo.exists || (fileInfo as any).size === 0) {
+        console.error('[ImageSave] File write verification failed');
+        Alert.alert('저장 실패', '파일 저장에 실패했습니다. 다시 시도해주세요.');
+        return;
+      }
+
+      // 3. 갤러리 저장 권한 처리
+      let { status, canAskAgain } = await MediaLibrary.getPermissionsAsync();
+      console.log('[ImageSave] Current permission status:', status, 'canAskAgain:', canAskAgain);
+
+      if (status !== 'granted') {
+        if (canAskAgain) {
+          const request = await MediaLibrary.requestPermissionsAsync(true); // writeOnly
+          status = request.status;
+          console.log('[ImageSave] Permission request result:', status);
+        }
+      }
+
       if (status === 'granted') {
         try {
-          await MediaLibrary.saveToLibraryAsync(fileUri);
+          const asset = await MediaLibrary.createAssetAsync(fileUri);
+          console.log('[ImageSave] Asset created successfully:', asset.uri);
           Alert.alert('저장 완료! ✅', '이미지가 갤러리에 저장되었습니다.');
-        } catch (saveErr) {
-          console.warn('saveToLibraryAsync failed, falling back to Share sheet:', saveErr);
-          await Share.share({
-            url: fileUri,
-            title: 'STAN.DOM Card',
-          });
+        } catch (saveErr: any) {
+          console.warn('[ImageSave] createAssetAsync failed:', saveErr?.message || saveErr);
+          // Fallback: Share sheet
+          try {
+            await Share.share({ url: fileUri, title: 'STAN.DOM Card' });
+          } catch (shareErr) {
+            console.error('[ImageSave] Share fallback also failed:', shareErr);
+            Alert.alert('저장 실패', '갤러리 저장에 실패했습니다. 앱 설정에서 저장소 권한을 확인해주세요.');
+          }
         }
       } else {
-        // Permission denied: show Share sheet directly as fallback so they can still save it
-        await Share.share({
-          url: fileUri,
-          title: 'STAN.DOM Card',
-        });
+        console.log('[ImageSave] Permission not granted, using Share sheet');
+        // Permission denied: show Share sheet as fallback
+        try {
+          await Share.share({ url: fileUri, title: 'STAN.DOM Card' });
+        } catch (shareErr) {
+          console.error('[ImageSave] Share fallback failed:', shareErr);
+          Alert.alert('저장 실패', '앱 설정에서 저장소 권한을 허용해주세요.');
+        }
       }
-      
-      // 알림 및 성공 신호를 웹뷰로 전달
+
+      // 4. 성공 신호를 웹뷰로 전달
       if (webviewRef.current) {
         webviewRef.current.injectJavaScript(`
           window.dispatchEvent(new CustomEvent('image-saved-success'));
           true;
         `);
       }
-    } catch (error) {
-      console.error('Image download error:', error);
-      Alert.alert('저장 실패', '이미지 저장 중 문제가 발생했습니다.');
+    } catch (error: any) {
+      console.error('[ImageSave] Critical error:', error?.message || error, error?.stack);
+      Alert.alert('저장 실패', `이미지 저장 중 문제가 발생했습니다.\n\n오류: ${error?.message || '알 수 없는 오류'}`);
     }
   };
 
