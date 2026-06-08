@@ -743,7 +743,7 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:justify-end w-full lg:w-auto">
             
             {/* Status + Vote Quota */}
-            <div className="flex items-center justify-between sm:justify-start gap-1 sm:gap-2 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center justify-between sm:justify-start gap-1 sm:gap-2 w-full sm:w-auto">
               {!userCountry ? (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}

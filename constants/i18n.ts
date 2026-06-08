@@ -39,9 +39,9 @@ export const i18n: Record<Language, Record<string, string>> = {
 
     // System Status
     logout: 'Logout',
-    connectNode: 'CONNECT COUNTRY NODE TO JOIN',
-    nodeStable: 'NODE STABLE',
-    remainingVotes: 'REMAINING VOTE',
+    connectNode: 'CONNECT COUNTRY',
+    nodeStable: 'COUNTRY CONNECTED',
+    remainingVotes: 'VOTES',
     visMode: 'VIS_MODE',
     globe: 'GLOBE',
     flatMap: 'FLAT',
@@ -650,9 +650,9 @@ export const i18n: Record<Language, Record<string, string>> = {
 
     // System Status
     logout: 'CERRAR SESIÓN',
-    connectNode: 'CONECTA TU NODO DE PAÍS',
-    nodeStable: 'NODO ESTABLE',
-    remainingVotes: 'VOTOS RESTANTES',
+    connectNode: 'CONECTA TU PAÍS',
+    nodeStable: 'PAÍS CONECTADO',
+    remainingVotes: 'VOTOS',
     visMode: 'MODO_VIS',
     globe: 'GLOBO',
     flatMap: 'PLANO',
