@@ -674,13 +674,6 @@ export default function Dashboard() {
                 >
                   {t('logout')}
                 </button>
-                {isAppEnv && (
-                  <span className="text-[8px] text-zinc-500 font-black mt-1 tracking-wider">
-                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP 
-                      ? `APP: ${(window as any).STAN_DOM_APP_VERSION || 'v1.0.3 (v11)'} ✅` 
-                      : 'APP: v1.0.0 (Old) ❌'}
-                  </span>
-                )}
               </div>
             ) : (
               <div className="flex flex-col items-end">
@@ -690,13 +683,6 @@ export default function Dashboard() {
                 >
                   {t('login')}
                 </Link>
-                {isAppEnv && (
-                  <span className="text-[8px] text-zinc-500 font-black mt-1 tracking-wider">
-                    {typeof window !== 'undefined' && (window as any).STAN_DOM_APP 
-                      ? `APP: ${(window as any).STAN_DOM_APP_VERSION || 'v1.0.3 (v11)'} ✅` 
-                      : 'APP: v1.0.0 (Old) ❌'}
-                  </span>
-                )}
               </div>
             )}
           </div>
@@ -745,18 +731,18 @@ export default function Dashboard() {
           </div>
 
           {/* Right/Bottom Group: Status & Mega Music Hook */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:justify-end">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:justify-end w-full lg:w-auto">
             
             {/* Status + Vote Quota */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center justify-between sm:justify-start gap-1 sm:gap-2 w-full sm:w-auto">
               {!userCountry ? (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-white/5 border border-white/5 border-dashed hover:border-red-500/30 transition-colors"
+                  className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-2xl bg-white/5 border border-white/5 border-dashed hover:border-red-500/30 transition-colors shrink-0"
                 >
                   <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_red]" />
-                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
+                  <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 uppercase tracking-tight sm:tracking-widest leading-none">
                     {t('connectNode')}
                   </span>
                 </motion.div>
@@ -764,10 +750,10 @@ export default function Dashboard() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-[var(--neon-lime)]/10 border border-[var(--neon-lime)]/30"
+                  className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-2xl bg-[var(--neon-lime)]/10 border border-[var(--neon-lime)]/30 shrink-0"
                 >
                   <div className="w-1.5 h-1.5 bg-[var(--neon-lime)] rounded-full shadow-[0_0_8px_var(--neon-lime)]" />
-                  <span className="text-[10px] font-black text-[var(--neon-lime)] uppercase tracking-widest leading-none">
+                  <span className="text-[9px] sm:text-[10px] font-black text-[var(--neon-lime)] uppercase tracking-tight sm:tracking-widest leading-none whitespace-nowrap">
                     {t('nodeStable')}
                   </span>
                 </motion.div>
@@ -778,10 +764,10 @@ export default function Dashboard() {
                   <motion.div
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-white/5 border border-white/5"
+                    className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-2xl bg-white/5 border border-white/5 shrink-0"
                   >
                     <div className={`w-1.5 h-1.5 rounded-full ${voteQuota.remaining > 0 ? 'bg-[var(--neon-lime)]' : 'bg-red-500'} shadow-[0_0_8px_currentColor]`} />
-                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">
+                    <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 uppercase tracking-tight sm:tracking-widest leading-none whitespace-nowrap">
                       {t('remainingVotes')}: <span className="text-white">{voteQuota.remaining}</span> / <span className="text-zinc-600">{voteQuota.limit}</span>
                     </span>
                   </motion.div>
@@ -790,11 +776,11 @@ export default function Dashboard() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     onClick={() => setShowAdModal(true)}
-                    className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-400 hover:text-amber-300 hover:scale-105 active:scale-95 transition-all overflow-hidden group"
+                    className="relative flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-400 hover:text-amber-300 hover:scale-105 active:scale-95 transition-all overflow-hidden group shrink-0"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                    <Gift size={14} className="animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">+3V</span>
+                    <Gift size={12} className="animate-pulse sm:w-3.5 sm:h-3.5" />
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-tight sm:tracking-widest whitespace-nowrap">+3V</span>
                   </motion.button>
                 </>
               )}
