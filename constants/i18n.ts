@@ -189,7 +189,7 @@ export const i18n: Record<Language, Record<string, string>> = {
     // Battle Zone
     battleZoneTitle: 'MONTHLY BATTLE ZONE',
     battleZoneSub: 'This Month: 5th Gen Global Visual Battle (ILLIT vs BABYMONSTER vs UNIS)',
-    votingRuleNotice: 'Members: 10 votes/day, Non-members: 3 votes/day',
+    votingRuleNotice: 'Members: 10 votes/day, Guests: 3 votes',
     pastBattles: 'View Past Battles',
     hidePastBattles: 'Hide',
     battleWinner: 'Winner',
