@@ -356,21 +356,30 @@ export default function Dashboard() {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       let dataUrl: string;
+      
+      const withTimeout = <T,>(promise: Promise<T>, ms: number, errorMsg: string) => {
+        let timeoutId: NodeJS.Timeout;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error(errorMsg)), ms);
+        });
+        return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
+      };
+
       try {
-        dataUrl = await toJpeg(staticHologramCardRef.current, {
+        dataUrl = await withTimeout(toJpeg(staticHologramCardRef.current, {
           quality: 0.8,
           backgroundColor: '#020205',
           pixelRatio: 2,
           skipAutoScale: true,
           cacheBust: true,
-        });
+        }), 8000, 'toJpeg timeout');
       } catch (pngErr) {
         console.warn('[Download] toJpeg failed, trying domToJpeg fallback:', pngErr);
-        dataUrl = await domToJpeg(staticHologramCardRef.current, {
+        dataUrl = await withTimeout(domToJpeg(staticHologramCardRef.current, {
           scale: 1.5,
           quality: 0.8,
           backgroundColor: '#020205',
-        });
+        }), 8000, 'domToJpeg timeout');
       }
       
       setGeneratedImage(dataUrl);
