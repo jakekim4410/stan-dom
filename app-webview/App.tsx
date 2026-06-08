@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useRef, useEffect, useState } from 'react';
 import { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 
 // 개발 환경에서는 테스트 광고, 프로덕션에서는 실제 애드몹 광고를 노출합니다.
