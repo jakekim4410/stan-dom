@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useRef, useEffect, useState } from 'react';
 import { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
-import * as FileSystem from 'expo-file-system/legacy';
+import { File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 
 // 개발 환경에서는 테스트 광고, 프로덕션에서는 실제 애드몹 광고를 노출합니다.
@@ -147,18 +147,17 @@ export default function App() {
       const header = dataUrl.substring(0, commaIndex);
       const extension = header.includes('jpeg') || header.includes('jpg') ? 'jpg' : 'png';
       const fileName = `standom_card_${Date.now()}.${extension}`;
-      const fileUri = FileSystem.cacheDirectory + fileName;
+      const fileUri = `${Paths.cache.uri}${fileName}`;
       console.log('[ImageSave] Saving to:', fileUri);
 
-      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-        encoding: 'base64',
-      });
+      const file = new File(fileUri);
+      file.write(base64Data, { encoding: 'base64' });
 
       // 파일이 정상적으로 저장되었는지 확인
-      const fileInfo = await FileSystem.getInfoAsync(fileUri);
+      const fileInfo = file.info();
       console.log('[ImageSave] File written:', JSON.stringify(fileInfo));
 
-      if (!fileInfo.exists || (fileInfo as any).size === 0) {
+      if (!fileInfo.exists || fileInfo.size === 0) {
         console.error('[ImageSave] File write verification failed');
         Alert.alert('저장 실패', '파일 저장에 실패했습니다. 다시 시도해주세요.');
         return;
