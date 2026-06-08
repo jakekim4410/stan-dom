@@ -151,7 +151,7 @@ export default function App() {
       console.log('[ImageSave] Saving to:', fileUri);
 
       await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-        encoding: FileSystem.EncodingType.Base64,
+        encoding: 'base64',
       });
 
       // 파일이 정상적으로 저장되었는지 확인
