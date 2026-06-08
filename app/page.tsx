@@ -699,7 +699,7 @@ export default function Dashboard() {
       </nav>
 
       {/* ── Operations Toolbar ── */}
-      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 pt-4 sm:pt-8 pb-4">
+      <div className="max-w-[1400px] w-full mx-auto px-2 sm:px-4 pt-6 sm:pt-8 pb-4">
         <div className="glassmorphism rounded-[2rem] p-4 sm:p-5 flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between border-white/5 shadow-2xl">
           
           {/* Left/Top Group: Country Selector & Map Toggle */}
@@ -707,7 +707,7 @@ export default function Dashboard() {
             <div className="w-full sm:w-72 relative group flex-shrink-0 z-20">
               <CountrySelector selected={userCountry} onSelect={setUserCountry} lang={lang} />
               {!userCountry && (
-                <div className="absolute -top-2 -right-2 bg-red-500 text-[9px] font-black px-2 py-0.5 rounded-full animate-bounce shadow-lg shadow-red-500/20 z-20">
+                <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 bg-red-500 text-[9px] font-black px-2 py-0.5 rounded-full animate-pulse shadow-lg shadow-red-500/20 z-20">
                   {t('required')}
                 </div>
               )}
