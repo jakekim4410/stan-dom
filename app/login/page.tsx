@@ -251,7 +251,6 @@ export default function LoginPage() {
               </div>
 
               {/* Country Node Selector */}
-              <div className="bg-black/50 border border-white/10 rounded-xl p-1">
               <div className="bg-black/50 border border-white/10 rounded-xl p-1 relative">
                 <div className="flex items-center px-3 py-2 text-xs font-black tracking-widest text-zinc-400 uppercase gap-2 mb-1">
                   <ShieldCheck size={14} className="text-neon-cyan" /> {t('selectCountry')}
