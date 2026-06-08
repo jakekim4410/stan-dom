@@ -6,6 +6,7 @@ import { useRef, useEffect, useState } from 'react';
 import { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 import { File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 
 // 개발 환경에서는 테스트 광고, 프로덕션에서는 실제 애드몹 광고를 노출합니다.
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-7904032658716092/1586676306';
@@ -147,10 +148,9 @@ export default function App() {
       const header = dataUrl.substring(0, commaIndex);
       const extension = header.includes('jpeg') || header.includes('jpg') ? 'jpg' : 'png';
       const fileName = `standom_card_${Date.now()}.${extension}`;
-      const fileUri = `${Paths.cache.uri}${fileName}`;
-      console.log('[ImageSave] Saving to:', fileUri);
+      const file = new File(Paths.cache, fileName);
+      console.log('[ImageSave] Saving to:', file.uri);
 
-      const file = new File(fileUri);
       file.write(base64Data, { encoding: 'base64' });
 
       // 파일이 정상적으로 저장되었는지 확인
@@ -177,14 +177,14 @@ export default function App() {
 
       if (status === 'granted') {
         try {
-          const asset = await MediaLibrary.createAssetAsync(fileUri);
+          const asset = await MediaLibrary.createAssetAsync(file.uri);
           console.log('[ImageSave] Asset created successfully:', asset.uri);
           Alert.alert('저장 완료! ✅', '이미지가 갤러리에 저장되었습니다.');
         } catch (saveErr: any) {
           console.warn('[ImageSave] createAssetAsync failed:', saveErr?.message || saveErr);
           // Fallback: Share sheet
           try {
-            await Share.share({ url: fileUri, title: 'STAN.DOM Card' });
+            await Sharing.shareAsync(file.uri, { dialogTitle: 'STAN.DOM Card' });
           } catch (shareErr) {
             console.error('[ImageSave] Share fallback also failed:', shareErr);
             Alert.alert('저장 실패', '갤러리 저장에 실패했습니다. 앱 설정에서 저장소 권한을 확인해주세요.');
@@ -194,7 +194,7 @@ export default function App() {
         console.log('[ImageSave] Permission not granted, using Share sheet');
         // Permission denied: show Share sheet as fallback
         try {
-          await Share.share({ url: fileUri, title: 'STAN.DOM Card' });
+          await Sharing.shareAsync(file.uri, { dialogTitle: 'STAN.DOM Card' });
         } catch (shareErr) {
           console.error('[ImageSave] Share fallback failed:', shareErr);
           Alert.alert('저장 실패', '앱 설정에서 저장소 권한을 허용해주세요.');
