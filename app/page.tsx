@@ -1140,7 +1140,7 @@ export default function Dashboard() {
                                 </button>
 
                                 {/* Page dots */}
-                                <div className="flex items-center gap-1.5">
+                                <div className="hidden sm:flex items-center gap-1.5">
                                   {Array.from({ length: pageCount }).map((_, i) => (
                                     <button
                                       key={i}
