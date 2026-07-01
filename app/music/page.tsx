@@ -1,4 +1,5 @@
 'use client';
+// Force hot-reload
 
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
@@ -12,6 +13,29 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+// spotify_id 필드에 저장된 JSON에서 영문 제목/아티스트 추출
+function getBilingualMeta(track: any): { titleEn?: string; artistEn?: string } {
+  try {
+    const meta = JSON.parse(track.spotify_id || '{}');
+    return { titleEn: meta.en_t, artistEn: meta.en_a };
+  } catch {
+    return {};
+  }
+}
+
+// 언어에 맞는 제목 반환: KO → 한글, EN/ES → 영문 (없으면 한글 fallback)
+function getDisplayTitle(track: any, lang: Language): string {
+  if (lang === 'KO') return track.title || '';
+  const { titleEn } = getBilingualMeta(track);
+  return titleEn || track.title || '';
+}
+
+function getDisplayArtist(track: any, lang: Language): string {
+  if (lang === 'KO') return track.artist || '';
+  const { artistEn } = getBilingualMeta(track);
+  return artistEn || track.artist || '';
+}
 
 const MusicChartPage = () => {
   const [tracks, setTracks] = useState<any[]>([]);
@@ -57,16 +81,25 @@ const MusicChartPage = () => {
     fetchChart();
   }, []);
 
+  // 검색 함수: 한글/영문 모두 검색
+  const matchesSearch = (track: any, query: string): boolean => {
+    const q = query.toLowerCase();
+    if (!q) return true;
+    if ((track.title || '').toLowerCase().includes(q)) return true;
+    if ((track.artist || '').toLowerCase().includes(q)) return true;
+    const { titleEn, artistEn } = getBilingualMeta(track);
+    if (titleEn?.toLowerCase().includes(q)) return true;
+    if (artistEn?.toLowerCase().includes(q)) return true;
+    return false;
+  };
+
   // 검색어가 바뀌면 필터된 곡만 activePlaylist로 세팅 (이 곡끼리만 next/prev 이동)
   useEffect(() => {
     if (searchQuery.trim() === '') {
       // 필터 없음 → 전체 playlist 사용 (activePlaylist 초기화)
       setActivePlaylist([]);
     } else {
-      const filtered = tracks.filter((t) =>
-        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.artist.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const filtered = tracks.filter((t) => matchesSearch(t, searchQuery));
       setActivePlaylist(filtered);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -236,10 +269,7 @@ const MusicChartPage = () => {
       ) : (
         <div className="grid gap-1.5">
           {tracks
-            .filter((t) => 
-              t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-              t.artist.toLowerCase().includes(searchQuery.toLowerCase())
-            )
+            .filter((t) => matchesSearch(t, searchQuery))
             .map((track, index) => {
             const isActive = currentTrack?.id === track.id;
             const hasArt = track.album_art && track.album_art.trim() !== '';
@@ -306,17 +336,17 @@ const MusicChartPage = () => {
                   )}
                 </div>
 
-                {/* 제목 & 아티스트 */}
+                {/* 제목 & 아티스트 (언어별 표시) */}
                 <div className="flex-1 min-w-0 pr-2">
                   <h3
-                    className={`text-[13px] md:text-sm font-bold truncate uppercase tracking-tight transition-colors ${
+                    className={`text-[13px] md:text-sm font-bold truncate tracking-tight transition-colors ${
                       isActive ? 'text-[#37C561]' : 'text-white'
                     }`}
                   >
-                    {track.title}
+                    {getDisplayTitle(track, lang)}
                   </h3>
                   <p className="text-[10px] md:text-[11px] text-zinc-500 truncate uppercase tracking-widest font-medium mt-0.5">
-                    {track.artist}
+                    {getDisplayArtist(track, lang)}
                   </p>
                 </div>
 
